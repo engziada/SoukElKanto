@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "title": "Kanto — Madinaty Neighbor-to-Neighbor Marketplace",
+    "description": "Buy and meet your neighbors. A neighbor-to-neighbor marketplace for Madinaty residents."
+  },
+  "nav": {
+    "home": "Home",
+    "listings": "Listings",
+    "create": "List Item",
+    "offers": "Offers",
+    "login": "Log In"
+  },
+  "hero": {
+    "title": "Buy and Meet Your Neighbors",
+    "subtitle": "A neighbor-to-neighbor marketplace for Madinaty — safe, trusted, simple.",
+    "searchPlaceholder": "Search for something..."
+  },
+  "home": {
+    "featuredStalls": "Trusted Sellers",
+    "newListings": "New in Kanto",
+    "trustBanner": "✓ Verified Madinaty residents  ·  Safe meet spots  ·  Token holds",
+    "viewAll": "View All"
+  },
+  "listing": {
+    "price": "EGP",
+    "makeOffer": "Make Offer",
+    "save": "Save",
+    "share": "Share",
+    "report": "Report",
+    "condition": "Condition",
+    "category": "Category",
+    "district": "District",
+    "seller": "Seller",
+    "memberSince": "Member since",
+    "kycVerified": "Verified",
+    "similar": "Similar listings"
+  },
+  "categories": {
+    "FURNITURE": "Furniture",
+    "ELECTRONICS": "Electronics",
+    "APPLIANCES": "Appliances",
+    "FASHION": "Fashion",
+    "KIDS_TOYS": "Kids Toys",
+    "KIDS_CLOTHING": "Kids Clothing",
+    "KIDS_GEAR": "Kids Gear",
+    "SPORTS": "Sports",
+    "BOOKS": "Books",
+    "AUTOMOTIVE": "Automotive",
+    "HOME_DECOR": "Home Decor",
+    "GARDEN": "Garden",
+    "MUSICAL_INSTRUMENTS": "Musical Instruments",
+    "COLLECTIBLES": "Collectibles",
+    "CRAFTS": "Crafts",
+    "OTHER": "Other"
+  },
+  "conditions": {
+    "NEW": "New",
+    "LIKE_NEW": "Like New",
+    "GOOD": "Good",
+    "FAIR": "Fair",
+    "FOR_PARTS": "For Parts"
+  },
+  "offer": {
+    "yourOffer": "Your Offer",
+    "note": "Note (optional)",
+    "tokenHold": "Lock 5 tokens as commitment",
+    "tokenHoldHint": "Tokens are not money — an internal hold released after handover.",
+    "sendOffer": "Send Offer",
+    "cancel": "Cancel"
+  },
+  "filters": {
+    "category": "Category",
+    "condition": "Condition",
+    "district": "District",
+    "priceRange": "Price",
+    "sort": "Sort",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price: Low to High",
+    "sortPriceDesc": "Price: High to Low",
+    "sortPopular": "Popular",
+    "clear": "Clear Filters"
+  },
+  "create": {
+    "title": "List an Item",
+    "stepPhotos": "Photos",
+    "stepDetails": "Details",
+    "stepPrice": "Price",
+    "stepReview": "Review",
+    "publish": "Publish Listing",
+    "saveDraft": "Save Draft"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "notFound": "We couldn't find what you're looking for.",
+    "unauthorized": "Please log in first."
+  }
+}

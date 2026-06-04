@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "title": "كانتو — سوق جيران مدينتي",
+    "description": "اشتري واتعرف على جيرانك. سوق جار-للجار لسكان مدينتي."
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "listings": "الإعلانات",
+    "create": "اعلن",
+    "offers": "العروض",
+    "login": "تسجيل الدخول"
+  },
+  "hero": {
+    "title": "اشتري واتعرف على جيرانك",
+    "subtitle": "سوق جار-للجار لسكان مدينتي — آمن، موثوق، بسيط.",
+    "searchPlaceholder": "دور على حاجة..."
+  },
+  "home": {
+    "featuredStalls": "بائعين موثوقين",
+    "newListings": "جديد في كانتو",
+    "trustBanner": "✓ سكان مدينتي المعتمدين  ·  أماكن آمنة للقاء  ·  حجز رمزي",
+    "viewAll": "شوف الكل"
+  },
+  "listing": {
+    "price": "ج.م",
+    "makeOffer": "اعرض سعر",
+    "save": "احفظ",
+    "share": "شارك",
+    "report": "بلاغ",
+    "condition": "الحالة",
+    "category": "الفئة",
+    "district": "المنطقة",
+    "seller": "البائع",
+    "memberSince": "عضو منذ",
+    "kycVerified": "موثق",
+    "similar": "إعلانات مشابهة"
+  },
+  "categories": {
+    "FURNITURE": "أثاث",
+    "ELECTRONICS": "إلكترونيات",
+    "APPLIANCES": "أجهزة منزلية",
+    "FASHION": "موضة",
+    "KIDS_TOYS": "ألعاط أطفال",
+    "KIDS_CLOTHING": "ملابس أطفال",
+    "KIDS_GEAR": "معدات أطفال",
+    "SPORTS": "رياضة",
+    "BOOKS": "كتب",
+    "AUTOMOTIVE": "سيارات",
+    "HOME_DECOR": "ديكور",
+    "GARDEN": "حديقة",
+    "MUSICAL_INSTRUMENTS": "آلات موسيقية",
+    "COLLECTIBLES": "تحف",
+    "CRAFTS": "حرف",
+    "OTHER": "أخرى"
+  },
+  "conditions": {
+    "NEW": "جديد",
+    "LIKE_NEW": "زي الجديد",
+    "GOOD": "كويس",
+    "FAIR": "مقبول",
+    "FOR_PARTS": "للقطع"
+  },
+  "offer": {
+    "yourOffer": "عرضك",
+    "note": "ملاحظة (اختياري)",
+    "tokenHold": "حجز 5 رموز كالتزام",
+    "tokenHoldHint": "الرموز مش فلوس — حجز داخلي بيتحرر بعد التسليم.",
+    "sendOffer": "ابعت العرض",
+    "cancel": "إلغاء"
+  },
+  "filters": {
+    "category": "الفئة",
+    "condition": "الحالة",
+    "district": "المنطقة",
+    "priceRange": "السعر",
+    "sort": "الترتيب",
+    "sortNewest": "الأحدث",
+    "sortPriceAsc": "السعر: الأقل",
+    "sortPriceDesc": "السعر: الأعلى",
+    "sortPopular": "الأشهر",
+    "clear": "امسح الفلاتر"
+  },
+  "create": {
+    "title": "اعلن عن حاجة",
+    "stepPhotos": "الصور",
+    "stepDetails": "التفاصيل",
+    "stepPrice": "السعر",
+    "stepReview": "مراجعه",
+    "publish": "نشر الإعلان",
+    "saveDraft": "احفظ مسودة"
+  },
+  "errors": {
+    "generic": "حصل حاجة غلط. جرب تاني.",
+    "notFound": "مش لاقين اللي بتدور عليه.",
+    "unauthorized": "لازم تسجل دخول الأول."
+  }
+}

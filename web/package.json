@@ -1,0 +1,41 @@
+{
+  "name": "soukelkanto-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/check-backend.mjs --soft",
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "check:be": "node scripts/check-backend.mjs",
+    "test": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "3.10.0",
+    "lucide-react": "0.474.0",
+    "next": "15.1.6",
+    "next-intl": "3.26.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-hook-form": "7.54.2",
+    "zod": "3.24.1",
+    "zustand": "5.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.50.1",
+    "@types/node": "22.13.1",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "9.20.1",
+    "eslint-config-next": "15.1.6",
+    "postcss": "8.5.2",
+    "tailwindcss": "^3.4.0",
+    "typescript": "5.7.3",
+    "vitest": "3.0.5"
+  }
+}
