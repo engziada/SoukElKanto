@@ -8,7 +8,8 @@
     "listings": "الإعلانات",
     "create": "اعلن",
     "offers": "العروض",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "loginComingSoon": "قريباً — بنشتغل عليها"
   },
   "hero": {
     "title": "اشتري واتعرف على جيرانك",
@@ -19,7 +20,21 @@
     "featuredStalls": "بائعين موثوقين",
     "newListings": "جديد في كانتو",
     "trustBanner": "✓ سكان مدينتي المعتمدين  ·  أماكن آمنة للقاء  ·  حجز رمزي",
-    "viewAll": "شوف الكل"
+    "viewAll": "شوف الكل",
+    "aboutTitle": "كانتو إيه بالظبط؟",
+    "aboutNeighbors": "جيرانك، مش غرباء",
+    "aboutNeighborsBody": "كل بائع وباييع موثقين. تعرف مين بيكلمك — جارك الفلاني، مش حساب وهمي.",
+    "aboutBroker": "وسيط، مش بنك",
+    "aboutBrokerBody": "مافيش فلوس بتتمر عبر المنصة. إعلان وعرض ولقاء. الصفقة بينك وبين الجار.",
+    "aboutWhatsApp": "شبه الواتساب",
+    "aboutWhatsAppBody": "تشارك الإعلان على واتساب بضغطة. التواصل بالطريقة اللي متعود عليها."
+  },
+  "search": {
+    "noResultsTitle": "مش لاقين حاجة زي دي",
+    "noResultsBody": "دورنا على \"{query}\" ومش لقيناش ولا إعلان مطابق. لو حابب، نقدر نبلغك لما يتنشر حاجة شبهها.",
+    "notifyMe": "نبهني لما يتنشر حاجة شبهها",
+    "notifySuccess": "تم! هنفضل نتابعلك.",
+    "suggestions": "ممكن يعجبك كمان"
   },
   "listing": {
     "price": "ج.م",
@@ -33,7 +48,9 @@
     "seller": "البائع",
     "memberSince": "عضو منذ",
     "kycVerified": "موثق",
-    "similar": "إعلانات مشابهة"
+    "similar": "إعلانات مشابهة",
+    "tierNew": "جديد",
+    "unsave": "إلغاء الحفظ"
   },
   "categories": {
     "FURNITURE": "أثاث",
@@ -92,6 +109,21 @@
   "errors": {
     "generic": "حصل حاجة غلط. جرب تاني.",
     "notFound": "مش لاقين اللي بتدور عليه.",
-    "unauthorized": "لازم تسجل دخول الأول."
+    "unauthorized": "لازم تسجل دخول الأول.",
+    "beFirst": "كن أول واحد يعلن — سوقك يستنى حاجتك!"
+  },
+  "footer": {
+    "madinatyEcosystem": "منظومة Madinaty AI",
+    "partOf": "هذه المنصة جزء من منظومة Madinaty AI",
+    "designedBy": "تصميم وبرمجة",
+    "footerLinksLabel": "روابط الفوتر",
+    "home": "الرئيسية",
+    "aboutMadinaty": "عن Madinaty AI",
+    "contact": "تواصل معنا",
+    "copyright": "© {year} ZSolutions · القاهرة الجديدة، مصر · جميع الحقوق محفوظة."
+  },
+  "theme": {
+    "toggleLight": "وضع النهار",
+    "toggleDark": "وضع الليل"
   }
 }

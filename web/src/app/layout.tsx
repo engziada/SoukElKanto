@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getLocale } from 'next-intl/server';
-import { Inter, Cairo } from 'next/font/google';
+import { Inter, Cairo, Space_Grotesk, Orbitron, Changa } from 'next/font/google';
 import './globals.css';
-import { NavBar } from '@/components/NavBar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,35 +14,42 @@ const cairo = Cairo({
   display: 'swap',
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: 'كانتو — سوق جيران مدينتي',
-    description: 'اشتري واتعرف على جيرانك. سوق جار-للجار لسكان مدينتي.',
-  };
-}
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-  const isRtl = locale === 'ar';
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  display: 'swap',
+});
 
+const changa = Changa({
+  subsets: ['arabic'],
+  variable: '--font-changa',
+  display: 'swap',
+});
+
+export const metadata: Metadata = {
+  title: 'كانتو — سوق جيران مدينتي',
+  description: 'اشتري واتعرف على جيرانك. سوق جار-للجار لسكان مدينتي.',
+};
+
+/**
+ * Root layout — locale-agnostic. The `[locale]/layout.tsx` owns the
+ * `<div dir lang>` wrapper + next-intl provider per-request.
+ */
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang={locale}
-      dir={isRtl ? 'rtl' : 'ltr'}
-      className={`${inter.variable} ${cairo.variable}`}
+      className={`${inter.variable} ${cairo.variable} ${spaceGrotesk.variable} ${orbitron.variable} ${changa.variable}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-screen antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NavBar />
-          <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {children}
-          </main>
-        </NextIntlClientProvider>
+      <body>
+        <div className="site-bg" aria-hidden="true" />
+        {children}
       </body>
     </html>
   );

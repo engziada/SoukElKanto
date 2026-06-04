@@ -1,0 +1,119 @@
+.footer {
+  margin-top: var(--s-9);
+  padding-block: var(--s-7) var(--s-6);
+  background: linear-gradient(180deg, transparent 0%, var(--bg-alt) 40%);
+  border-top: 1px solid var(--border-soft);
+}
+
+.inner {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.brandLogo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.brandTitle {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.brandSlogan {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.divider {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .divider {
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: var(--border);
+    justify-self: center;
+  }
+}
+
+.partner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  justify-self: flex-start;
+}
+
+@media (min-width: 768px) {
+  .partner { justify-self: flex-end; }
+  [dir="rtl"] .partner { justify-self: flex-start; }
+}
+
+.partnerCaption {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.partnerLogo {
+  height: 30px;
+  width: auto;
+  color: var(--text);
+}
+
+.bar {
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.barLinks {
+  display: flex;
+  gap: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.barLinks a {
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.barLinks a:hover { color: var(--text); }
+
+/* Dark/light logo swap — show one, hide the other based on data-theme. */
+.themeLight { display: block; }
+.themeDark  { display: none; }
+[data-theme="dark"] .themeLight { display: none; }
+[data-theme="dark"] .themeDark  { display: block; }

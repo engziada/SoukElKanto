@@ -1,0 +1,161 @@
+.wrap {
+  max-width: 38rem;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.h1 {
+  font-family: var(--font-headline);
+  font-size: 1.6rem;
+  letter-spacing: -0.015em;
+}
+
+.steps {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: var(--surface-mid);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.dotActive {
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  border-color: transparent;
+  box-shadow: var(--shadow-coral);
+}
+
+.dotDone {
+  background: var(--teal);
+  color: var(--on-teal);
+  border-color: transparent;
+}
+
+.stepLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.panel {
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.photoDrop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-7) var(--s-4);
+  border-radius: var(--r-md);
+  border: 2px dashed var(--border);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--kanto-coral);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--kanto-coral) 20%, transparent);
+}
+
+.textarea { min-height: 5.5rem; resize: vertical; }
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-soft);
+}
+
+.review {
+  text-align: center;
+  color: var(--text-muted);
+  padding: var(--s-6) 0;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.65rem 1rem;
+  border-radius: var(--r-md);
+  color: var(--text-soft);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: color var(--dur-fast);
+}
+
+.back:hover { color: var(--text); }
+
+.back:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.next,
+.publish {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: var(--shadow-coral);
+  transition: transform var(--dur-fast);
+}
+
+.next:hover,
+.publish:hover { transform: translateY(-1px); }

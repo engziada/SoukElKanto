@@ -1,0 +1,120 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-7);
+}
+
+.pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-4);
+  padding: var(--s-7) var(--s-5);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--kanto-coral) 10%, transparent), transparent 55%),
+    linear-gradient(180deg, var(--kanto-stall), var(--surface));
+  border: 1px solid var(--kanto-stall-edge);
+}
+
+.pill svg {
+  color: var(--kanto-coral);
+  opacity: 0.7;
+}
+
+.heading {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.body {
+  max-width: 28rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+.notifyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: var(--shadow-coral);
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.notifyBtn:hover {
+  transform: translateY(-1px);
+}
+
+.success {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--r-pill);
+  background: var(--mint-soft);
+  color: var(--mint);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ── Suggestions ── */
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.suggestionsHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.suggestionsTitle {
+  font-family: var(--font-headline);
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.suggestionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+
+@media (min-width: 640px) {
+  .suggestionsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .suggestionsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5); }
+}
+
+.suggestionsFoot {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--s-2);
+}
+
+.viewAll {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--teal);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.viewAll:hover { color: var(--teal-bright); }

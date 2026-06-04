@@ -1,0 +1,87 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Lightweight utility classes — only what is broadly reused across components.
+   Component-specific styling lives in *.module.css next to the component.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.container {
+  width: min(1280px, 92vw);
+  margin-inline: auto;
+  padding-inline: var(--s-4);
+}
+
+@media (min-width: 768px) { .container { padding-inline: var(--s-5); } }
+@media (min-width: 1024px) { .container { padding-inline: var(--s-6); } }
+
+.stack { display: flex; flex-direction: column; }
+.row   { display: flex; flex-direction: row; }
+.center { display: flex; align-items: center; justify-content: center; }
+
+.gap-1 { gap: var(--s-1); }
+.gap-2 { gap: var(--s-2); }
+.gap-3 { gap: var(--s-3); }
+.gap-4 { gap: var(--s-4); }
+.gap-5 { gap: var(--s-5); }
+.gap-6 { gap: var(--s-6); }
+.gap-7 { gap: var(--s-7); }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+.glass {
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.9), rgba(246, 249, 255, 0.72));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+[data-theme="dark"] .glass {
+  background: linear-gradient(155deg, rgba(15, 27, 48, 0.72), rgba(7, 16, 30, 0.55));
+}
+
+/* Site background — soft ambient gradient + grid mask. Mirrors Platform. */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--bg);
+  pointer-events: none;
+}
+.site-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 75% 55% at 8% 0%,   rgba(255, 201, 74, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 95% 10%, rgba(43, 110, 255, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 50% 95%, rgba(255, 131, 102, 0.14) 0%, transparent 55%);
+  animation: bg-pulse 18s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+[data-theme="dark"] .site-bg::before {
+  background:
+    radial-gradient(ellipse 75% 55% at 8% 0%,   rgba(33, 212, 212, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 95% 10%, rgba(95, 141, 255, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 50% 95%, rgba(255, 154, 122, 0.10) 0%, transparent 55%);
+}
+
+@keyframes bg-pulse {
+  0%   { opacity: 0.6; }
+  100% { opacity: 1.0; }
+}
+
+/* Generic clamp / truncate */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tabular numerals for prices */
+.tnum { font-variant-numeric: tabular-nums; }

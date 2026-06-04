@@ -1,0 +1,28 @@
+.button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.button:hover {
+  background: linear-gradient(135deg, var(--kanto-coral), var(--sun));
+  border-color: transparent;
+  color: var(--on-coral);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-coral);
+}
+
+.iconShow { display: block; }
+.iconHide { display: none; }
+[data-theme="dark"] .iconShow { display: none; }
+[data-theme="dark"] .iconHide { display: block; }

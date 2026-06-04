@@ -8,7 +8,8 @@
     "listings": "Listings",
     "create": "List Item",
     "offers": "Offers",
-    "login": "Log In"
+    "login": "Log In",
+    "loginComingSoon": "Coming soon — we're on it"
   },
   "hero": {
     "title": "Buy and Meet Your Neighbors",
@@ -19,7 +20,21 @@
     "featuredStalls": "Trusted Sellers",
     "newListings": "New in Kanto",
     "trustBanner": "✓ Verified Madinaty residents  ·  Safe meet spots  ·  Token holds",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "aboutTitle": "What is Kanto, exactly?",
+    "aboutNeighbors": "Your neighbors, not strangers",
+    "aboutNeighborsBody": "Every seller and buyer is verified. You know who you're talking to — your neighbor, not a faceless account.",
+    "aboutBroker": "A broker, never a bank",
+    "aboutBrokerBody": "No money moves through the platform. Post, offer, meet. The deal stays between you and your neighbor.",
+    "aboutWhatsApp": "Works like WhatsApp",
+    "aboutWhatsAppBody": "Share any listing to WhatsApp with one tap. Communicate the way you already do."
+  },
+  "search": {
+    "noResultsTitle": "We couldn't find anything like that",
+    "noResultsBody": "We searched for \"{query}\" and didn't find any matching listings. If you'd like, we can notify you when something similar gets posted.",
+    "notifyMe": "Notify me when something similar is listed",
+    "notifySuccess": "Done! We'll keep an eye out for you.",
+    "suggestions": "You might also like"
   },
   "listing": {
     "price": "EGP",
@@ -33,7 +48,9 @@
     "seller": "Seller",
     "memberSince": "Member since",
     "kycVerified": "Verified",
-    "similar": "Similar listings"
+    "similar": "Similar listings",
+    "tierNew": "NEW",
+    "unsave": "Remove save"
   },
   "categories": {
     "FURNITURE": "Furniture",
@@ -92,6 +109,21 @@
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "notFound": "We couldn't find what you're looking for.",
-    "unauthorized": "Please log in first."
+    "unauthorized": "Please log in first.",
+    "beFirst": "Be the first to list something — your souk is waiting!"
+  },
+  "footer": {
+    "madinatyEcosystem": "MadinatyAI Ecosystem",
+    "partOf": "This platform is part of the MadinatyAI ecosystem",
+    "designedBy": "Designed & built by",
+    "footerLinksLabel": "Footer navigation",
+    "home": "Home",
+    "aboutMadinaty": "About MadinatyAI",
+    "contact": "Contact",
+    "copyright": "© {year} ZSolutions · New Cairo, Egypt · All rights reserved."
+  },
+  "theme": {
+    "toggleLight": "Light mode",
+    "toggleDark": "Dark mode"
   }
 }

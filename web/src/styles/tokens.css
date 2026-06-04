@@ -1,0 +1,166 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   SOUK ELKANTO — DESIGN TOKENS
+   "Sunny Horizon" (light, default) / "Aurora Night" (dark, [data-theme=dark])
+   Inherits the MadinatyAI base from Platform/src/app/globals.css and adds the
+   Kanto-specific tokens documented in SoukElkanto/docs/design_spec.md §2.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="light"] {
+  /* ── Sunny Horizon (light) — daylight, sky, coral warmth ─────────────── */
+  --bg:           #f6f9ff;
+  --bg-alt:       #eef3ff;
+  --surface:      #fdfeff;  /* tinted near-white, never pure #fff */
+  --surface-mid:  #f3f7ff;
+  --surface-hi:   #e6eeff;
+  --border:       rgba(20, 60, 140, 0.10);
+  --border-soft:  rgba(20, 60, 140, 0.06);
+  --border-strong:rgba(20, 60, 140, 0.18);
+
+  /* Brand — teal/blue + warm accents */
+  --teal:         #0bb8c7;
+  --teal-bright:  #14d4d4;
+  --teal-dim:     rgba(11, 184, 199, 0.12);
+  --teal-soft:    #ccfbf1;
+  --blue:         #2b6eff;
+  --blue-mid:     #1e4fd9;
+
+  --coral:        #ff6b5b;
+  --coral-soft:   #ffd7d1;
+  --sun:          #ffc94a;
+  --sun-soft:     #fff1c2;
+  --mint:         #22c993;
+  --mint-soft:    #cdf3e3;
+  --lilac:        #9b7bff;
+
+  /* Text — deep navy on light background */
+  --text:         #0c1a33;
+  --text-soft:    #516787;
+  --text-muted:   #8094b0;
+  --on-coral:     #fffaf7;  /* warm-tinted near-white */
+  --on-teal:      #f9fdff;  /* cool-tinted near-white */
+
+  /* Souk ElKanto signature accent — coral, warm-not-aggressive */
+  --kanto-coral:        #ff8366;
+  --kanto-coral-soft:   #fff0eb;
+  --kanto-stall:        #f5ecdc;
+  --kanto-stall-edge:   #e8d9bd;
+
+  /* TrustMeter tier palette */
+  --kanto-tier-new:       #94a3b8;
+  --kanto-tier-bronze:    #b45309;
+  --kanto-tier-silver:    #64748b;
+  --kanto-tier-gold:      #ca8a04;
+  --kanto-tier-platinum:  #0e7490;
+
+  /* Radii */
+  --r-sm:   0.5rem;
+  --r-md:   0.875rem;
+  --r-lg:   1.25rem;
+  --r-xl:   1.75rem;
+  --r-pill: 9999px;
+
+  /* Spacing — 4/8/12/16/24/32/48/64/96 px scale */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+
+  /* Shadows — soft, ambient, never pure black */
+  --shadow-card:        0 14px 42px rgba(20, 60, 140, 0.10),
+                        0 2px 6px rgba(20, 60, 140, 0.06);
+  --shadow-card-hover:  0 24px 64px rgba(20, 60, 140, 0.16),
+                        0 4px 10px rgba(20, 60, 140, 0.08);
+  --shadow-glow:        0 14px 50px rgba(11, 184, 199, 0.20);
+  --shadow-coral:       0 12px 34px rgba(255, 131, 102, 0.30);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 160ms;
+  --dur-med:  220ms;
+  --dur-slow: 320ms;
+}
+
+/* ── Aurora Night (dark) ─────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:           #07101e;
+  --bg-alt:       #0d1a30;
+  --surface:      #0f1b30;
+  --surface-mid:  #142340;
+  --surface-hi:   #1b2c4e;
+  --border:       rgba(160, 200, 255, 0.10);
+  --border-soft:  rgba(160, 200, 255, 0.06);
+  --border-strong:rgba(160, 200, 255, 0.20);
+
+  --teal:         #21d4d4;
+  --teal-bright:  #5bf0e6;
+  --teal-dim:     rgba(33, 212, 212, 0.18);
+  --teal-soft:    #134e4a;
+  --blue:         #5f8dff;
+  --blue-mid:     #3a6cf0;
+
+  --coral:        #ff8b7a;
+  --coral-soft:   #3a1813;
+  --sun:          #ffd66a;
+  --sun-soft:     #3a2a08;
+  --mint:         #4eddae;
+  --mint-soft:    #163829;
+  --lilac:        #b6a0ff;
+
+  --text:         #e8efff;
+  --text-soft:    #a9bbd9;
+  --text-muted:   #748aab;
+  --on-coral:     #1a0f0a;
+  --on-teal:      #07101e;
+
+  --kanto-coral:        #ff9a7a;
+  --kanto-coral-soft:   #3d1f15;
+  --kanto-stall:        #1f1a14;
+  --kanto-stall-edge:   #332b1f;
+
+  --kanto-tier-new:       #64748b;
+  --kanto-tier-bronze:    #d97706;
+  --kanto-tier-silver:    #94a3b8;
+  --kanto-tier-gold:      #eab308;
+  --kanto-tier-platinum:  #22d3ee;
+
+  --shadow-card:        0 14px 42px rgba(0, 0, 0, 0.45),
+                        0 2px 6px rgba(0, 0, 0, 0.30);
+  --shadow-card-hover:  0 24px 64px rgba(0, 0, 0, 0.55),
+                        0 4px 10px rgba(0, 0, 0, 0.35);
+  --shadow-glow:        0 14px 50px rgba(33, 212, 212, 0.25);
+  --shadow-coral:       0 12px 34px rgba(255, 154, 122, 0.30);
+}
+
+/* ── Honor system preference when user hasn't toggled ────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+  }
+}
+
+/* ── Font tokens — populated by next/font/google in app/layout.tsx ──────── */
+:root {
+  --font-body:        var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-headline:    var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+  --font-display:     var(--font-orbitron), var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body-ar:     var(--font-cairo), system-ui, sans-serif;
+  --font-micro-ar:    var(--font-changa), var(--font-cairo), system-ui, sans-serif;
+}
+[lang="ar"], [dir="rtl"] {
+  --font-body: var(--font-cairo), system-ui, sans-serif;
+}
+
+/* ── Reduce-motion fallback ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-med:  0ms;
+    --dur-slow: 0ms;
+  }
+}

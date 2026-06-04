@@ -1,27 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Souk ElKanto — global stylesheet. No Tailwind. Pure CSS tokens. */
+@import "../styles/tokens.css";
+@import "../styles/reset.css";
+@import "../styles/utilities.css";
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    font-family: theme('fontFamily.sans');
-    background-color: theme('colors.kanto-bg');
-    color: theme('colors.kanto-text');
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  [dir="rtl"] body {
-    font-family: 'Cairo', 'Inter', system-ui, sans-serif;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
+html { scroll-behavior: smooth; }
+[lang="ar"], [dir="rtl"] { letter-spacing: 0; }

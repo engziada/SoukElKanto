@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-04T20:00:00Z",
+  "title": "Design System: Souk ElKanto",
+  "extensions": {
+    "colorMeta": {
+      "stallkeeper-coral":   { "role": "primary",   "displayName": "Stallkeeper Coral",  "canonical": "oklch(73.3% 0.144 32.8)",  "tonalRamp": ["#3b1810","#5e2918","#83391f","#a84a26","#cd5b2e","#e76f44","#ff8366","#ffa68f"] },
+      "coral-awning":        { "role": "primary",   "displayName": "Coral Awning",       "canonical": "oklch(97.5% 0.011 32.8)",  "tonalRamp": ["#3b1810","#5e2918","#83391f","#cd5b2e","#ff8366","#ffaa97","#ffd1c4","#fff0eb"] },
+      "sun-baked-coral":     { "role": "secondary", "displayName": "Sun-baked Coral",    "canonical": "oklch(69.5% 0.187 26.6)",  "tonalRamp": ["#3a0e08","#5e1810","#85221a","#ab2d24","#d23e34","#ff5848","#ff6b5b","#ff8a7e"] },
+      "cairo-honey":         { "role": "secondary", "displayName": "Cairo Honey",        "canonical": "oklch(84.5% 0.151 78.7)",  "tonalRamp": ["#3d2a05","#5e410a","#7d570f","#9a6c16","#b7811f","#d39730","#ffc94a","#ffd97e"] },
+      "faience-teal":        { "role": "tertiary",  "displayName": "Faience Teal",       "canonical": "oklch(67.2% 0.121 215.4)", "tonalRamp": ["#03303a","#08495a","#0e667a","#11879b","#0bb8c7","#3ed3dc","#7fe3e8","#bcf0f3"] },
+      "resident-indigo":     { "role": "tertiary",  "displayName": "Resident Indigo",    "canonical": "oklch(58.0% 0.247 263.4)", "tonalRamp": ["#040f33","#0a1d55","#0f2877","#1539a3","#2b6eff","#5f96ff","#8fb7ff","#c1d4ff"] },
+      "garden-mint":         { "role": "tertiary",  "displayName": "Garden Mint",        "canonical": "oklch(71.4% 0.144 158.0)", "tonalRamp": ["#0a2e1f","#11472f","#17613f","#1d7a4f","#22c993","#5ed9ad","#9be7c8","#cdf3e3"] },
+      "twilight-lilac":      { "role": "tertiary",  "displayName": "Twilight Lilac",     "canonical": "oklch(63.6% 0.181 296.0)", "tonalRamp": ["#1f0e44","#371967","#4f2691","#6c3eb8","#9b7bff","#b89eff","#d3c1ff","#ebe1ff"] },
+      "stall-paper":         { "role": "primary",   "displayName": "Stall Paper",        "canonical": "oklch(94.7% 0.030 79.0)",  "tonalRamp": ["#33291a","#503f25","#6c5331","#866840","#a07d50","#bf9863","#dcb88c","#f5ecdc"] },
+      "stall-paper-edge":    { "role": "neutral",   "displayName": "Stall Paper Edge",   "canonical": "oklch(88.4% 0.043 79.0)",  "tonalRamp": ["#33291a","#4d3a22","#65502d","#7d6537","#9a7e44","#bba16a","#d3bb8e","#e8d9bd"] },
+      "morning-haze":        { "role": "neutral",   "displayName": "Morning Haze",       "canonical": "oklch(98.0% 0.011 247.0)", "tonalRamp": ["#070d18","#0c1a33","#1c2c53","#36486f","#5e7396","#8da3c6","#bccde2","#f6f9ff"] },
+      "daylight-cream":      { "role": "neutral",   "displayName": "Daylight Cream",     "canonical": "oklch(96.7% 0.013 247.0)", "tonalRamp": ["#070d18","#0c1a33","#1c2c53","#36486f","#5e7396","#8da3c6","#b6c5da","#eef3ff"] },
+      "stall-linen":         { "role": "neutral",   "displayName": "Stall Linen",        "canonical": "oklch(99.4% 0.003 247.0)", "tonalRamp": ["#070d18","#0c1a33","#1c2c53","#36486f","#5e7396","#a3b6d3","#cfdcec","#fdfeff"] },
+      "awning-shade":        { "role": "neutral",   "displayName": "Awning Shade",       "canonical": "oklch(97.1% 0.013 247.0)", "tonalRamp": ["#070d18","#0c1a33","#1c2c53","#36486f","#5e7396","#8da3c6","#b8c7dd","#f3f7ff"] },
+      "souk-mist":           { "role": "neutral",   "displayName": "Souk Mist",          "canonical": "oklch(94.2% 0.024 247.0)", "tonalRamp": ["#070d18","#0c1a33","#1c2c53","#36486f","#5e7396","#8a9dc0","#b0c1de","#e6eeff"] },
+      "atlas-midnight":      { "role": "neutral",   "displayName": "Atlas Midnight",     "canonical": "oklch(20.0% 0.041 264.0)", "tonalRamp": ["#0c1a33","#152547","#1f335d","#2c4378","#3d5694","#516787","#8094b0","#bccde2"] },
+      "slate-smoke":         { "role": "neutral",   "displayName": "Slate Smoke",        "canonical": "oklch(50.2% 0.040 247.0)", "tonalRamp": ["#0c1a33","#1c2c53","#2d3f6c","#3f5286","#516787","#7286a4","#a0b1c8","#cfdcec"] },
+      "dusty-cloud":         { "role": "neutral",   "displayName": "Dusty Cloud",        "canonical": "oklch(64.6% 0.034 247.0)", "tonalRamp": ["#0c1a33","#1c2c53","#36486f","#5e7396","#8094b0","#a8b8d0","#c8d4e3","#e3eaf3"] },
+      "tier-quiet-slate":    { "role": "tertiary",  "displayName": "Quiet Slate (NEW)",       "canonical": "oklch(68.4% 0.035 250.0)", "tonalRamp": ["#0e1525","#1b2538","#293553","#3b4970","#54648c","#7384a8","#94a3b8","#c1cad8"] },
+      "tier-worked-bronze":  { "role": "tertiary",  "displayName": "Worked Bronze (BRONZE)",  "canonical": "oklch(51.4% 0.139 50.0)",  "tonalRamp": ["#2f1606","#48220a","#612e0e","#7c3b13","#974918","#b45309","#d97706","#f7ad55"] },
+      "tier-mantle-silver":  { "role": "tertiary",  "displayName": "Mantle Silver (SILVER)",  "canonical": "oklch(53.6% 0.036 250.0)", "tonalRamp": ["#0e1525","#1b2538","#293553","#3b4970","#54648c","#64748b","#94a3b8","#c1cad8"] },
+      "tier-aged-brass":     { "role": "tertiary",  "displayName": "Aged Brass (GOLD)",       "canonical": "oklch(64.0% 0.149 80.4)",  "tonalRamp": ["#2f1f06","#4d3308","#6a460d","#874f0c","#a06309","#ca8a04","#eab308","#facc15"] },
+      "tier-verdigris":      { "role": "tertiary",  "displayName": "Verdigris (PLATINUM)",    "canonical": "oklch(47.5% 0.073 197.0)", "tonalRamp": ["#022530","#053745","#074a5b","#0a5d72","#0e7490","#0891b2","#22d3ee","#67e8f9"] },
+
+      "night-bg":            { "role": "neutral",   "displayName": "Aurora Night BG",         "canonical": "oklch(17.0% 0.030 247.0)", "tonalRamp": ["#040814","#07101e","#0d1a30","#142340","#1b2c4e","#2a3e6a","#4e6394","#a9bbd9"] },
+      "night-surface":       { "role": "neutral",   "displayName": "Aurora Night Surface",    "canonical": "oklch(22.0% 0.039 247.0)", "tonalRamp": ["#040814","#07101e","#0f1b30","#142340","#1b2c4e","#2a3e6a","#7488ad","#e8efff"] }
+    },
+    "typographyMeta": {
+      "display":   { "displayName": "Display",   "purpose": "Hero titles only — one per page. Orbitron, geometric, restrained." },
+      "headline":  { "displayName": "Headline",  "purpose": "Section titles. Space Grotesk / Cairo Bold." },
+      "title":     { "displayName": "Title",     "purpose": "Card headers, modal titles, dashboard tab names." },
+      "body":      { "displayName": "Body",      "purpose": "Paragraph copy — Inter (Latin) or Cairo (Arabic, lh 1.7)." },
+      "body-ar":   { "displayName": "Body (AR)", "purpose": "Arabic body. Cairo. Slightly taller line-height than Latin body." },
+      "label":     { "displayName": "Label",     "purpose": "Chip text, tier ribbons, footer captions. Inter 600, tracked." },
+      "price-tag": { "displayName": "Price Tag", "purpose": "Currency amounts. Space Grotesk 700, tabular nums on. Signature." }
+    },
+    "shadows": [
+      { "name": "card",        "value": "0 14px 42px rgba(20, 60, 140, 0.10), 0 2px 6px rgba(20, 60, 140, 0.06)", "purpose": "Default rest state for every ListingCard, OfferRow, footer card, hero search bar." },
+      { "name": "card-hover",  "value": "0 24px 64px rgba(20, 60, 140, 0.16), 0 4px 10px rgba(20, 60, 140, 0.08)", "purpose": "Card hover lift; pair with transform: translateY(-3px)." },
+      { "name": "coral",       "value": "0 12px 34px rgba(255, 131, 102, 0.30)",                                  "purpose": "Warm shadow under coral CTAs, PriceTag, locale-toggle hover. The only brand-colored shadow." },
+      { "name": "glow-teal",   "value": "0 14px 50px rgba(11, 184, 199, 0.20)",                                   "purpose": "TrustPanel KYC badge glow, theme-toggle interaction." }
+    ],
+    "motion": [
+      { "name": "ease-out",   "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing on all transitions — exponential ease-out." },
+      { "name": "dur-fast",   "value": "160ms",                          "purpose": "Hover, focus, locale-toggle, theme-toggle, chip hover." },
+      { "name": "dur-med",    "value": "220ms",                          "purpose": "Card lift, photo scale on hover." },
+      { "name": "dur-slow",   "value": "320ms",                          "purpose": "Modal slide-up, drawer open, photo carousel transition." }
+    ],
+    "breakpoints": [
+      { "name": "mobile",  "value": "375px", "purpose": "Smallest target. Single-column lists, sticky bottom CTA on detail pages." },
+      { "name": "sm",      "value": "640px", "purpose": "Listing grid expands from 2 to 3 columns." },
+      { "name": "md",      "value": "768px", "purpose": "NavBar shows full link row; footer goes from stacked to three-column." },
+      { "name": "lg",      "value": "1024px","purpose": "Listing grid expands to 4 columns; container padding-inline grows." },
+      { "name": "container","value": "1280px","purpose": "Max content width (min(1280px, 92vw))." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary CTA",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Coral-gradient pill, Warm White text. Used for Make Offer, Publish, Send OTP. The single most-clicked control in the system.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg><span>Make Offer</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 9999px; background: linear-gradient(135deg, #ff8366, #ff6b5b); color: #fffaf7; font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-weight: 600; font-size: 0.92rem; letter-spacing: -0.01em; box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 42px rgba(255, 131, 102, 0.36); } .ds-btn-primary:focus-visible { outline: 2px solid #14d4d4; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Surface-tinted pill with 1px border. Used for Save / Share / Report alongside the primary CTA on listing detail.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg><span>Save</span></button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1rem; border-radius: 9999px; background: #fdfeff; color: #516787; border: 1px solid rgba(20, 60, 140, 0.10); font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 0.88rem; transition: background 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-ghost:hover { background: #f3f7ff; color: #0c1a33; } .ds-btn-ghost:focus-visible { outline: 2px solid #14d4d4; outline-offset: 2px; }"
+    },
+    {
+      "name": "Locale Toggle",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Round pill with a single Arabic glyph 'ع' or 'EN'. On hover swaps to a coral-honey gradient. Signature interaction.",
+      "html": "<button class=\"ds-locale-toggle\" type=\"button\" aria-label=\"Switch to Arabic\">ع</button>",
+      "css": ".ds-locale-toggle { width: 2.4rem; height: 2.4rem; border-radius: 9999px; background: #f3f7ff; border: 1px solid rgba(20, 60, 140, 0.10); display: inline-flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-weight: 700; font-size: 1rem; color: #0c1a33; transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-locale-toggle:hover { background: linear-gradient(135deg, #ff8366, #ffc94a); border-color: transparent; color: #fffaf7; transform: translateY(-1px); box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); } .ds-locale-toggle:focus-visible { outline: 2px solid #14d4d4; outline-offset: 2px; }"
+    },
+    {
+      "name": "PriceTag",
+      "kind": "custom",
+      "refersTo": "price-tag",
+      "description": "The signature visual: a small coral-gradient pill anchored to the bottom-corner of every listing photo. Tabular nums. EGP suffix.",
+      "html": "<span class=\"ds-price-tag\">1,800 EGP</span>",
+      "css": ".ds-price-tag { display: inline-block; padding: 0.3rem 0.7rem; border-radius: 0.5rem; background: linear-gradient(135deg, #ff8366, #ff6b5b); color: #fffaf7; font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); }"
+    },
+    {
+      "name": "ListingCard",
+      "kind": "card",
+      "refersTo": "card-listing",
+      "description": "The canonical content card. Photo on top with PriceTag overlay, title, district + favorite row. Lifts 3px on hover.",
+      "html": "<a class=\"ds-listing-card\" href=\"#\"><div class=\"ds-listing-card-photo\"><div class=\"ds-listing-card-photo-placeholder\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><line x1=\"3\" x2=\"21\" y1=\"3\" y2=\"21\"/></svg></div><span class=\"ds-listing-card-price\">1,800 EGP</span></div><div class=\"ds-listing-card-body\"><h3 class=\"ds-listing-card-title\">Like-new IKEA Hemnes crib</h3><div class=\"ds-listing-card-meta\"><span class=\"ds-listing-card-district\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>B5</span><button class=\"ds-listing-card-fav\" type=\"button\" aria-label=\"Save\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg></button></div></div></a>",
+      "css": ".ds-listing-card { position: relative; display: flex; flex-direction: column; background: #fdfeff; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 14px 42px rgba(20, 60, 140, 0.10), 0 2px 6px rgba(20, 60, 140, 0.06); border: 1px solid rgba(20, 60, 140, 0.06); transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1); text-decoration: none; color: inherit; isolation: isolate; max-width: 260px; } .ds-listing-card:hover { transform: translateY(-3px); box-shadow: 0 24px 64px rgba(20, 60, 140, 0.16), 0 4px 10px rgba(20, 60, 140, 0.08); } .ds-listing-card-photo { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(135deg, #f3f7ff, #f5ecdc); display: flex; align-items: center; justify-content: center; } .ds-listing-card-photo-placeholder { color: #8094b0; } .ds-listing-card-price { position: absolute; inset-block-end: 0.5rem; inset-inline-end: 0.5rem; padding: 0.3rem 0.7rem; border-radius: 0.5rem; background: linear-gradient(135deg, #ff8366, #ff6b5b); color: #fffaf7; font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); } .ds-listing-card-body { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; flex: 1; } .ds-listing-card-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 0.92rem; line-height: 1.4; color: #0c1a33; margin: 0; min-height: 2.5em; } .ds-listing-card-meta { margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #8094b0; } .ds-listing-card-district { display: inline-flex; align-items: center; gap: 0.3rem; } .ds-listing-card-fav { width: 1.9rem; height: 1.9rem; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; color: #8094b0; background: transparent; border: none; cursor: pointer; transition: background 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-listing-card-fav:hover { background: #fff0eb; color: #ff8366; }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filter / category chip with optional Lucide icon. Pill radius, Awning Shade rest.",
+      "html": "<span class=\"ds-chip\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>B5</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 9999px; background: #f3f7ff; color: #516787; font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 0.78rem; }"
+    },
+    {
+      "name": "Accent Chip",
+      "kind": "chip",
+      "refersTo": "chip-accent",
+      "description": "Coral-soft variant — used to surface the category on listing detail. Maximum one per chip cluster.",
+      "html": "<span class=\"ds-chip-accent\">Kids&apos; Gear</span>",
+      "css": ".ds-chip-accent { display: inline-flex; align-items: center; padding: 0.35rem 0.75rem; border-radius: 9999px; background: #fff0eb; color: #ff8366; font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 0.78rem; }"
+    },
+    {
+      "name": "Tier Ribbon (Silver)",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "TrustMeter tier badge. Background is the tier color at 12% opacity, text at full. Calm, never a scoreboard.",
+      "html": "<span class=\"ds-tier-ribbon ds-tier-silver\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2 14.39 8.25 21 8.27 15.83 12.14 17.83 18.5 12 14.77 6.17 18.5 8.17 12.14 3 8.27 9.61 8.25Z\"/></svg>SILVER · 612</span>",
+      "css": ".ds-tier-ribbon { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.6rem; border-radius: 9999px; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 0.72rem; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; } .ds-tier-silver { background: rgba(100, 116, 139, 0.12); color: #64748b; }"
+    },
+    {
+      "name": "Input — Hero Search",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Pill-shaped search field anchored in the home hero. Lucide search icon at start (RTL-aware).",
+      "html": "<div class=\"ds-search-bar\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input type=\"search\" placeholder=\"Search for something…\" /></div>",
+      "css": ".ds-search-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem; background: #fdfeff; border-radius: 9999px; border: 1px solid rgba(20, 60, 140, 0.10); box-shadow: 0 14px 42px rgba(20, 60, 140, 0.10), 0 2px 6px rgba(20, 60, 140, 0.06); color: #8094b0; transition: border-color 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1); max-width: 32rem; } .ds-search-bar:focus-within { border-color: #ff8366; box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); } .ds-search-bar input { flex: 1; border: 0; background: transparent; outline: none; font: inherit; font-size: 0.92rem; color: #0c1a33; } .ds-search-bar input::placeholder { color: #8094b0; }"
+    },
+    {
+      "name": "Navigation Brand",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Logotype: Store icon in a coral-gradient rounded square + 'كانتو' / 'Kanto' wordmark. Sticky nav anchor.",
+      "html": "<a class=\"ds-nav-brand\" href=\"/\"><span class=\"ds-nav-brand-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7\"/><path d=\"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8\"/><path d=\"M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4\"/><path d=\"M2 7h20\"/><path d=\"M22 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7\"/><path d=\"M18 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7\"/><path d=\"M14 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7\"/><path d=\"M10 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7\"/><path d=\"M6 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7\"/></svg></span><span class=\"ds-nav-brand-text\">Kanto</span></a>",
+      "css": ".ds-nav-brand { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #0c1a33; font-family: 'Space Grotesk', Inter, system-ui, sans-serif; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; } .ds-nav-brand-icon { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 0.875rem; background: linear-gradient(135deg, #ff8366, #ffc94a); color: #fffaf7; box-shadow: 0 12px 34px rgba(255, 131, 102, 0.30); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Covered Souk",
+    "overview": "Souk ElKanto is the design language of a curated, indoor neighborhood market: stallkeepers you know by name, warm filtered light through fabric awnings, conversations over coffee. The system anchors on Sunny Horizon in light mode (daylight, sky, coral warmth) and Aurora Night in dark mode (deep navy, lagoon teal, warm-tinted near-white text). Both themes share the same souk metaphor: a covered space, never floodlit, never sterile.\n\nThis is a marketplace, but it explicitly rejects the classifieds vocabulary. Listings are stalls, not rows of ads. The signature coral (#ff8366) appears as a CTA accent and price tag — never as a sticker or a countdown. Trust signals (KYC verified, TrustMeter tier) precede the price visually on every listing. The grid breathes: two columns on mobile, never four. White-space is non-negotiable. Density is reserved for the seller dashboard, never the public browse surface.\n\nThe system descends from MadinatyAI's Sunny Horizon palette (deep navy text on cool-blue ground) and adds Souk ElKanto-specific tokens — --kanto-coral, --kanto-stall, --kanto-stall-edge — that carry the warm-craft character.",
+    "keyCharacteristics": [
+      "One signature accent (Stallkeeper Coral) used on ≤15% of any screen",
+      "Ambient tinted glows, never hard black drop-shadows",
+      "Tabular numerals on every price tag, currency suffix in user language",
+      "RTL is a first-class layout direction, not a flip-translation",
+      "The hero panel uses stall-paper cream + coral radial; no other surface does",
+      "TrustMeter tier is a calm ribbon (Quiet Slate → Verdigris), never a leaderboard"
+    ],
+    "rules": [
+      { "name": "The Coral Restraint Rule",   "body": "Stallkeeper Coral appears on ≤15% of any rendered surface. If a screen would push past 15%, the coral retreats to the Price Tag and CTA only. Decorative coral on background-coral is never used.", "section": "colors" },
+      { "name": "The No-Pure-Neutrals Rule",  "body": "#000 and #fff are forbidden in tokens, components, and ad-hoc styles. Every neutral is tinted toward blue (cool family) or warm (stall-paper, warm-white). Pure black/white kills the souk feel and produces SaaS-cream cliché.", "section": "colors" },
+      { "name": "The Warmth-Anchor Rule",     "body": "Stall Paper (#f5ecdc) is the ONLY warm surface; everything else stays cool. Spreading the warm tone across multiple surfaces destroys the 'covered, single light source' metaphor.", "section": "colors" },
+      { "name": "The Tabular-Nums-on-Prices Rule", "body": "Every price renders with font-variant-numeric: tabular-nums. Misaligned 3-vs-4-digit prices in a grid look untrustworthy; tabular nums lock the column.", "section": "typography" },
+      { "name": "The Arabic-First Rule",      "body": "The default --font-body becomes Cairo when [lang='ar'] or [dir='rtl']. Arabic line-height is 1.7 (Latin is 1.6) — Arabic ascenders/descenders need the extra room to breathe.", "section": "typography" },
+      { "name": "The Display-Rationing Rule", "body": "Orbitron Display appears at most twice per route: the hero title, and the price on a focused ListingCard. Spreading Display further dilutes its impact.", "section": "typography" },
+      { "name": "The Flat-Background-Rule",   "body": "The page background is flat. Depth is established by surface cards, not by gradient washes on the body. The radial-gradient in .site-bg is decorative atmosphere; it never carries hierarchy.", "section": "elevation" },
+      { "name": "The Tinted-Shadow Rule",     "body": "Every shadow uses rgba(20, 60, 140, x) (Resident Indigo low-opacity) or rgba(255, 131, 102, x) (Stallkeeper Coral). rgba(0, 0, 0, x) is forbidden in light mode.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do lead every listing with the KYC + TrustMeter tier ribbon, then the title, then the price. The trust signal precedes the offer.",
+      "Do use Stallkeeper Coral on ≤15% of any screen. Reserve it for the Price Tag and the primary CTA. If you find yourself painting a third surface in coral, restructure.",
+      "Do put Arabic line-height at 1.7 and Latin at 1.6. The mixed rendering needs the extra Arabic room.",
+      "Do flow numbers through font-variant-numeric: tabular-nums whenever they sit in a column or grid.",
+      "Do lift cards on hover by 3px with transform, not by deepening shadow alone. The micro-movement is what reads as warmth.",
+      "Do mirror chevrons and arrows in RTL via [dir='rtl'] CSS rules. Symbolic icons (search, heart, store) stay un-mirrored.",
+      "Do use logical properties (margin-inline-start, inset-inline-end, padding-inline) so every component flips correctly between AR and EN.",
+      "Do carry the dual-logo footer (MadinatyAI + ZSolutions) on every authenticated route. Attribution is not optional."
+    ],
+    "donts": [
+      "Don't use #000 or #fff anywhere. Every neutral is tinted toward blue or warm.",
+      "Don't apply border-left or border-right greater than 1px as a colored stripe on any card, alert, or list row. Side-stripe borders are banned.",
+      "Don't use background-clip: text to make the brand text run a coral-to-honey gradient. Gradient text is decorative cliché; use a single solid color.",
+      "Don't show a glassy backdrop-filter blur on hero panels, modals, or 'premium' tiles. Glassmorphism is reserved for the sticky NavBar and the (later) WalletDrawer slide-in.",
+      "Don't look like OLX or Dubizzle. No banner ads anywhere. No 'Recommended Sponsored' rows. No price-strikethrough discounts.",
+      "Don't look like Facebook Marketplace. No infinite-scroll without curation. No mixed-quality grid. No DM-the-seller shortcut bypassing the offer flow.",
+      "Don't look like crypto / web3 dashboards. No neon-on-black, no monospace anywhere except in (future) developer/diagnostic surfaces. Aurora Night uses navy and tinted lagoon, not black.",
+      "Don't look like generic SaaS-cream. No flat-white background + navy text + blue-gradient CTA. We have stall-paper warmth; use it.",
+      "Don't use FLASH-SALE energy: no red countdown timers, no 'ENDS IN' copy, no urgent oranges, no hero carousels of discount stickers.",
+      "Don't make the TrustMeter tier a leaderboard. No top-100 boards, no public rankings, no big visible point counters. The tier badge is a calm ribbon.",
+      "Don't nest cards. A card inside a card is always wrong. Use whitespace and tonal separation instead.",
+      "Don't call coral 'red' or 'orange' anywhere in the UI copy. It is coral.",
+      "Don't trigger celebratory animation (confetti, sparkle bursts, scale-up bounces) on routine actions — favorite, scroll, browse. Save delight for tier-up and confirmed-handover.",
+      "Don't ever ship a string that exists in only one locale. AR and EN parity is enforced; the typed messages/{ar,en}.json shape catches missing keys."
+    ]
+  }
+}
