@@ -1,22 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Store, Search, PlusCircle, Tag, LogIn } from 'lucide-react';
+import {
+  Store, Search, PlusCircle, Tag, LogIn, User as UserIcon, LayoutGrid, LogOut,
+} from 'lucide-react';
+import { useAuthStore } from '@/lib/auth/store';
 import styles from './NavBar.module.css';
+
+function formatPhone(phone: string): string {
+  // +201234567890 → 0123 456 7890 (Egyptian visual style)
+  if (!phone) return '';
+  const local = phone.replace(/^\+20/, '0');
+  return local.replace(/^(\d{4})(\d{3})(\d{4})$/, '$1 $2 $3');
+}
 
 export function NavBar() {
   const t = useTranslations('nav');
+  const tAuth = useTranslations('auth');
   const locale = useLocale();
   const pathname = usePathname() ?? '/';
-  const [loginMsg, setLoginMsg] = useState(false);
+  const router = useRouter();
 
-  // Build the mirrored URL for the alternate locale by replacing the prefix.
+  const [hydrated, setHydrated] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setHydrated(true), []);
+
+  // Close dropdown on outside click + Esc
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onPointer = (e: PointerEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
+
   const otherLocale = locale === 'ar' ? 'en' : 'ar';
   const pathWithoutLocale = pathname.replace(new RegExp(`^/${locale}(?=/|$)`), '') || '/';
   const otherLocaleHref = `/${otherLocale}${pathWithoutLocale}`.replace(/\/$/, '') || `/${otherLocale}`;
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    router.push(`/${locale}`);
+  };
+
+  const showUserChip = hydrated && isAuthenticated && user;
 
   return (
     <header className={styles.header}>
@@ -57,22 +104,54 @@ export function NavBar() {
             >
               {otherLocale === 'ar' ? 'ع' : 'EN'}
             </Link>
-            <div className={styles.loginWrap}>
-              <button
-                type="button"
+
+            {showUserChip ? (
+              <div className={styles.userWrap} ref={menuRef}>
+                <button
+                  type="button"
+                  className={styles.userChip}
+                  onClick={() => setMenuOpen((s) => !s)}
+                  aria-expanded={menuOpen}
+                  aria-haspopup="menu"
+                >
+                  <span className={styles.userAvatar} aria-hidden="true">
+                    <UserIcon size={14} />
+                  </span>
+                  <span className={styles.userPhone}>{formatPhone(user!.phoneNumber)}</span>
+                </button>
+                {menuOpen && (
+                  <div className={styles.userMenu} role="menu">
+                    <Link
+                      href={`/${locale}/my`}
+                      className={styles.userMenuItem}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <LayoutGrid size={14} aria-hidden="true" />
+                      {tAuth('myAccount')}
+                    </Link>
+                    <button
+                      type="button"
+                      className={styles.userMenuItem}
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      <LogOut size={14} aria-hidden="true" />
+                      {tAuth('logout')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href={`/${locale}/auth/login`}
                 className={styles.login}
                 aria-label={t('login')}
-                onClick={() => setLoginMsg((s) => !s)}
               >
-                <LogIn size={16} />
+                <LogIn size={16} aria-hidden="true" />
                 <span className={styles.loginLabel}>{t('login')}</span>
-              </button>
-              {loginMsg && (
-                <span className={styles.loginHint} role="status" aria-live="polite">
-                  {t('loginComingSoon')}
-                </span>
-              )}
-            </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>

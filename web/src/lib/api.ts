@@ -16,9 +16,10 @@ const API_BASE =
     : process.env.NEXT_PUBLIC_API_BASE || '';
 const TENANT_ID = 'kanto';
 
+import { getAuthToken } from './auth/store';
+
 function getToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('jwt');
+  return getAuthToken();
 }
 
 export class ApiError extends Error {
@@ -145,7 +146,55 @@ export interface CreateListingDto {
   district: string;
 }
 
+export interface AuthUserPayload {
+  id: string;
+  phoneNumber: string;
+  role: 'USER' | 'PROVIDER' | 'TENANT_ADMIN' | 'PLATFORM_ADMIN';
+  isVerified?: boolean;
+  trustScore?: number;
+  metadata?: Record<string, unknown>;
+  kyc?: unknown;
+  createdAt?: string;
+}
+
+export interface VerifyOtpResponse {
+  user: AuthUserPayload;
+  token: string;
+  expiresIn?: number;
+}
+
+export interface KycStatus {
+  isVerified: boolean;
+  status: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | string;
+  submittedAt?: string | null;
+  reviewedAt?: string | null;
+}
+
 export const api = {
+  auth: {
+    /** Register OR re-send OTP if the phone already exists. BE is idempotent. */
+    register: (phoneNumber: string) =>
+      fetchJson<{ phoneNumber: string }>('/api/v1/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber }),
+      }),
+    /** Trade phone + 6-digit code for a JWT. */
+    verifyOtp: (phoneNumber: string, code: string) =>
+      fetchJson<VerifyOtpResponse>('/api/v1/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber, code }),
+      }),
+    /** Resend OTP via /auth/login (existing user path). */
+    resend: (phoneNumber: string) =>
+      fetchJson<{ phoneNumber: string }>('/api/v1/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber }),
+      }),
+    me: () => fetchJson<AuthUserPayload>('/api/v1/auth/me'),
+  },
+  users: {
+    kycStatus: () => fetchJson<KycStatus>('/api/v1/users/me/kyc-status'),
+  },
   listings: {
     list: (params?: Record<string, string>) =>
       fetchJson<PaginatedListings>(

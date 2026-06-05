@@ -146,3 +146,99 @@
 
 .loginLabel { display: none; }
 @media (min-width: 480px) { .loginLabel { display: inline; } }
+
+/* ── User chip + dropdown (authenticated state) ─────────────────────────── */
+.userWrap {
+  position: relative;
+}
+
+.userChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.4rem;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-headline);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  transition: background var(--dur-fast), border-color var(--dur-fast);
+  cursor: pointer;
+}
+
+[lang="ar"] .userChip {
+  font-family: var(--font-body-ar);
+  letter-spacing: 0;
+}
+
+.userChip:hover,
+.userChip:focus-visible {
+  background: var(--surface-mid);
+  border-color: var(--border-strong);
+  outline: none;
+}
+
+.userAvatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--kanto-coral), var(--sun));
+  color: var(--on-coral);
+  flex-shrink: 0;
+}
+
+.userPhone {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .userPhone { display: inline; }
+}
+
+.userMenu {
+  position: absolute;
+  top: calc(100% + var(--s-2));
+  inset-inline-end: 0;
+  min-width: 11rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card-hover);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  z-index: 60;
+  animation: fadeInDown 160ms var(--ease-out);
+}
+
+.userMenuItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-sm);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  text-align: start;
+  width: 100%;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.userMenuItem:hover,
+.userMenuItem:focus-visible {
+  background: var(--surface-mid);
+  color: var(--text);
+  outline: none;
+}
