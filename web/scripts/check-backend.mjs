@@ -14,7 +14,9 @@
  */
 
 const soft = process.argv.includes('--soft');
-const base = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:3000';
+// `||` (not `??`) so an empty NEXT_PUBLIC_API_BASE (relative-rewrite mode)
+// still gives the script a real URL to probe.
+const base = process.env.NEXT_PUBLIC_API_BASE || process.env.CORE_MESH_URL || 'http://localhost:3000';
 const healthUrl = `${base.replace(/\/$/, '')}/api/v1/health`;
 const timeoutMs = 4000;
 

@@ -1,8 +1,27 @@
-.wrap { display: flex; flex-direction: column; gap: var(--s-5); }
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
 
-.h1 { font-family: var(--font-headline); font-size: 1.6rem; letter-spacing: -0.015em; }
+.h1 {
+  font-family: var(--font-headline);
+  font-size: 1.6rem;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  margin: 0;
+}
 
-.list { display: grid; gap: var(--s-3); }
+[lang="ar"] .h1 {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.list {
+  display: grid;
+  gap: var(--s-3);
+}
 
 .row {
   display: flex;
@@ -16,7 +35,11 @@
   box-shadow: var(--shadow-card);
 }
 
-.left { display: flex; align-items: center; gap: var(--s-3); }
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
 
 .iconBox {
   width: 2.4rem;
@@ -27,20 +50,80 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+
+.amountWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.amountValue {
   font-family: var(--font-headline);
   font-weight: 700;
+  font-size: 1.05rem;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
-.status {
+.amountUnit {
+  font-family: var(--font-headline);
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--text-soft);
+}
+
+[lang="ar"] .amountUnit { font-family: var(--font-micro-ar); }
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--r-pill);
+  width: fit-content;
+}
+
+[lang="ar"] .status {
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 700;
+}
+
+.statusPending {
+  background: color-mix(in oklab, var(--sun) 18%, white);
+  color: #8a5d00;
+}
+
+.statusAccepted {
+  background: color-mix(in oklab, var(--mint) 18%, white);
+  color: #11704f;
+}
+
+.statusDeclined {
+  background: color-mix(in oklab, var(--kanto-coral) 14%, white);
+  color: var(--kanto-coral);
+}
+
+.statusCountered {
+  background: color-mix(in oklab, var(--blue) 12%, white);
+  color: var(--blue-mid);
+}
+
+.statusWithdrawn,
+.statusExpired {
+  background: var(--surface-mid);
+  color: var(--text-muted);
 }
 
 .ts {
@@ -52,10 +135,19 @@
 }
 
 .empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
   padding: var(--s-7) var(--s-5);
   text-align: center;
-  color: var(--text-muted);
+  color: var(--text-soft);
   background: var(--surface);
   border: 1px dashed var(--border);
   border-radius: var(--r-lg);
+}
+
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }

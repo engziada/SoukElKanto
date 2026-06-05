@@ -24,3 +24,9 @@ npm-debug.log*
 # Misc
 *.tmp
 *.temp
+
+# TS incremental build cache
+**/tsconfig.tsbuildinfo
+
+# Claude Preview / agent harness scratch
+**/.claude/

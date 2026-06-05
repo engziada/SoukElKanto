@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Kanto — Madinaty Neighbor-to-Neighbor Marketplace",
-    "description": "Buy and meet your neighbors. A neighbor-to-neighbor marketplace for Madinaty residents."
+    "title": "Kanto · Madinaty Neighbor-to-Neighbor Marketplace",
+    "description": "Your nearest deal. A neighbor-to-neighbor marketplace for Madinaty residents."
   },
   "nav": {
     "home": "Home",
@@ -9,21 +9,22 @@
     "create": "List Item",
     "offers": "Offers",
     "login": "Log In",
-    "loginComingSoon": "Coming soon — we're on it"
+    "loginComingSoon": "Coming soon, we're on it."
   },
   "hero": {
-    "title": "Buy and Meet Your Neighbors",
-    "subtitle": "A neighbor-to-neighbor marketplace for Madinaty — safe, trusted, simple.",
+    "title": "Your Nearest Deal",
+    "subtitle": "A neighbor-to-neighbor marketplace for Madinaty. Safe, trusted, simple.",
     "searchPlaceholder": "Search for something..."
   },
   "home": {
     "featuredStalls": "Trusted Sellers",
     "newListings": "New in Kanto",
+    "categoriesTitle": "Browse by category",
     "trustBanner": "✓ Verified Madinaty residents  ·  Safe meet spots  ·  Token holds",
     "viewAll": "View All",
     "aboutTitle": "What is Kanto, exactly?",
     "aboutNeighbors": "Your neighbors, not strangers",
-    "aboutNeighborsBody": "Every seller and buyer is verified. You know who you're talking to — your neighbor, not a faceless account.",
+    "aboutNeighborsBody": "Every seller and buyer is verified. You know who you're talking to: your neighbor, not a faceless account.",
     "aboutBroker": "A broker, never a bank",
     "aboutBrokerBody": "No money moves through the platform. Post, offer, meet. The deal stays between you and your neighbor.",
     "aboutWhatsApp": "Works like WhatsApp",
@@ -39,8 +40,10 @@
   "listing": {
     "price": "EGP",
     "makeOffer": "Make Offer",
+    "shareWhatsApp": "Share on WhatsApp",
     "save": "Save",
     "share": "Share",
+    "shareDone": "Copied",
     "report": "Report",
     "condition": "Condition",
     "category": "Category",
@@ -50,6 +53,10 @@
     "kycVerified": "Verified",
     "similar": "Similar listings",
     "tierNew": "NEW",
+    "tierBronze": "BRONZE",
+    "tierSilver": "SILVER",
+    "tierGold": "GOLD",
+    "tierPlatinum": "PLATINUM",
     "unsave": "Remove save"
   },
   "categories": {
@@ -81,9 +88,24 @@
     "yourOffer": "Your Offer",
     "note": "Note (optional)",
     "tokenHold": "Lock 5 tokens as commitment",
-    "tokenHoldHint": "Tokens are not money — an internal hold released after handover.",
+    "tokenHoldHint": "Tokens are not money. An internal hold released after handover.",
     "sendOffer": "Send Offer",
     "cancel": "Cancel"
+  },
+  "offers": {
+    "emptyHint": "When you send or receive offers, they will appear here.",
+    "status": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
+      "COUNTERED": "Countered",
+      "WITHDRAWN": "Withdrawn",
+      "EXPIRED": "Expired"
+    }
+  },
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next"
   },
   "filters": {
     "category": "Category",
@@ -95,7 +117,9 @@
     "sortPriceAsc": "Price: Low to High",
     "sortPriceDesc": "Price: High to Low",
     "sortPopular": "Popular",
-    "clear": "Clear Filters"
+    "clear": "Clear Filters",
+    "apply": "Apply",
+    "title": "Filter"
   },
   "create": {
     "title": "List an Item",
@@ -104,13 +128,53 @@
     "stepPrice": "Price",
     "stepReview": "Review",
     "publish": "Publish Listing",
-    "saveDraft": "Save Draft"
+    "publishing": "Publishing...",
+    "saveDraft": "Save Draft",
+    "draftSaved": "Draft saved",
+    "draftRestored": "Draft restored",
+    "back": "Back",
+    "next": "Next",
+    "photoDrop": "Drag & drop photos here, or click to browse (1–8 photos)",
+    "photoCount": "{count} photos selected",
+    "labelTitle": "Title",
+    "placeholderTitle": "e.g. Brown leather 3-seat sofa",
+    "labelDescription": "Description",
+    "placeholderDescription": "Describe the condition, age, reason for selling...",
+    "labelCategory": "Category",
+    "placeholderCategory": "Select a category",
+    "labelCondition": "Condition",
+    "placeholderCondition": "Select condition",
+    "labelDistrict": "District",
+    "placeholderDistrict": "e.g. B5",
+    "labelPrice": "Price (EGP)",
+    "placeholderPrice": "1800",
+    "reviewText": "Review your listing before publishing.",
+    "reviewTitle": "Title",
+    "reviewCategory": "Category",
+    "reviewCondition": "Condition",
+    "reviewDistrict": "District",
+    "reviewPrice": "Price",
+    "reviewPhotos": "Photos",
+    "publishSuccess": "Published!",
+    "publishSuccessBody": "Your listing is now visible to all your neighbors.",
+    "publishSuccessView": "View your listing",
+    "loginRequired": "You need to log in to publish a listing",
+    "errorPhotos": "Add at least one photo.",
+    "errorTitle": "Title must be at least 3 characters.",
+    "errorPrice": "Enter a price greater than zero.",
+    "errorCategory": "Choose a category.",
+    "errorCondition": "Choose a condition.",
+    "errorPublish": "Couldn't publish the listing. Please try again."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
-    "notFound": "We couldn't find what you're looking for.",
+    "notFound": "This listing doesn't exist.",
+    "networkDown": "We can't reach the server. Check your connection and try again.",
+    "emptyResults": "No listings match these filters.",
+    "emptyOffers": "No offers here yet.",
     "unauthorized": "Please log in first.",
-    "beFirst": "Be the first to list something — your souk is waiting!"
+    "beFirst": "Be the first to list something. Your souk is waiting!",
+    "retry": "Try again"
   },
   "footer": {
     "madinatyEcosystem": "MadinatyAI Ecosystem",
@@ -121,9 +185,5 @@
     "aboutMadinaty": "About MadinatyAI",
     "contact": "Contact",
     "copyright": "© {year} ZSolutions · New Cairo, Egypt · All rights reserved."
-  },
-  "theme": {
-    "toggleLight": "Light mode",
-    "toggleDark": "Dark mode"
   }
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Cairo, Space_Grotesk, Orbitron, Changa } from 'next/font/google';
+import { getLocale, getTranslations } from 'next-intl/server';
 import './globals.css';
 
 const inter = Inter({
@@ -32,20 +33,32 @@ const changa = Changa({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'كانتو — سوق جيران مدينتي',
-  description: 'اشتري واتعرف على جيرانك. سوق جار-للجار لسكان مدينتي.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('metadata');
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
 
 /**
- * Root layout — locale-agnostic. The `[locale]/layout.tsx` owns the
- * `<div dir lang>` wrapper + next-intl provider per-request.
+ * Root layout — server-renders `<html lang dir data-theme>` correctly for the
+ * resolved locale. This fixes WCAG 3.1.1 (Language of Page) and removes the
+ * theme FOUC by setting `data-theme="light"` before hydration.
+ *
+ * Dark theme is intentionally disabled for v1; the [data-theme="dark"] block
+ * in tokens.css stays dormant until we re-enable the toggle in Phase E.
  */
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const isRtl = locale === 'ar';
+
   return (
     <html
+      lang={locale}
+      dir={isRtl ? 'rtl' : 'ltr'}
+      data-theme="light"
       className={`${inter.variable} ${cairo.variable} ${spaceGrotesk.variable} ${orbitron.variable} ${changa.variable}`}
-      suppressHydrationWarning
     >
       <body>
         <div className="site-bg" aria-hidden="true" />

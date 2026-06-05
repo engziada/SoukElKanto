@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "كانتو — سوق جيران مدينتي",
-    "description": "اشتري واتعرف على جيرانك. سوق جار-للجار لسكان مدينتي."
+    "title": "كانتو · سوق جيران مدينتي",
+    "description": "أقرب صفقة ليك. سوق جار-للجار لسكان مدينتي."
   },
   "nav": {
     "home": "الرئيسية",
@@ -9,21 +9,22 @@
     "create": "اعلن",
     "offers": "العروض",
     "login": "تسجيل الدخول",
-    "loginComingSoon": "قريباً — بنشتغل عليها"
+    "loginComingSoon": "قريباً، بنشتغل عليها."
   },
   "hero": {
-    "title": "اشتري واتعرف على جيرانك",
-    "subtitle": "سوق جار-للجار لسكان مدينتي — آمن، موثوق، بسيط.",
+    "title": "أقرب صفقة ليك",
+    "subtitle": "سوق جار-للجار لسكان مدينتي. آمن، موثوق، بسيط.",
     "searchPlaceholder": "دور على حاجة..."
   },
   "home": {
     "featuredStalls": "بائعين موثوقين",
     "newListings": "جديد في كانتو",
+    "categoriesTitle": "دور بالفئة",
     "trustBanner": "✓ سكان مدينتي المعتمدين  ·  أماكن آمنة للقاء  ·  حجز رمزي",
     "viewAll": "شوف الكل",
     "aboutTitle": "كانتو إيه بالظبط؟",
     "aboutNeighbors": "جيرانك، مش غرباء",
-    "aboutNeighborsBody": "كل بائع وباييع موثقين. تعرف مين بيكلمك — جارك الفلاني، مش حساب وهمي.",
+    "aboutNeighborsBody": "كل بائع وباييع موثقين. تعرف مين بيكلمك. جارك الفلاني، مش حساب وهمي.",
     "aboutBroker": "وسيط، مش بنك",
     "aboutBrokerBody": "مافيش فلوس بتتمر عبر المنصة. إعلان وعرض ولقاء. الصفقة بينك وبين الجار.",
     "aboutWhatsApp": "شبه الواتساب",
@@ -39,8 +40,10 @@
   "listing": {
     "price": "ج.م",
     "makeOffer": "اعرض سعر",
+    "shareWhatsApp": "شارك على واتساب",
     "save": "احفظ",
     "share": "شارك",
+    "shareDone": "تم النسخ",
     "report": "بلاغ",
     "condition": "الحالة",
     "category": "الفئة",
@@ -50,6 +53,10 @@
     "kycVerified": "موثق",
     "similar": "إعلانات مشابهة",
     "tierNew": "جديد",
+    "tierBronze": "برونزي",
+    "tierSilver": "فضي",
+    "tierGold": "ذهبي",
+    "tierPlatinum": "بلاتيني",
     "unsave": "إلغاء الحفظ"
   },
   "categories": {
@@ -57,7 +64,7 @@
     "ELECTRONICS": "إلكترونيات",
     "APPLIANCES": "أجهزة منزلية",
     "FASHION": "موضة",
-    "KIDS_TOYS": "ألعاط أطفال",
+    "KIDS_TOYS": "ألعاب أطفال",
     "KIDS_CLOTHING": "ملابس أطفال",
     "KIDS_GEAR": "معدات أطفال",
     "SPORTS": "رياضة",
@@ -81,9 +88,24 @@
     "yourOffer": "عرضك",
     "note": "ملاحظة (اختياري)",
     "tokenHold": "حجز 5 رموز كالتزام",
-    "tokenHoldHint": "الرموز مش فلوس — حجز داخلي بيتحرر بعد التسليم.",
+    "tokenHoldHint": "الرموز مش فلوس. حجز داخلي بيتحرر بعد التسليم.",
     "sendOffer": "ابعت العرض",
     "cancel": "إلغاء"
+  },
+  "offers": {
+    "emptyHint": "لما تبعت أو تستقبل عروض، هتظهر هنا.",
+    "status": {
+      "PENDING": "بانتظار الرد",
+      "ACCEPTED": "مقبول",
+      "DECLINED": "مرفوض",
+      "COUNTERED": "عرض مضاد",
+      "WITHDRAWN": "ملغي",
+      "EXPIRED": "انتهت صلاحيته"
+    }
+  },
+  "pagination": {
+    "prev": "السابق",
+    "next": "التالي"
   },
   "filters": {
     "category": "الفئة",
@@ -95,7 +117,9 @@
     "sortPriceAsc": "السعر: الأقل",
     "sortPriceDesc": "السعر: الأعلى",
     "sortPopular": "الأشهر",
-    "clear": "امسح الفلاتر"
+    "clear": "امسح الفلاتر",
+    "apply": "تطبيق",
+    "title": "فلتر"
   },
   "create": {
     "title": "اعلن عن حاجة",
@@ -104,13 +128,53 @@
     "stepPrice": "السعر",
     "stepReview": "مراجعه",
     "publish": "نشر الإعلان",
-    "saveDraft": "احفظ مسودة"
+    "publishing": "بنرفع الإعلان...",
+    "saveDraft": "احفظ مسودة",
+    "draftSaved": "تم حفظ المسودة",
+    "draftRestored": "استرجعنا مسودتك",
+    "back": "رجوع",
+    "next": "التالي",
+    "photoDrop": "اسحب الصور هنا، أو اضغط لتصفح (1–8 صور)",
+    "photoCount": "{count} صور محددة",
+    "labelTitle": "العنوان",
+    "placeholderTitle": "مثلاً: كنبة جلد بني 3 مقاعد",
+    "labelDescription": "الوصف",
+    "placeholderDescription": "صف الحالة، العمر، سبب البيع...",
+    "labelCategory": "الفئة",
+    "placeholderCategory": "اختار الفئة",
+    "labelCondition": "الحالة",
+    "placeholderCondition": "اختار الحالة",
+    "labelDistrict": "المنطقة",
+    "placeholderDistrict": "مثلاً: B5",
+    "labelPrice": "السعر (ج.م)",
+    "placeholderPrice": "1800",
+    "reviewText": "راجع إعلانك قبل النشر.",
+    "reviewTitle": "العنوان",
+    "reviewCategory": "الفئة",
+    "reviewCondition": "الحالة",
+    "reviewDistrict": "المنطقة",
+    "reviewPrice": "السعر",
+    "reviewPhotos": "الصور",
+    "publishSuccess": "تم النشر!",
+    "publishSuccessBody": "إعلانك بقى متاح لكل جيرانك.",
+    "publishSuccessView": "شوف إعلانك",
+    "loginRequired": "محتاج تسجل دخول الأول عشان تنشر",
+    "errorPhotos": "ضيف صورة واحدة على الأقل.",
+    "errorTitle": "العنوان لازم يكون 3 أحرف على الأقل.",
+    "errorPrice": "اكتب سعر أكبر من صفر.",
+    "errorCategory": "اختار فئة.",
+    "errorCondition": "اختار حالة الحاجة.",
+    "errorPublish": "الإعلان مرفعش. جرب تاني."
   },
   "errors": {
     "generic": "حصل حاجة غلط. جرب تاني.",
-    "notFound": "مش لاقين اللي بتدور عليه.",
+    "notFound": "الإعلان ده مش موجود.",
+    "networkDown": "مش قادرين نوصل للسيرفر. تأكد من الإنترنت وحاول تاني.",
+    "emptyResults": "مفيش إعلانات بالمواصفات دي.",
+    "emptyOffers": "لسه مفيش عروض هنا.",
     "unauthorized": "لازم تسجل دخول الأول.",
-    "beFirst": "كن أول واحد يعلن — سوقك يستنى حاجتك!"
+    "beFirst": "كن أول واحد يعلن. سوقك يستنى حاجتك!",
+    "retry": "جرب تاني"
   },
   "footer": {
     "madinatyEcosystem": "منظومة Madinaty AI",
@@ -121,9 +185,5 @@
     "aboutMadinaty": "عن Madinaty AI",
     "contact": "تواصل معنا",
     "copyright": "© {year} ZSolutions · القاهرة الجديدة، مصر · جميع الحقوق محفوظة."
-  },
-  "theme": {
-    "toggleLight": "وضع النهار",
-    "toggleDark": "وضع الليل"
   }
 }

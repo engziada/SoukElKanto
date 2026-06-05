@@ -3,12 +3,34 @@
  * Injects x-tenant-id and Authorization headers on every request.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:3000';
+/**
+ * Different bases for server vs browser:
+ *   - SSR (server components, route handlers): absolute URL — `node fetch` needs one.
+ *     Falls back to CORE_MESH_URL or the dev default.
+ *   - Browser: relative `/api/...` so the Next dev rewrite proxies to CoreMesh
+ *     without triggering CORS preflight against :3000.
+ */
+const API_BASE =
+  typeof window === 'undefined'
+    ? process.env.CORE_MESH_URL || 'http://localhost:3000'
+    : process.env.NEXT_PUBLIC_API_BASE || '';
 const TENANT_ID = 'kanto';
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('jwt');
+}
+
+export class ApiError extends Error {
+  public readonly status: number;
+  public readonly code?: string;
+
+  constructor(message: string, status: number, code?: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+  }
 }
 
 async function fetchJson<T>(
@@ -25,17 +47,41 @@ async function fetchJson<T>(
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const res = await fetch(url, {
-    ...init,
-    headers,
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(err.message ?? `HTTP ${res.status}`);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...init,
+      headers,
+    });
+  } catch (e) {
+    throw new ApiError(
+      e instanceof Error ? e.message : 'network error',
+      0,
+      'NETWORK',
+    );
   }
 
-  return res.json() as Promise<T>;
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    const message =
+      (body && (body.error?.message ?? body.message)) ?? `HTTP ${res.status}`;
+    const code = body?.error?.code;
+    throw new ApiError(message, res.status, code);
+  }
+
+  const payload = (await res.json()) as unknown;
+
+  // Unwrap global response envelope: { success, data, meta }
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    'data' in payload &&
+    'success' in payload
+  ) {
+    return (payload as { data: T }).data;
+  }
+
+  return payload as T;
 }
 
 export interface Listing {
@@ -90,6 +136,15 @@ export interface SafeMeetSpot {
   longitude: number;
 }
 
+export interface CreateListingDto {
+  title: string;
+  description: string;
+  category: string;
+  condition: string;
+  askingPrice: number;
+  district: string;
+}
+
 export const api = {
   listings: {
     list: (params?: Record<string, string>) =>
@@ -97,7 +152,7 @@ export const api = {
         `/api/v1/listings?${new URLSearchParams(params ?? {}).toString()}`,
       ),
     get: (id: string) => fetchJson<Listing>(`/api/v1/listings/${id}`),
-    create: (dto: Omit<Listing, 'id' | 'createdAt' | 'updatedAt' | 'viewCount'>) =>
+    create: (dto: CreateListingDto) =>
       fetchJson<Listing>('/api/v1/listings', {
         method: 'POST',
         body: JSON.stringify(dto),

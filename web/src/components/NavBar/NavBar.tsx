@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Store, Search, PlusCircle, Tag, LogIn } from 'lucide-react';
-import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
 import styles from './NavBar.module.css';
 
 export function NavBar() {
@@ -50,7 +49,6 @@ export function NavBar() {
           </nav>
 
           <div className={styles.right}>
-            <ThemeToggle />
             <Link
               href={otherLocaleHref}
               className={styles.locale}

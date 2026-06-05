@@ -1,0 +1,51 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.photo {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-lg);
+  background: var(--surface-mid);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.title {
+  height: 1.2rem;
+  width: 80%;
+  border-radius: var(--r-sm);
+  background: var(--surface-mid);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.district {
+  height: 0.9rem;
+  width: 40%;
+  border-radius: var(--r-sm);
+  background: var(--surface-mid);
+}
+
+.fav {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -1,37 +1,94 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { Search, ShieldCheck, MapPin, Coins, Sparkles, Users, Handshake, MessageCircle } from 'lucide-react';
+import {
+  Search, ShieldCheck, MapPin, Coins, Users, Handshake, MessageCircle,
+  Sofa, Smartphone, Refrigerator, Shirt, Baby, Dumbbell, BookOpen, Car,
+} from 'lucide-react';
 import { api } from '@/lib/api';
 import { ListingCard } from '@/components/ListingCard';
+import { ListingCardSkeletonGrid } from '@/components/ListingCardSkeleton/ListingCardSkeletonGrid';
 import styles from './page.module.css';
 
-export default async function HomePage() {
-  const t = await getTranslations();
-  const locale = await getLocale();
-  let listings: Awaited<ReturnType<typeof api.listings.list>> | null = null;
+type CategoryShortcut = {
+  key: string;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+};
 
+const CATEGORY_SHORTCUTS: CategoryShortcut[] = [
+  { key: 'FURNITURE', icon: Sofa },
+  { key: 'ELECTRONICS', icon: Smartphone },
+  { key: 'APPLIANCES', icon: Refrigerator },
+  { key: 'FASHION', icon: Shirt },
+  { key: 'KIDS_GEAR', icon: Baby },
+  { key: 'SPORTS', icon: Dumbbell },
+  { key: 'BOOKS', icon: BookOpen },
+  { key: 'AUTOMOTIVE', icon: Car },
+];
+
+async function HomeListingsGrid() {
+  const t = await getTranslations();
+  let listings: Awaited<ReturnType<typeof api.listings.list>> | null = null;
   try {
     listings = await api.listings.list({ limit: '12' });
   } catch {
     listings = null;
   }
 
+  if (!listings) {
+    return (
+      <div className={styles.empty}>
+        <p>{t('errors.networkDown')}</p>
+      </div>
+    );
+  }
+
+  if (listings.data.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <p>{t('errors.emptyResults')}</p>
+        <p className={styles.emptyHint}>{t('errors.beFirst')}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.grid}>
+      {listings.data.map((listing) => (
+        <ListingCard key={listing.id} listing={listing} />
+      ))}
+    </div>
+  );
+}
+
+export default async function HomePage() {
+  const t = await getTranslations();
+  const locale = await getLocale();
   const trustParts = t('home.trustBanner').split('·').map((s) => s.trim());
 
   return (
     <div className={styles.wrap}>
       {/* Hero */}
-      <section className={styles.hero}>
-        <span className={styles.heroEyebrow}>
-          <Sparkles size={12} />
-          Souk ElKanto
-        </span>
-        <h1 className={styles.heroTitle}>{t('hero.title')}</h1>
+      <section className={styles.hero} aria-labelledby="hero-title">
+        {/* Decorative awning ornament — top-end corner */}
+        <svg
+          className={styles.heroOrnament}
+          viewBox="0 0 240 160"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M0 80 Q60 0 120 80 T240 80" stroke="var(--kanto-coral)" strokeOpacity="0.35" strokeWidth="2" fill="none" />
+          <path d="M0 110 Q60 40 120 110 T240 110" stroke="var(--kanto-coral)" strokeOpacity="0.22" strokeWidth="2" fill="none" />
+          <path d="M0 140 Q60 70 120 140 T240 140" stroke="var(--sun)" strokeOpacity="0.28" strokeWidth="2" fill="none" />
+        </svg>
+
+        <h1 id="hero-title" className={styles.heroTitle}>{t('hero.title')}</h1>
         <p className={styles.heroSubtitle}>{t('hero.subtitle')}</p>
         <form
           action={`/${locale}/listings`}
           method="get"
           className={styles.heroSearch}
+          role="search"
         >
           <Search size={18} aria-hidden="true" />
           <input
@@ -44,6 +101,28 @@ export default async function HomePage() {
         </form>
       </section>
 
+      {/* Categories chip strip */}
+      <section className={styles.categoriesSection} aria-labelledby="categories-title">
+        <h2 id="categories-title" className={styles.categoriesTitle}>
+          {t('home.categoriesTitle')}
+        </h2>
+        <div className={styles.categoryChips} role="list">
+          {CATEGORY_SHORTCUTS.map(({ key, icon: Icon }) => (
+            <Link
+              key={key}
+              href={`/${locale}/listings?category=${key}`}
+              className={styles.categoryChip}
+              role="listitem"
+            >
+              <span className={styles.categoryChipIcon} aria-hidden="true">
+                <Icon size={18} strokeWidth={1.6} />
+              </span>
+              <span>{t(`categories.${key}`)}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* New listings */}
       <section className={styles.section}>
         <header className={styles.sectionHead}>
@@ -53,48 +132,43 @@ export default async function HomePage() {
           </Link>
         </header>
 
-        {listings && listings.data.length > 0 ? (
-          <div className={styles.grid}>
-            {listings.data.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        ) : (
-          <div className={styles.empty}>
-            <p>{t('errors.notFound')}</p>
-            <p style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7 }}>
-              {t('errors.beFirst')}
-            </p>
-          </div>
-        )}
+        <Suspense fallback={<ListingCardSkeletonGrid count={8} />}>
+          <HomeListingsGrid />
+        </Suspense>
       </section>
 
-      {/* What is ElKanto */}
+      {/* What is ElKanto — flat layout, no wrapping card */}
       <section className={styles.about} aria-labelledby="about-title">
         <h2 id="about-title" className={styles.aboutTitle}>
           {t('home.aboutTitle')}
         </h2>
         <div className={styles.aboutGrid}>
-          <div className={styles.aboutCard}>
-            <span className={styles.aboutIcon}>
+          <div className={styles.aboutItem}>
+            <span className={`${styles.aboutIcon} ${styles.aboutIconCoral}`}>
               <Users size={20} />
             </span>
-            <h3 className={styles.aboutCardTitle}>{t('home.aboutNeighbors')}</h3>
-            <p className={styles.aboutCardBody}>{t('home.aboutNeighborsBody')}</p>
+            <div className={styles.aboutText}>
+              <h3 className={styles.aboutItemTitle}>{t('home.aboutNeighbors')}</h3>
+              <p className={styles.aboutItemBody}>{t('home.aboutNeighborsBody')}</p>
+            </div>
           </div>
-          <div className={styles.aboutCard}>
-            <span className={styles.aboutIcon}>
+          <div className={styles.aboutItem}>
+            <span className={`${styles.aboutIcon} ${styles.aboutIconTeal}`}>
               <Handshake size={20} />
             </span>
-            <h3 className={styles.aboutCardTitle}>{t('home.aboutBroker')}</h3>
-            <p className={styles.aboutCardBody}>{t('home.aboutBrokerBody')}</p>
+            <div className={styles.aboutText}>
+              <h3 className={styles.aboutItemTitle}>{t('home.aboutBroker')}</h3>
+              <p className={styles.aboutItemBody}>{t('home.aboutBrokerBody')}</p>
+            </div>
           </div>
-          <div className={styles.aboutCard}>
-            <span className={styles.aboutIcon}>
+          <div className={styles.aboutItem}>
+            <span className={`${styles.aboutIcon} ${styles.aboutIconMint}`}>
               <MessageCircle size={20} />
             </span>
-            <h3 className={styles.aboutCardTitle}>{t('home.aboutWhatsApp')}</h3>
-            <p className={styles.aboutCardBody}>{t('home.aboutWhatsAppBody')}</p>
+            <div className={styles.aboutText}>
+              <h3 className={styles.aboutItemTitle}>{t('home.aboutWhatsApp')}</h3>
+              <p className={styles.aboutItemBody}>{t('home.aboutWhatsAppBody')}</p>
+            </div>
           </div>
         </div>
       </section>

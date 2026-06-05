@@ -18,8 +18,8 @@ interface LocaleLayoutProps {
 }
 
 /**
- * Per-locale layout — owns `dir`/`lang` adjustments via a wrapping <div>,
- * provides next-intl context, and mounts NavBar + Footer chrome.
+ * Per-locale layout. The root layout (`app/layout.tsx`) owns `<html lang dir>`,
+ * so this layer just provides next-intl context and mounts NavBar + Footer.
  */
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params;
@@ -29,11 +29,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   setRequestLocale(locale);
   const messages = await getMessages();
-  const isRtl = locale === 'ar';
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <div dir={isRtl ? 'rtl' : 'ltr'} lang={locale} className={styles.shell}>
+      <div className={styles.shell}>
         <NavBar />
         <main className={`${styles.main} container`}>{children}</main>
         <Footer />

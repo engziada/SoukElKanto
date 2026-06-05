@@ -1,14 +1,218 @@
 'use client';
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Camera, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import Link from 'next/link';
+import {
+  Camera, ChevronLeft, ChevronRight, AlertCircle, Check, ImagePlus, Save,
+} from 'lucide-react';
+import { api, ApiError } from '@/lib/api';
 import styles from './wizard.module.css';
+
+const CATEGORY_KEYS = [
+  'FURNITURE', 'ELECTRONICS', 'APPLIANCES', 'FASHION',
+  'KIDS_TOYS', 'KIDS_CLOTHING', 'KIDS_GEAR', 'SPORTS',
+  'BOOKS', 'AUTOMOTIVE', 'HOME_DECOR', 'GARDEN',
+  'MUSICAL_INSTRUMENTS', 'COLLECTIBLES', 'CRAFTS', 'OTHER',
+] as const;
+const CONDITION_KEYS = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'FOR_PARTS'] as const;
+
+const DRAFT_KEY = 'kanto.listing-draft.v1';
+const TOTAL_STEPS = 4;
+
+interface DraftState {
+  title: string;
+  description: string;
+  category: string;
+  condition: string;
+  district: string;
+  askingPrice: string;
+  photoNames: string[];
+}
+
+const EMPTY_DRAFT: DraftState = {
+  title: '',
+  description: '',
+  category: '',
+  condition: '',
+  district: '',
+  askingPrice: '',
+  photoNames: [],
+};
 
 export default function CreateListingPage() {
   const t = useTranslations();
+  const locale = useLocale();
+  const fileRef = useRef<HTMLInputElement>(null);
+
   const [step, setStep] = useState(1);
-  const totalSteps = 4;
+  const [draft, setDraft] = useState<DraftState>(EMPTY_DRAFT);
+  const [files, setFiles] = useState<File[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [draftRestored, setDraftRestored] = useState(false);
+  const [draftSavedFlash, setDraftSavedFlash] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [publishedListingId, setPublishedListingId] = useState<string | null>(null);
+
+  // ── Draft restore on mount ─────────────────────────────────────────────
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as DraftState;
+        // Filenames carry no actual file data, but they let the user know what they
+        // had selected. Real File objects can't be persisted; users re-pick them
+        // on Step 1.
+        setDraft({ ...EMPTY_DRAFT, ...parsed });
+        if (parsed.title || parsed.askingPrice) {
+          setDraftRestored(true);
+          setTimeout(() => setDraftRestored(false), 4000);
+        }
+      }
+    } catch {
+      // ignore malformed draft
+    }
+  }, []);
+
+  // ── Draft autosave on every change ─────────────────────────────────────
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      try {
+        sessionStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ ...draft, photoNames: files.map((f) => f.name) }),
+        );
+        if (
+          draft.title || draft.description || draft.askingPrice ||
+          draft.category || draft.condition || draft.district
+        ) {
+          setDraftSavedFlash(true);
+          setTimeout(() => setDraftSavedFlash(false), 1200);
+        }
+      } catch {
+        // sessionStorage may be unavailable in private mode
+      }
+    }, 500);
+    return () => clearTimeout(handle);
+  }, [draft, files]);
+
+  const validateStep = useCallback(
+    (s: number): boolean => {
+      const next: Record<string, string> = {};
+      if (s === 1 && files.length === 0 && draft.photoNames.length === 0) {
+        next.photos = t('create.errorPhotos');
+      }
+      if (s === 2) {
+        if (!draft.title.trim() || draft.title.trim().length < 3) {
+          next.title = t('create.errorTitle');
+        }
+        if (!draft.category) next.category = t('create.errorCategory');
+        if (!draft.condition) next.condition = t('create.errorCondition');
+      }
+      if (s === 3) {
+        const n = Number(draft.askingPrice);
+        if (!draft.askingPrice || !Number.isFinite(n) || n <= 0) {
+          next.askingPrice = t('create.errorPrice');
+        }
+      }
+      setErrors(next);
+      return Object.keys(next).length === 0;
+    },
+    [draft, files.length, t],
+  );
+
+  const goNext = useCallback(() => {
+    if (!validateStep(step)) return;
+    setStep((s) => Math.min(TOTAL_STEPS, s + 1));
+  }, [step, validateStep]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const dropped = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith('image/'),
+    );
+    setFiles((prev) => [...prev, ...dropped].slice(0, 8));
+    setErrors((p) => {
+      const n = { ...p };
+      delete n.photos;
+      return n;
+    });
+  }, []);
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selected = Array.from(e.target.files ?? []).filter((f) =>
+        f.type.startsWith('image/'),
+      );
+      setFiles((prev) => [...prev, ...selected].slice(0, 8));
+      setErrors((p) => {
+        const n = { ...p };
+        delete n.photos;
+        return n;
+      });
+    },
+    [],
+  );
+
+  const removePhoto = (idx: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handlePublish = async () => {
+    if (!validateStep(3)) {
+      setStep(3);
+      return;
+    }
+    setPublishing(true);
+    setErrors({});
+    try {
+      const created = await api.listings.create({
+        title: draft.title.trim(),
+        description: draft.description.trim() || draft.title.trim(),
+        category: draft.category,
+        condition: draft.condition,
+        askingPrice: Number(draft.askingPrice),
+        district: draft.district.trim() || 'B5',
+      });
+      setPublishedListingId(created.id);
+      sessionStorage.removeItem(DRAFT_KEY);
+    } catch (e) {
+      if (e instanceof ApiError) {
+        if (e.status === 401 || e.status === 403) {
+          setErrors({ publish: t('create.loginRequired') });
+        } else if (e.status === 0) {
+          setErrors({ publish: t('errors.networkDown') });
+        } else {
+          setErrors({ publish: t('create.errorPublish') });
+        }
+      } else {
+        setErrors({ publish: t('create.errorPublish') });
+      }
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  // ── Success state ──────────────────────────────────────────────────────
+  if (publishedListingId) {
+    return (
+      <div className={styles.wrap}>
+        <div className={styles.success}>
+          <div className={styles.successIcon} aria-hidden="true">
+            <Check size={36} strokeWidth={1.6} />
+          </div>
+          <h2 className={styles.successTitle}>{t('create.publishSuccess')}</h2>
+          <p className={styles.successBody}>{t('create.publishSuccessBody')}</p>
+          <Link
+            href={`/${locale}/listings/${publishedListingId}`}
+            className={styles.successCta}
+          >
+            {t('create.publishSuccessView')}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const stepLabels = [
     t('create.stepPhotos'),
@@ -19,81 +223,308 @@ export default function CreateListingPage() {
 
   return (
     <div className={styles.wrap}>
-      <h1 className={styles.h1}>{t('create.title')}</h1>
+      <div className={styles.head}>
+        <h1 className={styles.h1}>{t('create.title')}</h1>
+        {draftRestored && (
+          <span className={styles.draftFlag} role="status" aria-live="polite">
+            <Save size={12} aria-hidden="true" />
+            {t('create.draftRestored')}
+          </span>
+        )}
+        {draftSavedFlash && !draftRestored && (
+          <span className={styles.draftFlag} role="status" aria-live="polite">
+            <Save size={12} aria-hidden="true" />
+            {t('create.draftSaved')}
+          </span>
+        )}
+      </div>
 
-      <div className={styles.steps}>
+      {/* Step indicator */}
+      <ol className={styles.steps} aria-label="progress">
         {stepLabels.map((label, idx) => {
           const n = idx + 1;
           const active = n === step;
           const done = n < step;
           return (
-            <div key={label} className={styles.step}>
-              <div
+            <li key={label} className={styles.step}>
+              <span
                 className={`${styles.dot} ${active ? styles.dotActive : ''} ${
                   done ? styles.dotDone : ''
                 }`}
+                aria-current={active ? 'step' : undefined}
               >
-                {done ? '✓' : n}
-              </div>
+                {done ? <Check size={12} aria-hidden="true" /> : n}
+              </span>
               <span className={styles.stepLabel}>{label}</span>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ol>
 
       <div className={styles.panel}>
+        {/* ── Step 1: Photos ────────────────────────────── */}
         {step === 1 && (
-          <div className={styles.photoDrop}>
-            <Camera size={36} />
-            <p>Drag &amp; drop photos here, or click to browse (1–8 photos)</p>
+          <div>
+            <div
+              className={styles.photoDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              onClick={() => fileRef.current?.click()}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileRef.current?.click();
+                }
+              }}
+              aria-label={t('create.stepPhotos')}
+            >
+              <ImagePlus size={36} strokeWidth={1.2} aria-hidden="true" />
+              <p>{t('create.photoDrop')}</p>
+              {files.length > 0 && (
+                <span className={styles.fileCount}>
+                  {t('create.photoCount', { count: files.length })}
+                </span>
+              )}
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className={styles.fileInput}
+                onChange={handleFileSelect}
+              />
+            </div>
+            {files.length > 0 && (
+              <ul className={styles.photoList}>
+                {files.map((f, i) => (
+                  <li key={i} className={styles.photoChip}>
+                    <Camera size={12} aria-hidden="true" />
+                    <span className={styles.photoName}>{f.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(i)}
+                      aria-label="remove"
+                      className={styles.photoRemove}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {errors.photos && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.photos}
+              </span>
+            )}
           </div>
         )}
+
+        {/* ── Step 2: Details ───────────────────────────── */}
         {step === 2 && (
           <div className={styles.fields}>
-            <input className={styles.input} placeholder="Title" />
-            <textarea className={styles.textarea} placeholder="Description" />
-            <select className={styles.select}>
-              <option>Category</option>
+            <label htmlFor="title" className={styles.label}>
+              {t('create.labelTitle')}
+            </label>
+            <input
+              id="title"
+              className={styles.input}
+              placeholder={t('create.placeholderTitle')}
+              value={draft.title}
+              onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+              aria-invalid={Boolean(errors.title)}
+            />
+            {errors.title && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.title}
+              </span>
+            )}
+
+            <label htmlFor="description" className={styles.label}>
+              {t('create.labelDescription')}
+            </label>
+            <textarea
+              id="description"
+              className={styles.textarea}
+              placeholder={t('create.placeholderDescription')}
+              value={draft.description}
+              onChange={(e) =>
+                setDraft({ ...draft, description: e.target.value })
+              }
+              rows={4}
+            />
+
+            <label htmlFor="category" className={styles.label}>
+              {t('create.labelCategory')}
+            </label>
+            <select
+              id="category"
+              className={styles.select}
+              value={draft.category}
+              onChange={(e) => setDraft({ ...draft, category: e.target.value })}
+              aria-invalid={Boolean(errors.category)}
+            >
+              <option value="">{t('create.placeholderCategory')}</option>
+              {CATEGORY_KEYS.map((k) => (
+                <option key={k} value={k}>
+                  {t(`categories.${k}`)}
+                </option>
+              ))}
             </select>
-            <select className={styles.select}>
-              <option>Condition</option>
+            {errors.category && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.category}
+              </span>
+            )}
+
+            <label htmlFor="condition" className={styles.label}>
+              {t('create.labelCondition')}
+            </label>
+            <select
+              id="condition"
+              className={styles.select}
+              value={draft.condition}
+              onChange={(e) =>
+                setDraft({ ...draft, condition: e.target.value })
+              }
+              aria-invalid={Boolean(errors.condition)}
+            >
+              <option value="">{t('create.placeholderCondition')}</option>
+              {CONDITION_KEYS.map((k) => (
+                <option key={k} value={k}>
+                  {t(`conditions.${k}`)}
+                </option>
+              ))}
             </select>
-            <input className={styles.input} placeholder="District" />
+            {errors.condition && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.condition}
+              </span>
+            )}
+
+            <label htmlFor="district" className={styles.label}>
+              {t('create.labelDistrict')}
+            </label>
+            <input
+              id="district"
+              className={styles.input}
+              placeholder={t('create.placeholderDistrict')}
+              value={draft.district}
+              onChange={(e) =>
+                setDraft({ ...draft, district: e.target.value })
+              }
+            />
           </div>
         )}
+
+        {/* ── Step 3: Price ─────────────────────────────── */}
         {step === 3 && (
           <div className={styles.fields}>
-            <label className={styles.label}>Price (EGP)</label>
-            <input type="number" className={styles.input} placeholder="1,800" />
+            <label htmlFor="price" className={styles.label}>
+              {t('create.labelPrice')}
+            </label>
+            <input
+              id="price"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              className={styles.input}
+              placeholder={t('create.placeholderPrice')}
+              value={draft.askingPrice}
+              onChange={(e) =>
+                setDraft({ ...draft, askingPrice: e.target.value })
+              }
+              aria-invalid={Boolean(errors.askingPrice)}
+            />
+            {errors.askingPrice && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.askingPrice}
+              </span>
+            )}
           </div>
         )}
+
+        {/* ── Step 4: Review ────────────────────────────── */}
         {step === 4 && (
-          <div className={styles.review}>Review your listing before publishing.</div>
+          <div className={styles.review}>
+            <p className={styles.reviewIntro}>{t('create.reviewText')}</p>
+            <dl className={styles.reviewList}>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewTitle')}</dt>
+                <dd>{draft.title || '—'}</dd>
+              </div>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewCategory')}</dt>
+                <dd>
+                  {draft.category
+                    ? t(`categories.${draft.category}` as never)
+                    : '—'}
+                </dd>
+              </div>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewCondition')}</dt>
+                <dd>
+                  {draft.condition
+                    ? t(`conditions.${draft.condition}` as never)
+                    : '—'}
+                </dd>
+              </div>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewDistrict')}</dt>
+                <dd>{draft.district || '—'}</dd>
+              </div>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewPrice')}</dt>
+                <dd className={styles.reviewPrice}>
+                  {draft.askingPrice
+                    ? `${Number(draft.askingPrice).toLocaleString()} ${t('listing.price')}`
+                    : '—'}
+                </dd>
+              </div>
+              <div className={styles.reviewRow}>
+                <dt>{t('create.reviewPhotos')}</dt>
+                <dd>{files.length || draft.photoNames.length || 0}</dd>
+              </div>
+            </dl>
+            {errors.publish && (
+              <div className={styles.publishError} role="alert">
+                <AlertCircle size={14} aria-hidden="true" /> {errors.publish}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
+      {/* Step navigation */}
       <div className={styles.nav}>
         <button
           type="button"
           onClick={() => setStep((s) => Math.max(1, s - 1))}
-          disabled={step === 1}
+          disabled={step === 1 || publishing}
           className={styles.back}
         >
-          <ChevronLeft size={16} />
-          Back
+          <ChevronLeft size={16} aria-hidden="true" />
+          {t('create.back')}
         </button>
-        {step < totalSteps ? (
+        {step < TOTAL_STEPS ? (
           <button
             type="button"
-            onClick={() => setStep((s) => Math.min(totalSteps, s + 1))}
+            onClick={goNext}
             className={styles.next}
           >
-            Next
-            <ChevronRight size={16} />
+            {t('create.next')}
+            <ChevronRight size={16} aria-hidden="true" />
           </button>
         ) : (
-          <button type="button" className={styles.publish}>
-            {t('create.publish')}
+          <button
+            type="button"
+            className={styles.publish}
+            onClick={handlePublish}
+            disabled={publishing}
+          >
+            {publishing ? t('create.publishing') : t('create.publish')}
           </button>
         )}
       </div>

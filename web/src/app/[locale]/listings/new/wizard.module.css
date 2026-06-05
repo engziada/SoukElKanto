@@ -1,20 +1,58 @@
 .wrap {
-  max-width: 38rem;
+  max-width: 42rem;
   margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: var(--s-5);
 }
 
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
 .h1 {
   font-family: var(--font-headline);
   font-size: 1.6rem;
   letter-spacing: -0.015em;
+  font-weight: 700;
+  margin: 0;
 }
 
+[lang="ar"] .h1 {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.draftFlag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-pill);
+  background: var(--mint-soft);
+  color: #11704f;
+  font-size: 0.78rem;
+  font-weight: 600;
+  animation: fadeInDown 200ms var(--ease-out);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Step indicator ─────────────────────────────────────────────────────── */
 .steps {
   display: flex;
   gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .step {
@@ -26,18 +64,20 @@
 }
 
 .dot {
-  width: 2rem;
-  height: 2rem;
+  width: 2.1rem;
+  height: 2.1rem;
   border-radius: var(--r-pill);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-headline);
   font-weight: 700;
   font-size: 0.85rem;
   background: var(--surface-mid);
   color: var(--text-muted);
   border: 1px solid var(--border);
   transition: all var(--dur-fast) var(--ease-out);
+  font-variant-numeric: tabular-nums;
 }
 
 .dotActive {
@@ -55,9 +95,11 @@
 
 .stepLabel {
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--text-soft);
+  text-align: center;
 }
 
+/* ── Panel ──────────────────────────────────────────────────────────────── */
 .panel {
   padding: var(--s-5);
   background: var(--surface);
@@ -66,6 +108,7 @@
   box-shadow: var(--shadow-card);
 }
 
+/* ── Photo drop ─────────────────────────────────────────────────────────── */
 .photoDrop {
   display: flex;
   flex-direction: column;
@@ -74,14 +117,86 @@
   padding: var(--s-7) var(--s-4);
   border-radius: var(--r-md);
   border: 2px dashed var(--border);
-  color: var(--text-muted);
+  color: var(--text-soft);
   text-align: center;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast);
 }
 
+.photoDrop:hover,
+.photoDrop:focus-visible {
+  border-color: var(--kanto-coral);
+  background: color-mix(in oklab, var(--kanto-coral) 4%, transparent);
+  color: var(--text);
+  outline: none;
+}
+
+.fileInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.fileCount {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--kanto-coral);
+}
+
+.photoList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  list-style: none;
+  padding: 0;
+}
+
+.photoChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--kanto-coral-soft);
+  color: var(--kanto-coral);
+  font-size: 0.78rem;
+  font-weight: 500;
+  max-width: 14rem;
+}
+
+.photoName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photoRemove {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: var(--r-pill);
+  background: var(--kanto-coral);
+  color: var(--on-coral);
+  font-size: 0.85rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Fields ─────────────────────────────────────────────────────────────── */
 .fields {
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
 }
 
 .input,
@@ -94,6 +209,7 @@
   background: var(--bg);
   color: var(--text);
   font: inherit;
+  font-size: 0.95rem;
   outline: none;
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
@@ -105,20 +221,147 @@
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--kanto-coral) 20%, transparent);
 }
 
-.textarea { min-height: 5.5rem; resize: vertical; }
+.textarea { min-height: 6rem; resize: vertical; }
 
-.label {
+.fieldError {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--kanto-coral);
+  margin-top: -0.4rem;
+}
+
+/* ── Review ─────────────────────────────────────────────────────────────── */
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.reviewIntro {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+[lang="ar"] .reviewIntro { line-height: 1.75; }
+
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.reviewRow:last-child {
+  border-bottom: 0;
+}
+
+.reviewRow dt {
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-soft);
 }
 
-.review {
-  text-align: center;
-  color: var(--text-muted);
-  padding: var(--s-6) 0;
+.reviewRow dd {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin: 0;
+  text-align: end;
 }
 
+.reviewPrice {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--kanto-coral);
+}
+
+.publishError {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--r-sm);
+  background: color-mix(in oklab, var(--kanto-coral) 10%, white);
+  color: var(--kanto-coral);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* ── Success state ──────────────────────────────────────────────────────── */
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-8) var(--s-5);
+  text-align: center;
+}
+
+.successIcon {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--mint), var(--teal));
+  color: var(--on-teal);
+  box-shadow: var(--shadow-glow);
+}
+
+.successTitle {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+[lang="ar"] .successTitle {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.successBody {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  max-width: 26rem;
+  margin: 0;
+}
+
+[lang="ar"] .successBody { line-height: 1.75; }
+
+.successCta {
+  margin-top: var(--s-3);
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-coral);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+[lang="ar"] .successCta { font-family: var(--font-body-ar); }
+
+.successCta:hover { transform: translateY(-1px); }
+
+/* ── Step nav ───────────────────────────────────────────────────────────── */
 .nav {
   display: flex;
   align-items: center;
@@ -140,22 +383,36 @@
 
 .back:hover { color: var(--text); }
 
-.back:disabled { opacity: 0.4; cursor: not-allowed; }
+.back:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 .next,
 .publish {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.7rem 1.4rem;
+  padding: 0.75rem 1.5rem;
   border-radius: var(--r-pill);
   background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
   color: var(--on-coral);
-  font-weight: 600;
-  font-size: 0.92rem;
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.95rem;
   box-shadow: var(--shadow-coral);
   transition: transform var(--dur-fast);
 }
 
+[lang="ar"] .next,
+[lang="ar"] .publish {
+  font-family: var(--font-body-ar);
+}
+
 .next:hover,
 .publish:hover { transform: translateY(-1px); }
+
+.publish:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

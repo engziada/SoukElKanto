@@ -9,19 +9,20 @@
 }
 
 .photoFrame {
+  position: relative;
   aspect-ratio: 4 / 3;
   border-radius: var(--r-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, var(--surface-mid), var(--kanto-stall));
+  background: var(--surface-mid);
   box-shadow: var(--shadow-card);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.photoFrame img { width: 100%; height: 100%; object-fit: cover; }
-
-.placeholder { color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+.photoImg {
+  object-fit: cover;
+}
 
 .info {
   display: flex;
@@ -29,33 +30,21 @@
   gap: var(--s-5);
 }
 
-.price {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 4vw, 2.6rem);
-  color: var(--kanto-coral);
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.h1 {
-  font-family: var(--font-headline);
-  font-size: clamp(1.4rem, 2.8vw, 1.85rem);
-  letter-spacing: -0.015em;
-}
-
+/* ── Trust panel — leads, per PRODUCT principle #1 ─────────────────────── */
 .trustPanel {
   display: flex;
+  align-items: center;
   gap: var(--s-3);
   padding: var(--s-4);
   border-radius: var(--r-md);
   background: var(--surface);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 
 .trustBadge {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.6rem;
+  height: 2.6rem;
   border-radius: var(--r-pill);
   background: var(--teal-dim);
   color: var(--teal);
@@ -63,12 +52,111 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: var(--shadow-glow);
 }
 
-.trustText { display: flex; flex-direction: column; gap: 0.15rem; }
-.trustTitle { font-weight: 600; color: var(--text); }
-.trustMeta { font-size: 0.82rem; color: var(--text-muted); }
+.trustText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
 
+.trustTitle {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.trustMeta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+[lang="ar"] .trustMeta { line-height: 1.7; }
+
+.tierRibbon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: var(--r-pill);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+
+[lang="ar"] .tierRibbon {
+  font-family: var(--font-micro-ar);
+  letter-spacing: 0;
+}
+
+.tierNew {
+  background: color-mix(in oklab, var(--kanto-tier-new) 14%, white);
+  color: var(--kanto-tier-new);
+}
+.tierBronze {
+  background: color-mix(in oklab, var(--kanto-tier-bronze) 14%, white);
+  color: var(--kanto-tier-bronze);
+}
+.tierSilver {
+  background: color-mix(in oklab, var(--kanto-tier-silver) 14%, white);
+  color: var(--kanto-tier-silver);
+}
+.tierGold {
+  background: color-mix(in oklab, var(--kanto-tier-gold) 14%, white);
+  color: var(--kanto-tier-gold);
+}
+.tierPlatinum {
+  background: color-mix(in oklab, var(--kanto-tier-platinum) 14%, white);
+  color: var(--kanto-tier-platinum);
+}
+
+/* ── Price + title ──────────────────────────────────────────────────────── */
+.price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: var(--kanto-coral);
+  margin-bottom: var(--s-2);
+}
+
+.priceAmount {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 4.5vw, 3rem);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.priceUnit {
+  font-family: var(--font-headline);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+[lang="ar"] .priceUnit { font-family: var(--font-micro-ar); }
+
+.h1 {
+  font-family: var(--font-headline);
+  font-size: clamp(1.4rem, 2.8vw, 1.85rem);
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--text);
+}
+
+[lang="ar"] .h1 {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* ── Chips ─────────────────────────────────────────────────────────────── */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -83,13 +171,14 @@
   border-radius: var(--r-pill);
   background: var(--surface-mid);
   color: var(--text-soft);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
 .chipAccent {
   background: var(--kanto-coral-soft);
   color: var(--kanto-coral);
+  font-weight: 600;
 }
 
 .description {
@@ -97,26 +186,70 @@
   line-height: 1.7;
 }
 
+[lang="ar"] .description { line-height: 1.85; }
+
+/* ── Actions ────────────────────────────────────────────────────────────── */
 .actions {
   display: flex;
   flex-direction: column;
-  gap: var(--s-3);
+  gap: var(--s-2);
   margin-top: auto;
+}
+
+.hint {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  text-align: center;
+  animation: fadeInDown 160ms var(--ease-out);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .cta {
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.95rem;
   border-radius: var(--r-md);
   background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
   color: var(--on-coral);
+  font-family: var(--font-headline);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.02rem;
   box-shadow: var(--shadow-coral);
-  transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
 }
 
+[lang="ar"] .cta { font-family: var(--font-body-ar); }
+
 .cta:hover { transform: translateY(-1px); }
+
+.whatsAppBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border-radius: var(--r-md);
+  background: #25D366;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: transform var(--dur-fast) var(--ease-out), filter var(--dur-fast);
+}
+
+.whatsAppBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
 
 .subActions {
   display: flex;
@@ -139,4 +272,39 @@
   transition: all var(--dur-fast) var(--ease-out);
 }
 
-.subBtn:hover { background: var(--surface-mid); color: var(--text); }
+.subBtn:hover {
+  background: var(--surface-mid);
+  color: var(--text);
+}
+
+.subBtnActive {
+  background: var(--kanto-coral-soft);
+  color: var(--kanto-coral);
+  border-color: var(--kanto-coral-soft);
+}
+
+/* ── Loading / error states ─────────────────────────────────────────────── */
+.loadingState {
+  min-height: 30rem;
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(110deg,
+      var(--surface) 0%,
+      var(--surface-mid) 30%,
+      var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.errorState {
+  padding: var(--s-7) var(--s-5);
+  text-align: center;
+  color: var(--text-soft);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+}

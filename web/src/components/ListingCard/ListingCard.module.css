@@ -22,7 +22,7 @@
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--surface-mid), var(--kanto-stall));
+  background: var(--surface-mid);
 }
 
 .photo {
@@ -43,41 +43,87 @@
   color: var(--text-muted);
 }
 
+/* ── Trust badge — tier-coloured ───────────────────────────────────────── */
 .trustBadge {
   position: absolute;
   inset-block-start: var(--s-2);
   inset-inline-start: var(--s-2);
   display: inline-flex;
   align-items: center;
-  gap: 0.2rem;
-  padding: 0.2rem 0.5rem;
+  gap: 0.25rem;
+  padding: 0.22rem 0.55rem;
   border-radius: var(--r-pill);
-  background: color-mix(in oklab, var(--kanto-tier-new) 12%, transparent);
-  color: var(--kanto-tier-new);
   font-family: var(--font-headline);
   font-weight: 700;
-  font-size: 0.65rem;
+  font-size: 0.66rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  backdrop-filter: blur(4px);
+  /* Solid backgrounds rather than glassmorphism so the ribbon reads from any photo */
+  border: 1px solid currentColor;
 }
 
+[lang="ar"] .trustBadge {
+  font-family: var(--font-micro-ar);
+  letter-spacing: 0;
+}
+
+.tierNew {
+  background: color-mix(in oklab, var(--kanto-tier-new) 14%, white);
+  color: var(--kanto-tier-new);
+}
+.tierBronze {
+  background: color-mix(in oklab, var(--kanto-tier-bronze) 14%, white);
+  color: var(--kanto-tier-bronze);
+}
+.tierSilver {
+  background: color-mix(in oklab, var(--kanto-tier-silver) 14%, white);
+  color: var(--kanto-tier-silver);
+}
+.tierGold {
+  background: color-mix(in oklab, var(--kanto-tier-gold) 14%, white);
+  color: var(--kanto-tier-gold);
+}
+.tierPlatinum {
+  background: color-mix(in oklab, var(--kanto-tier-platinum) 14%, white);
+  color: var(--kanto-tier-platinum);
+}
+
+/* ── Price tag — the signature element ─────────────────────────────────── */
 .priceTag {
   position: absolute;
   inset-block-end: var(--s-2);
   inset-inline-end: var(--s-2);
-  padding: 0.3rem 0.7rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.35rem 0.7rem;
   border-radius: var(--r-sm);
   background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
   color: var(--on-coral);
-  font-family: var(--font-headline);
-  font-weight: 700;
-  font-size: 0.92rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
   box-shadow: var(--shadow-coral);
 }
 
+.priceAmount {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.priceUnit {
+  font-family: var(--font-headline);
+  font-weight: 600;
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+[lang="ar"] .priceUnit {
+  font-family: var(--font-micro-ar);
+  font-weight: 700;
+}
+
+/* ── Body ──────────────────────────────────────────────────────────────── */
 .body {
   display: flex;
   flex-direction: column;
@@ -93,10 +139,16 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   line-height: 1.4;
   color: var(--text);
   min-height: 2.5em;
+}
+
+[lang="ar"] .title {
+  line-height: 1.7;
+  min-height: 2.9em;
+  font-weight: 700;
 }
 
 .meta {
@@ -104,7 +156,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 
@@ -125,9 +177,11 @@
   transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
-.fav:hover {
+.fav:hover,
+.fav:focus-visible {
   background: var(--kanto-coral-soft);
   color: var(--kanto-coral);
+  outline: none;
 }
 
 .favActive {
