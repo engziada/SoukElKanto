@@ -1,0 +1,65 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-7) var(--s-5);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(80% 60% at 50% 0%, color-mix(in oklab, var(--kanto-coral) 8%, transparent), transparent 70%),
+    var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.ribbon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.2rem 2rem;
+  border-radius: var(--r-lg);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+}
+
+[lang="ar"] .ribbon {
+  font-family: var(--font-micro-ar);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.tier_tierNew {
+  background: color-mix(in oklab, var(--kanto-tier-new) 12%, white);
+  color: var(--kanto-tier-new);
+}
+.tier_tierBronze {
+  background: color-mix(in oklab, var(--kanto-tier-bronze) 12%, white);
+  color: var(--kanto-tier-bronze);
+}
+.tier_tierSilver {
+  background: color-mix(in oklab, var(--kanto-tier-silver) 12%, white);
+  color: var(--kanto-tier-silver);
+}
+.tier_tierGold {
+  background: color-mix(in oklab, var(--kanto-tier-gold) 12%, white);
+  color: var(--kanto-tier-gold);
+}
+.tier_tierPlatinum {
+  background: color-mix(in oklab, var(--kanto-tier-platinum) 12%, white);
+  color: var(--kanto-tier-platinum);
+}
+
+.soon {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 28rem;
+}
+
+[lang="ar"] .soon { line-height: 1.75; }

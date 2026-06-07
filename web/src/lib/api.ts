@@ -228,4 +228,14 @@ export const api = {
         `/api/v1/safe-meet-spots${district ? `?district=${district}` : ''}`,
       ),
   },
+  tokens: {
+    walletMe: () =>
+      fetchJson<{
+        userId: string;
+        businessTokens: number;
+        individualTokens: number;
+        allocations: unknown[];
+        recentTransactions: unknown[];
+      }>('/api/v1/tokens/wallet/me'),
+  },
 };

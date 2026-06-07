@@ -1,0 +1,135 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.skeleton {
+  min-height: 28rem;
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(110deg,
+      var(--surface) 0%,
+      var(--surface-mid) 30%,
+      var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: 1.6rem;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  margin: 0;
+}
+
+[lang="ar"] .title {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+/* ── Tab strip ──────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  padding-block: 0.2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.tabs::-webkit-scrollbar { height: 6px; }
+.tabs::-webkit-scrollbar-track { background: transparent; }
+.tabs::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-pill); }
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all var(--dur-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.tab:hover {
+  background: var(--surface-mid);
+  color: var(--text);
+}
+
+.tabActive {
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  border-color: transparent;
+  box-shadow: var(--shadow-coral);
+}
+
+.tabActive:hover {
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+}
+
+/* ── Content area ───────────────────────────────────────────────────────── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* ── Reusable panel for sub-pages ───────────────────────────────────────── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.panelTitle {
+  font-family: var(--font-headline);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+[lang="ar"] .panelTitle {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+}
+
+.empty {
+  padding: var(--s-7) var(--s-4);
+  text-align: center;
+  color: var(--text-soft);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+}
+
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: var(--s-2);
+}

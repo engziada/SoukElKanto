@@ -176,6 +176,86 @@
     "beFirst": "Be the first to list something. Your souk is waiting!",
     "retry": "Try again"
   },
+  "my": {
+    "shellTitle": "Your account",
+    "tabs": {
+      "overview": "Overview",
+      "listings": "My Listings",
+      "offers": "Offers",
+      "handovers": "Handovers",
+      "favorites": "Saved",
+      "wallet": "Wallet",
+      "trustMeter": "Trust",
+      "profile": "Profile"
+    },
+    "overview": {
+      "greet": "Welcome back, {phone}",
+      "kycChip": "Verified",
+      "kycChipNot": "Not verified yet",
+      "kycCta": "Start verification",
+      "memberSince": "Member since {date}",
+      "tier": "Trust tier: {tier}",
+      "viewProfile": "View full profile",
+      "quickActions": "Quick actions",
+      "publishCta": "List an item",
+      "browseCta": "Browse listings",
+      "recentActivity": "Recent activity",
+      "noActivity": "Nothing happening yet. Post a listing or make an offer."
+    },
+    "listings": {
+      "title": "My listings",
+      "empty": "No listings yet. Post your first.",
+      "publishCta": "List a new item",
+      "viewing": "viewed",
+      "saves": "saved",
+      "status": {
+        "ACTIVE": "Active",
+        "RESERVED": "Reserved",
+        "SOLD": "Sold",
+        "EXPIRED": "Expired",
+        "REMOVED": "Removed",
+        "PENDING_REVIEW": "Pending review"
+      }
+    },
+    "offers": {
+      "title": "Offers",
+      "tabSent": "Sent",
+      "tabReceived": "Received",
+      "empty": "No offers here yet."
+    },
+    "handovers": {
+      "title": "Handovers",
+      "empty": "Your active handovers will appear here."
+    },
+    "favorites": {
+      "title": "Saved listings",
+      "empty": "Nothing saved yet. Tap the heart on any listing to save it."
+    },
+    "wallet": {
+      "title": "Your wallet",
+      "balance": "Token balance",
+      "businessTokens": "Business tokens",
+      "individualTokens": "Personal tokens",
+      "noBalance": "Wallet empty. Tokens are commitment holds, not money; they appear automatically with offer holds.",
+      "soon": "Coming soon: transaction history and live holds."
+    },
+    "trustMeter": {
+      "title": "Trust meter",
+      "soon": "Coming soon: full progress bar and the activity ledger."
+    },
+    "profile": {
+      "title": "Profile",
+      "phone": "Mobile number",
+      "kycStatus": "Verification status",
+      "kycVerified": "Verified",
+      "kycNotSubmitted": "Not submitted",
+      "kycPending": "Under review",
+      "kycApproved": "Verified",
+      "kycRejected": "Rejected",
+      "memberSince": "Member since",
+      "logout": "Sign out"
+    }
+  },
   "auth": {
     "loginTitle": "Welcome, sign in with your phone",
     "loginSubtitle": "We'll send a code to confirm your number. No passwords, no fuss.",

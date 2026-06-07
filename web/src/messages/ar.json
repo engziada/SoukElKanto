@@ -176,6 +176,86 @@
     "beFirst": "كن أول واحد يعلن. سوقك يستنى حاجتك!",
     "retry": "جرب تاني"
   },
+  "my": {
+    "shellTitle": "حسابك",
+    "tabs": {
+      "overview": "نظرة عامة",
+      "listings": "إعلاناتي",
+      "offers": "العروض",
+      "handovers": "التسليم",
+      "favorites": "المحفوظات",
+      "wallet": "المحفظة",
+      "trustMeter": "ثقتك",
+      "profile": "بياناتك"
+    },
+    "overview": {
+      "greet": "أهلاً يا جار، {phone}",
+      "kycChip": "تم التوثيق",
+      "kycChipNot": "حسابك مش موثق",
+      "kycCta": "ابدأ التوثيق",
+      "memberSince": "عضو منذ {date}",
+      "tier": "مستوى ثقتك: {tier}",
+      "viewProfile": "بياناتك بالكامل",
+      "quickActions": "إجراءات سريعة",
+      "publishCta": "اعلن عن حاجة",
+      "browseCta": "اتفرج على المعروض",
+      "recentActivity": "آخر النشاط",
+      "noActivity": "لسه مفيش نشاط. ابدأ بإعلان أو عرض."
+    },
+    "listings": {
+      "title": "إعلاناتي",
+      "empty": "مفيش إعلانات لسه. ابدأ أول واحد.",
+      "publishCta": "اعلن عن حاجة جديدة",
+      "viewing": "متفرج",
+      "saves": "محفوظ",
+      "status": {
+        "ACTIVE": "متاح",
+        "RESERVED": "محجوز",
+        "SOLD": "تم البيع",
+        "EXPIRED": "انتهى",
+        "REMOVED": "متشال",
+        "PENDING_REVIEW": "تحت المراجعة"
+      }
+    },
+    "offers": {
+      "title": "العروض",
+      "tabSent": "اللي بعتها",
+      "tabReceived": "اللي وصلتني",
+      "empty": "مفيش عروض هنا."
+    },
+    "handovers": {
+      "title": "التسليم",
+      "empty": "هنا تشوف عمليات التسليم اللي معاك."
+    },
+    "favorites": {
+      "title": "محفوظاتك",
+      "empty": "لسه ما حفظتش حاجة. دوس على القلب على أي إعلان عشان نسجله."
+    },
+    "wallet": {
+      "title": "محفظتك",
+      "balance": "رصيد الرموز",
+      "businessTokens": "رموز شغل",
+      "individualTokens": "رموز شخصية",
+      "noBalance": "محفظتك فاضية. الرموز مش فلوس، هتشحن لك تلقائياً مع الحجوزات.",
+      "soon": "قريباً، تفاصيل المعاملات والحجوزات."
+    },
+    "trustMeter": {
+      "title": "مستوى ثقتك",
+      "soon": "قريباً، شريطك الكامل وكل النشاط بيتم تتبعه."
+    },
+    "profile": {
+      "title": "بياناتك",
+      "phone": "رقم الموبايل",
+      "kycStatus": "حالة التوثيق",
+      "kycVerified": "تم التوثيق",
+      "kycNotSubmitted": "غير موثق",
+      "kycPending": "جاري المراجعة",
+      "kycApproved": "تم التوثيق",
+      "kycRejected": "رفضت المراجعة",
+      "memberSince": "عضو منذ",
+      "logout": "تسجيل خروج"
+    }
+  },
   "auth": {
     "loginTitle": "أهلاً، ادخل برقم تليفونك",
     "loginSubtitle": "هنبعتلك رمز تأكيد على رقمك. مفيش باسوورد، مفيش كلام كتير.",

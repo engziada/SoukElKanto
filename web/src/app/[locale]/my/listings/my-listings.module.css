@@ -1,0 +1,133 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+  flex-wrap: wrap;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.88rem;
+  box-shadow: var(--shadow-coral);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+[lang="ar"] .cta { font-family: var(--font-body-ar); }
+
+.cta:hover { transform: translateY(-1px); }
+
+.emptyCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: var(--s-3);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--kanto-coral), var(--coral));
+  color: var(--on-coral);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-coral);
+}
+
+[lang="ar"] .emptyCta { font-family: var(--font-body-ar); }
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); }
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.rowCard {
+  display: block;
+}
+
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+  padding-block: 0.4rem;
+}
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--r-pill);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[lang="ar"] .statusChip {
+  font-family: var(--font-micro-ar);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.statusDefault {
+  background: var(--surface-mid);
+  color: var(--text-soft);
+}
+
+.status_ACTIVE {
+  background: var(--mint-soft);
+  color: #11704f;
+}
+
+.status_RESERVED {
+  background: color-mix(in oklab, var(--sun) 18%, white);
+  color: #8a5d00;
+}
+
+.status_SOLD {
+  background: var(--teal-dim);
+  color: var(--teal);
+}
+
+.status_EXPIRED,
+.status_REMOVED {
+  background: var(--surface-mid);
+  color: var(--text-muted);
+}
+
+.status_PENDING_REVIEW {
+  background: color-mix(in oklab, var(--lilac) 14%, white);
+  color: var(--lilac);
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
