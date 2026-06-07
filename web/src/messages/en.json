@@ -87,10 +87,17 @@
   "offer": {
     "yourOffer": "Your Offer",
     "note": "Note (optional)",
+    "notePlaceholder": "e.g. Happy to negotiate, just need to see it first...",
+    "askingIs": "Asking price",
     "tokenHold": "Lock 5 tokens as commitment",
     "tokenHoldHint": "Tokens are not money. An internal hold released after handover.",
     "sendOffer": "Send Offer",
-    "cancel": "Cancel"
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "done": "Done",
+    "sentTitle": "Offer sent!",
+    "sentBody": "The seller will review your offer and get back to you. Get ready to negotiate.",
+    "ownListing": "You can't make an offer on your own listing."
   },
   "offers": {
     "emptyHint": "When you send or receive offers, they will appear here.",

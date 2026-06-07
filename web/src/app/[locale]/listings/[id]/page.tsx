@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import {
   MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check,
 } from 'lucide-react';
@@ -13,6 +14,9 @@ import {
   tierClassMap,
   tierLabelKey,
 } from '@/lib/trustTier';
+import { useAuthStore } from '@/lib/auth/store';
+import { useFavoritesStore } from '@/lib/favorites/store';
+import { OfferModal } from '@/components/OfferModal';
 import styles from './detail.module.css';
 
 interface DetailViewProps {
@@ -26,9 +30,13 @@ function fallbackPhotoUrl(listingId: string, size = '1200/900'): string {
 function DetailView({ listing }: DetailViewProps) {
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { toggle: toggleFavorite, isSaved } = useFavoritesStore();
+  const saved = isSaved(listing.id);
   const [hint, setHint] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [offerOpen, setOfferOpen] = useState(false);
 
   const primaryPhoto = listing.photos?.find((p) => p.position === 0);
   const photoUrl = primaryPhoto?.url || fallbackPhotoUrl(listing.id);
@@ -131,7 +139,15 @@ function DetailView({ listing }: DetailViewProps) {
           <button
             type="button"
             className={styles.cta}
-            onClick={() => showHint(t('nav.loginComingSoon'))}
+            onClick={() => {
+              if (!isAuthenticated) {
+                // Redirect to login, come back after auth
+                const path = typeof window !== 'undefined' ? window.location.pathname : `/${locale}/listings/${listing.id}`;
+                router.push(`/${locale}/auth/login?next=${encodeURIComponent(path)}`);
+                return;
+              }
+              setOfferOpen(true);
+            }}
           >
             {t('listing.makeOffer')}
           </button>
@@ -153,7 +169,7 @@ function DetailView({ listing }: DetailViewProps) {
               type="button"
               className={`${styles.subBtn} ${saved ? styles.subBtnActive : ''}`}
               onClick={() => {
-                setSaved((s) => !s);
+                toggleFavorite(listing.id);
                 showHint(saved ? t('listing.unsave') : t('listing.save'));
               }}
               aria-pressed={saved}
@@ -180,6 +196,14 @@ function DetailView({ listing }: DetailViewProps) {
           </div>
         </div>
       </div>
+
+      {/* Offer modal — rendered at root level to avoid stacking context issues */}
+      {offerOpen && (
+        <OfferModal
+          listing={listing}
+          onClose={() => setOfferOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -11,6 +10,7 @@ import {
   tierLabelKey,
   tierClassMap,
 } from '@/lib/trustTier';
+import { useFavoritesStore } from '@/lib/favorites/store';
 import styles from './ListingCard.module.css';
 
 interface ListingCardProps {
@@ -29,7 +29,8 @@ function fallbackPhotoUrl(listingId: string, size = '640/480'): string {
 export function ListingCard({ listing }: ListingCardProps) {
   const locale = useLocale();
   const t = useTranslations();
-  const [saved, setSaved] = useState(false);
+  const { toggle: toggleFavorite, isSaved } = useFavoritesStore();
+  const saved = isSaved(listing.id);
   const primaryPhoto = listing.photos?.find((p) => p.position === 0);
   const photoUrl = primaryPhoto?.url || fallbackPhotoUrl(listing.id);
 
@@ -40,7 +41,7 @@ export function ListingCard({ listing }: ListingCardProps) {
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSaved((s) => !s);
+    toggleFavorite(listing.id);
   };
 
   return (
