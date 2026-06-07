@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
+import { useQuery } from '@tanstack/react-query';
 import {
   ShieldCheck, PlusCircle, Search, Award, ArrowRight,
 } from 'lucide-react';
-import { api, type KycStatus } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth/store';
+import { qk, fetchKycStatus } from '@/lib/queries';
 import {
   deriveTierFromId,
   tierLabelKey,
@@ -27,15 +27,13 @@ export default function MyOverviewPage() {
   const tListings = useTranslations('listing');
   const locale = useLocale();
   const user = useAuthStore((s) => s.user);
-  const [kyc, setKyc] = useState<KycStatus | null>(null);
 
-  useEffect(() => {
-    if (!user) return;
-    api.users
-      .kycStatus()
-      .then(setKyc)
-      .catch(() => setKyc(null));
-  }, [user]);
+  const { data: kyc } = useQuery({
+    queryKey: qk.kycStatus(),
+    queryFn: fetchKycStatus,
+    enabled: Boolean(user),
+    staleTime: 5 * 60_000, // 5 min — KYC rarely changes
+  });
 
   if (!user) return null;
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Cairo, Space_Grotesk, Orbitron, Changa } from 'next/font/google';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import './globals.css';
 
 const inter = Inter({
@@ -61,8 +62,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${inter.variable} ${cairo.variable} ${spaceGrotesk.variable} ${orbitron.variable} ${changa.variable}`}
     >
       <body>
-        <div className="site-bg" aria-hidden="true" />
-        {children}
+        <ReactQueryProvider>
+          <div className="site-bg" aria-hidden="true" />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

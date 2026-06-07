@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
+import { useQuery } from '@tanstack/react-query';
 import { PlusCircle, Eye, Heart } from 'lucide-react';
-import { api, type Listing } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth/store';
+import { qk, fetchMyListings } from '@/lib/queries';
 import { ListingCard } from '@/components/ListingCard';
 import { ListingCardSkeletonGrid } from '@/components/ListingCardSkeleton/ListingCardSkeletonGrid';
 import tabStyles from '../my.module.css';
@@ -17,22 +17,12 @@ export default function MyListingsPage() {
   const locale = useLocale();
   const user = useAuthStore((s) => s.user);
 
-  const [listings, setListings] = useState<Listing[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user) return;
-    setLoading(true);
-    // Fetch all listings then filter by sellerId.
-    // TODO: replace with `GET /api/v1/listings?sellerId=me` once BE supports it.
-    api.listings
-      .list({ limit: '50' })
-      .then((res) => {
-        setListings(res.data.filter((l) => l.sellerId === user.id));
-      })
-      .catch(() => setListings([]))
-      .finally(() => setLoading(false));
-  }, [user]);
+  const { data: listings, isLoading } = useQuery({
+    queryKey: qk.myListings(),
+    queryFn: () => fetchMyListings(user!.id),
+    enabled: Boolean(user),
+    staleTime: 60_000, // 1 min — my own listings change infrequently
+  });
 
   return (
     <section aria-labelledby="my-listings-title">
@@ -46,7 +36,7 @@ export default function MyListingsPage() {
         </Link>
       </header>
 
-      {loading ? (
+      {isLoading ? (
         <ListingCardSkeletonGrid count={4} />
       ) : !listings || listings.length === 0 ? (
         <div className={tabStyles.empty}>

@@ -1,16 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useQuery } from '@tanstack/react-query';
 import { ArrowLeftRight, Clock, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
-import { api, type Offer } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth/store';
+import { qk, fetchOffersSent, fetchOffersReceived } from '@/lib/queries';
+import type { Offer } from '@/lib/api';
 import tabStyles from '../my.module.css';
 import styles from './my-offers.module.css';
 
 type Tab = 'sent' | 'received';
 
-const STATUS_KEYS = ['PENDING','ACCEPTED','DECLINED','COUNTERED','WITHDRAWN','EXPIRED'] as const;
+const STATUS_KEYS = ['PENDING', 'ACCEPTED', 'DECLINED', 'COUNTERED', 'WITHDRAWN', 'EXPIRED'] as const;
 
 export default function MyOffersPage() {
   const t = useTranslations('my.offers');
@@ -19,25 +21,21 @@ export default function MyOffersPage() {
   const user = useAuthStore((s) => s.user);
 
   const [tab, setTab] = useState<Tab>('received');
-  const [sent, setSent] = useState<Offer[] | null>(null);
-  const [received, setReceived] = useState<Offer[] | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
-    setLoading(true);
-    Promise.all([
-      api.offers.listSent().catch(() => [] as Offer[]),
-      api.offers.listReceived().catch(() => [] as Offer[]),
-    ])
-      .then(([s, r]) => {
-        setSent(s);
-        setReceived(r);
-      })
-      .finally(() => setLoading(false));
-  }, [user]);
+  const { data: sent, isLoading: loadingSent } = useQuery({
+    queryKey: qk.offersSent(),
+    queryFn: fetchOffersSent,
+    enabled: Boolean(user),
+  });
 
-  const rows = tab === 'sent' ? sent : received;
+  const { data: received, isLoading: loadingReceived } = useQuery({
+    queryKey: qk.offersReceived(),
+    queryFn: fetchOffersReceived,
+    enabled: Boolean(user),
+  });
+
+  const isLoading = tab === 'sent' ? loadingSent : loadingReceived;
+  const rows: Offer[] | undefined = tab === 'sent' ? sent : received;
 
   return (
     <section aria-labelledby="my-offers-title">
@@ -71,7 +69,7 @@ export default function MyOffersPage() {
         </div>
       </header>
 
-      {loading ? (
+      {isLoading ? (
         <div className={tabStyles.empty} aria-busy="true">…</div>
       ) : !rows || rows.length === 0 ? (
         <div className={tabStyles.empty}>
