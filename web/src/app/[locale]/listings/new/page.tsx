@@ -166,6 +166,31 @@ export default function CreateListingPage() {
     setPublishing(true);
     setErrors({});
     try {
+      // 1. Request presigned R2 PUT URLs for all selected photos (parallel)
+      const uploadMeta = await Promise.all(
+        files.map((file) =>
+          api.listings.photoUploadUrl(
+            file.name,
+            file.type || 'image/jpeg',
+            file.size,
+          ),
+        ),
+      );
+
+      // 2. Upload each file directly to R2 via the presigned PUT URL (parallel)
+      await Promise.all(
+        uploadMeta.map(({ uploadUrl }, idx) =>
+          fetch(uploadUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': files[idx].type || 'image/jpeg' },
+            body: files[idx],
+          }).then((res) => {
+            if (!res.ok) throw new Error(`Photo upload failed (${res.status})`);
+          }),
+        ),
+      );
+
+      // 3. Create the listing
       const created = await api.listings.create({
         title: draft.title.trim(),
         description: draft.description.trim() || draft.title.trim(),
@@ -174,6 +199,14 @@ export default function CreateListingPage() {
         askingPrice: Number(draft.askingPrice),
         district: draft.district.trim() || 'B5',
       });
+
+      // 4. Attach each uploaded photo to the new listing (parallel)
+      await Promise.all(
+        uploadMeta.map(({ r2Key }, idx) =>
+          api.listings.addPhoto(created.id, r2Key, idx),
+        ),
+      );
+
       setPublishedListingId(created.id);
       sessionStorage.removeItem(DRAFT_KEY);
     } catch (e) {

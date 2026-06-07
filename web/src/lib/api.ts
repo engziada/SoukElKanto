@@ -146,6 +146,14 @@ export interface CreateListingDto {
   district: string;
 }
 
+/** Response from POST /listings/photo-upload-url */
+export interface PhotoUploadUrlResponse {
+  uploadUrl: string;     // presigned R2 PUT URL
+  r2Key: string;        // key to pass to addPhoto
+  publicUrl: string;    // public CDN URL after upload
+  expiresInSeconds: number;
+}
+
 export interface AuthUserPayload {
   id: string;
   phoneNumber: string;
@@ -206,6 +214,28 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(dto),
       }),
+    /**
+     * Request a presigned R2 PUT URL for a photo.
+     * Call this once per file, PUT the raw file bytes to uploadUrl,
+     * then call addPhoto with the returned r2Key.
+     */
+    photoUploadUrl: (filename: string, contentType: string, bytes: number) =>
+      fetchJson<PhotoUploadUrlResponse>('/api/v1/listings/photo-upload-url', {
+        method: 'POST',
+        body: JSON.stringify({ filename, contentType, bytes }),
+      }),
+    /**
+     * Attach an uploaded photo (by r2Key) to an existing listing.
+     * The BE resolves the public CDN URL from the key.
+     */
+    addPhoto: (listingId: string, r2Key: string, position: number) =>
+      fetchJson<{ id: string; r2Key: string; url: string; position: number }>(
+        `/api/v1/listings/${listingId}/photos`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ r2Key, position }),
+        },
+      ),
   },
   offers: {
     listSent: () => fetchJson<Offer[]>('/api/v1/offers/sent'),
