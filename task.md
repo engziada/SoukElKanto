@@ -49,30 +49,22 @@
 - [x] Commit Wave 6 → `e5da041`
 
 ## Wave 7 — R2 Photo Upload
-- [/] API client methods (`photoUploadUrl` and `addPhoto`) in `web/src/lib/api.ts`
-- [ ] Wire wizard Step 1 to upload files via presigned URL (during `handlePublish` in `new/page.tsx`)
-- [ ] Commit Wave 7
+- [x] API client methods (`photoUploadUrl` and `addPhoto`) in `web/src/lib/api.ts`
+- [x] Wire wizard `handlePublish` to upload files via presigned URL then attach to listing
+- [x] Commit Wave 7 → `795bcc4`
 
 ---
 
-## Current Status & Next Steps
+## Current Status
 
-### Point We Stopped At
-* **Wave 6** is fully completed and committed (`e5da041`).
-* **Wave 7** is in progress. We added two new API endpoints inside `web/src/lib/api.ts`:
-  1. `api.listings.photoUploadUrl` — requests a presigned R2 PUT upload URL and an R2 key.
-  2. `api.listings.addPhoto` — associates the uploaded photo (via its `r2Key`) with an existing listing ID.
-* These API additions are currently saved but **uncommitted** in the workspace.
+**Phase D is complete.** All 7 waves committed.
 
-### Next Step
-1. **Update Wizard Listing Creation Flow**:
-   Modify `web/src/app/[locale]/listings/new/page.tsx` within the `handlePublish` function to:
-   * Loop through the selected files.
-   * For each file, fetch a presigned PUT URL by calling `api.listings.photoUploadUrl`.
-   * Perform an HTTP `PUT` request to upload the raw binary file data directly to the received `uploadUrl`.
-   * Create the listing via `api.listings.create`.
-   * Attach the uploaded photos to the new listing by calling `api.listings.addPhoto` using the returned listing ID and each file's `r2Key`.
-2. **Verification & Typecheck**:
-   Run `npm run typecheck` and verify the compilation.
-3. **Commit Wave 7**:
-   Stage and commit the changes to close out Phase D.
+| Wave | Commit | Summary |
+|------|--------|---------|
+| 1 | `bd198ab` | Auth foundation |
+| 2 | `edb348e` | /my dashboard shell |
+| 3 | `edb348e` | Listings browse + detail + create wizard |
+| 4 | `709bd86` | Offer modal |
+| 5 | `709bd86` | Favorites persistence |
+| 6 | `e5da041` | TanStack Query + data layer |
+| 7 | `795bcc4` | R2 photo upload wired into wizard |
