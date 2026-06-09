@@ -1,6 +1,10 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Tag, Clock, Inbox } from 'lucide-react';
-import { api, ApiError } from '@/lib/api';
+import { api } from '@/lib/api';
+import type { Offer } from '@/lib/api';
 import styles from './offers.module.css';
 
 const STATUS_CLASS_MAP: Record<string, string> = {
@@ -21,27 +25,57 @@ function StatusBadge({ status, label }: { status: string; label: string }) {
   );
 }
 
-export default async function OffersPage() {
-  const t = await getTranslations();
+export default function OffersPage() {
+  const t = useTranslations();
+  const [sent, setSent] = useState<Offer[]>([]);
+  const [received, setReceived] = useState<Offer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorKey, setErrorKey] = useState<'unauthorized' | 'networkDown' | 'generic' | null>(null);
 
-  let sent: Awaited<ReturnType<typeof api.offers.listSent>> | null = null;
-  let received: Awaited<ReturnType<typeof api.offers.listReceived>> | null = null;
-  let errorKey: 'unauthorized' | 'networkDown' | 'generic' | null = null;
+  useEffect(() => {
+    let cancelled = false;
 
-  try {
-    sent = await api.offers.listSent();
-    received = await api.offers.listReceived();
-  } catch (e) {
-    if (e instanceof ApiError) {
-      if (e.status === 401 || e.status === 403) errorKey = 'unauthorized';
-      else if (e.status === 0) errorKey = 'networkDown';
-      else errorKey = 'generic';
-    } else {
-      errorKey = 'generic';
+    async function load() {
+      setLoading(true);
+      setErrorKey(null);
+      try {
+        const [s, r] = await Promise.all([
+          api.offers.listSent(),
+          api.offers.listReceived(),
+        ]);
+        if (!cancelled) {
+          setSent(s);
+          setReceived(r);
+        }
+      } catch (e: unknown) {
+        if (cancelled) return;
+        const err = e as { status?: number };
+        const status = err?.status ?? 0;
+        if (status === 401 || status === 403) setErrorKey('unauthorized');
+        else if (status === 0) setErrorKey('networkDown');
+        else setErrorKey('generic');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
-  }
 
-  const allOffers = [...(sent ?? []), ...(received ?? [])];
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  const allOffers = [...sent, ...received];
+
+  if (loading) {
+    return (
+      <div className={styles.wrap}>
+        <h1 className={styles.h1}>{t('nav.offers')}</h1>
+        <div className={styles.empty}>
+          <Inbox size={36} strokeWidth={1.2} aria-hidden="true" />
+          <p>{t('errors.retry')}...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (errorKey) {
     return (

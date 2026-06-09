@@ -33,6 +33,29 @@
   pointer-events: none;
 }
 
+.heroOrnament path {
+  animation: waveFade 6s ease-in-out infinite;
+}
+.heroOrnament path:nth-child(2) {
+  animation-delay: 1.5s;
+  animation-duration: 7s;
+}
+.heroOrnament path:nth-child(3) {
+  animation-delay: 3s;
+  animation-duration: 8s;
+}
+
+@keyframes waveFade {
+  0%, 100% {
+    stroke-opacity: 0.15;
+    transform: translateY(0);
+  }
+  50% {
+    stroke-opacity: 0.45;
+    transform: translateY(3px);
+  }
+}
+
 .heroTitle {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3.4rem);
@@ -229,6 +252,56 @@
   margin-top: var(--s-2);
   color: var(--text-muted);
 }
+
+/* ───────────── Heritage ───────────── */
+.heritage {
+  padding: var(--s-5);
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, var(--kanto-stall), var(--surface));
+  border: 1px solid var(--kanto-stall-edge);
+}
+
+.heritageInner {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+}
+
+.heritageIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: var(--r-md);
+  background: var(--sun-dim);
+  color: var(--sun);
+  flex-shrink: 0;
+}
+
+.heritageTitle {
+  font-family: var(--font-headline);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0 0 var(--s-2);
+}
+
+[lang="ar"] .heritageTitle {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.heritageBody {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+[lang="ar"] .heritageBody { line-height: 1.8; }
 
 /* ───────────── Trust banner ───────────── */
 .trust {

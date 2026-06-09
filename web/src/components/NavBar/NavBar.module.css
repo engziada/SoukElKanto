@@ -242,3 +242,11 @@
   color: var(--text);
   outline: none;
 }
+
+
+.verifiedStar {
+  color: #3b82f6;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.15rem;
+}

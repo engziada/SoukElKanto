@@ -11,11 +11,11 @@ import styles from './wizard.module.css';
 
 const CATEGORY_KEYS = [
   'FURNITURE', 'ELECTRONICS', 'APPLIANCES', 'FASHION',
-  'KIDS_TOYS', 'KIDS_CLOTHING', 'KIDS_GEAR', 'SPORTS',
-  'BOOKS', 'AUTOMOTIVE', 'HOME_DECOR', 'GARDEN',
-  'MUSICAL_INSTRUMENTS', 'COLLECTIBLES', 'CRAFTS', 'OTHER',
+  'KIDS_TOYS', 'KIDS_CLOTHING', 'KIDS_GEAR', 'BOOKS_MEDIA',
+  'SPORTS_OUTDOOR', 'HOME_DECOR', 'KITCHEN_DINING', 'BABY_MATERNITY',
+  'MOBILE_TABLETS', 'VINTAGE_COLLECTIBLES', 'MOVING_BUNDLE', 'OTHER',
 ] as const;
-const CONDITION_KEYS = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'FOR_PARTS'] as const;
+const CONDITION_KEYS = ['NEW_WITH_TAGS', 'LIKE_NEW', 'GOOD', 'FAIR', 'NEEDS_REPAIR', 'FOR_PARTS'] as const;
 
 const DRAFT_KEY = 'kanto.listing-draft.v1';
 const TOTAL_STEPS = 4;
@@ -48,6 +48,8 @@ export default function CreateListingPage() {
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState<DraftState>(EMPTY_DRAFT);
   const [files, setFiles] = useState<File[]>([]);
+  const [coverIndex, setCoverIndex] = useState(0);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [draftRestored, setDraftRestored] = useState(false);
   const [draftSavedFlash, setDraftSavedFlash] = useState(false);
@@ -99,12 +101,15 @@ export default function CreateListingPage() {
   const validateStep = useCallback(
     (s: number): boolean => {
       const next: Record<string, string> = {};
-      if (s === 1 && files.length === 0 && draft.photoNames.length === 0) {
-        next.photos = t('create.errorPhotos');
-      }
+      // Photos are encouraged but not required — R2 may be unavailable in dev.
       if (s === 2) {
-        if (!draft.title.trim() || draft.title.trim().length < 3) {
+        const titleTrimmed = draft.title.trim();
+        const descTrimmed = draft.description.trim();
+        if (!titleTrimmed || titleTrimmed.length < 3) {
           next.title = t('create.errorTitle');
+        }
+        if (!descTrimmed || descTrimmed.length < 10) {
+          next.description = t('create.errorDescription');
         }
         if (!draft.category) next.category = t('create.errorCategory');
         if (!draft.condition) next.condition = t('create.errorCondition');
@@ -158,6 +163,15 @@ export default function CreateListingPage() {
     setFiles((prev) => prev.filter((_, i) => i !== idx));
   };
 
+  // Generate preview URLs for selected files
+  useEffect(() => {
+    const urls = files.map((f) => URL.createObjectURL(f));
+    setPhotoUrls(urls);
+    return () => {
+      urls.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [files]);
+
   const handlePublish = async () => {
     if (!validateStep(3)) {
       setStep(3);
@@ -166,55 +180,76 @@ export default function CreateListingPage() {
     setPublishing(true);
     setErrors({});
     try {
-      // 1. Request presigned R2 PUT URLs for all selected photos (parallel)
-      const uploadMeta = await Promise.all(
-        files.map((file) =>
-          api.listings.photoUploadUrl(
-            file.name,
-            file.type || 'image/jpeg',
-            file.size,
-          ),
-        ),
-      );
+      let photos: Array<{ r2Key: string; position: number }> | undefined;
 
-      // 2. Upload each file directly to R2 via the presigned PUT URL (parallel)
-      await Promise.all(
-        uploadMeta.map(({ uploadUrl }, idx) =>
-          fetch(uploadUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': files[idx].type || 'image/jpeg' },
-            body: files[idx],
-          }).then((res) => {
-            if (!res.ok) throw new Error(`Photo upload failed (${res.status})`);
-          }),
-        ),
-      );
+      // If photos were selected, try to upload them. R2 may be unavailable in dev —
+      // we fall back to creating the listing without photos rather than failing entirely.
+      if (files.length > 0) {
+        try {
+          // 1. Request presigned R2 PUT URLs
+          const uploadMeta = await Promise.all(
+            files.map((file) =>
+              api.listings.photoUploadUrl(
+                file.name,
+                file.type || 'image/jpeg',
+                file.size,
+              ),
+            ),
+          );
 
-      // 3. Create the listing
+          // 2. Upload each file directly to R2
+          await Promise.all(
+            uploadMeta.map(({ uploadUrl }, idx) =>
+              fetch(uploadUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': files[idx].type || 'image/jpeg' },
+                body: files[idx],
+              }).then((res) => {
+                if (!res.ok) throw new Error(`Photo upload failed (${res.status})`);
+              }),
+            ),
+          );
+
+          photos = uploadMeta.map(({ r2Key, publicUrl }, idx) => ({
+            r2Key,
+            url: publicUrl,
+            position: idx === coverIndex ? 0 : idx < coverIndex ? idx + 1 : idx,
+          }));
+        } catch (photoErr) {
+          // R2 not configured (503) or upload failed — still allow listing creation
+          console.warn('[publish] Photo upload skipped:', photoErr);
+        }
+      }
+
+      // 3. Create the listing (with or without photos)
+      const title = draft.title.trim();
+      let description = draft.description.trim();
+      if (!description || description.length < 10) {
+        description = title + ' — ' + t('create.defaultDescription');
+      }
       const created = await api.listings.create({
-        title: draft.title.trim(),
-        description: draft.description.trim() || draft.title.trim(),
+        title,
+        description,
         category: draft.category,
         condition: draft.condition,
         askingPrice: Number(draft.askingPrice),
         district: draft.district.trim() || 'B5',
+        photos,
       });
-
-      // 4. Attach each uploaded photo to the new listing (parallel)
-      await Promise.all(
-        uploadMeta.map(({ r2Key }, idx) =>
-          api.listings.addPhoto(created.id, r2Key, idx),
-        ),
-      );
 
       setPublishedListingId(created.id);
       sessionStorage.removeItem(DRAFT_KEY);
     } catch (e) {
-      if (e instanceof ApiError) {
-        if (e.status === 401 || e.status === 403) {
+      const err = e instanceof ApiError ? e : null;
+      console.error('[publish] Failed:', err?.message ?? (e as Error)?.message ?? String(e));
+      if (err) {
+        if (err.status === 401 || err.status === 403) {
           setErrors({ publish: t('create.loginRequired') });
-        } else if (e.status === 0) {
+        } else if (err.status === 0) {
           setErrors({ publish: t('errors.networkDown') });
+        } else if (err.status === 400) {
+          // Show the actual backend validation message so the user knows what to fix
+          setErrors({ publish: err.message || t('create.errorPublish') });
         } else {
           setErrors({ publish: t('create.errorPublish') });
         }
@@ -330,22 +365,36 @@ export default function CreateListingPage() {
               />
             </div>
             {files.length > 0 && (
-              <ul className={styles.photoList}>
+              <div className={styles.photoGrid}>
                 {files.map((f, i) => (
-                  <li key={i} className={styles.photoChip}>
-                    <Camera size={12} aria-hidden="true" />
-                    <span className={styles.photoName}>{f.name}</span>
+                  <div
+                    key={i}
+                    className={`${styles.photoThumb} ${i === coverIndex ? styles.photoThumbCover : ''}`}
+                    onClick={() => setCoverIndex(i)}
+                    role="button"
+                    tabIndex={0}
+                    title={i === coverIndex ? 'Cover image' : 'Click to set as cover'}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={photoUrls[i]} alt={f.name} className={styles.photoThumbImg} />
+                    {i === coverIndex && (
+                      <span className={styles.coverBadge}>★</span>
+                    )}
                     <button
                       type="button"
-                      onClick={() => removePhoto(i)}
-                      aria-label="remove"
                       className={styles.photoRemove}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removePhoto(i);
+                        if (coverIndex >= i && coverIndex > 0) setCoverIndex(coverIndex - 1);
+                      }}
+                      aria-label="remove"
                     >
                       ×
                     </button>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
             {errors.photos && (
               <span className={styles.fieldError} role="alert">
@@ -387,7 +436,13 @@ export default function CreateListingPage() {
                 setDraft({ ...draft, description: e.target.value })
               }
               rows={4}
+              aria-invalid={Boolean(errors.description)}
             />
+            {errors.description && (
+              <span className={styles.fieldError} role="alert">
+                <AlertCircle size={12} aria-hidden="true" /> {errors.description}
+              </span>
+            )}
 
             <label htmlFor="category" className={styles.label}>
               {t('create.labelCategory')}

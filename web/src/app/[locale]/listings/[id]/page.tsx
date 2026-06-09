@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import {
-  MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check,
+  MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check, Pencil,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Listing } from '@/lib/api';
@@ -32,14 +32,21 @@ function DetailView({ listing }: DetailViewProps) {
   const locale = useLocale();
   const router = useRouter();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { toggle: toggleFavorite, isSaved } = useFavoritesStore();
-  const saved = isSaved(listing.id);
+  const user = useAuthStore((s) => s.user);
+  // Subscribe reactively to the ids array so the heart updates on every toggle.
+  const ids = useFavoritesStore((s) => s.ids);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  // Defer localStorage-backed reads to after hydration to avoid SSR mismatch.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  const saved = hydrated && ids.includes(listing.id);
+  const isOwnListing = hydrated && user?.id === listing.sellerId;
   const [hint, setHint] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [offerOpen, setOfferOpen] = useState(false);
 
   const primaryPhoto = listing.photos?.find((p) => p.position === 0);
-  const photoUrl = primaryPhoto?.url || fallbackPhotoUrl(listing.id);
+  const photoUrl = primaryPhoto?.url?.trim() ? primaryPhoto.url : fallbackPhotoUrl(listing.id);
   const tier = deriveTierFromId(`${listing.sellerId}::${listing.id}`);
 
   const showHint = useCallback((msg: string) => {
@@ -66,8 +73,8 @@ function DetailView({ listing }: DetailViewProps) {
     const url = typeof window !== 'undefined' ? window.location.href : '';
     const text =
       locale === 'ar'
-        ? `${listing.title} على كانتو · ${listing.askingPrice.toLocaleString()} ${t('listing.price')}\n${url}`
-        : `${listing.title} on Kanto · ${listing.askingPrice.toLocaleString()} ${t('listing.price')}\n${url}`;
+        ? `${listing.title} على سوق الكانتو · ${listing.askingPrice.toLocaleString()} ${t('listing.price')}\n${url}`
+        : `${listing.title} on Souk ElKanto · ${listing.askingPrice.toLocaleString()} ${t('listing.price')}\n${url}`;
     return `https://wa.me/?text=${encodeURIComponent(text)}`;
   })();
 
@@ -136,21 +143,41 @@ function DetailView({ listing }: DetailViewProps) {
               {hint}
             </span>
           )}
-          <button
-            type="button"
-            className={styles.cta}
-            onClick={() => {
-              if (!isAuthenticated) {
-                // Redirect to login, come back after auth
-                const path = typeof window !== 'undefined' ? window.location.pathname : `/${locale}/listings/${listing.id}`;
-                router.push(`/${locale}/auth/login?next=${encodeURIComponent(path)}`);
-                return;
-              }
-              setOfferOpen(true);
-            }}
-          >
-            {t('listing.makeOffer')}
-          </button>
+          {isOwnListing ? (
+            <>
+              <button
+                type="button"
+                className={styles.cta}
+                onClick={() => router.push(`/${locale}/my/offers`)}
+              >
+                {t('listing.reviewOffers')}
+              </button>
+              <button
+                type="button"
+                className={styles.subBtn}
+                onClick={() => router.push(`/${locale}/listings/${listing.id}/edit`)}
+              >
+                <Pencil size={14} aria-hidden="true" />
+                {t('listing.edit')}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className={styles.cta}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  // Redirect to login, come back after auth
+                  const path = typeof window !== 'undefined' ? window.location.pathname : `/${locale}/listings/${listing.id}`;
+                  router.push(`/${locale}/auth/login?next=${encodeURIComponent(path)}`);
+                  return;
+                }
+                setOfferOpen(true);
+              }}
+            >
+              {t('listing.makeOffer')}
+            </button>
+          )}
           <a
             href={whatsAppHref}
             target="_blank"
@@ -165,18 +192,21 @@ function DetailView({ listing }: DetailViewProps) {
             {t('listing.shareWhatsApp')}
           </a>
           <div className={styles.subActions}>
-            <button
-              type="button"
-              className={`${styles.subBtn} ${saved ? styles.subBtnActive : ''}`}
-              onClick={() => {
-                toggleFavorite(listing.id);
-                showHint(saved ? t('listing.unsave') : t('listing.save'));
-              }}
-              aria-pressed={saved}
-            >
-              <Heart size={14} fill={saved ? 'currentColor' : 'none'} aria-hidden="true" />
-              {saved ? t('listing.unsave') : t('listing.save')}
-            </button>
+            {!isOwnListing && (
+              <button
+                type="button"
+                className={`${styles.subBtn} ${saved ? styles.subBtnActive : ''}`}
+                onClick={() => {
+                  toggleFavorite(listing.id);
+                  // `saved` is the state BEFORE toggle → announce the NEW state.
+                  showHint(saved ? t('listing.removedDone') : t('listing.savedDone'));
+                }}
+                aria-pressed={saved}
+              >
+                <Heart size={14} fill={saved ? 'currentColor' : 'none'} aria-hidden="true" />
+                {saved ? t('listing.unsave') : t('listing.save')}
+              </button>
+            )}
             <button
               type="button"
               className={`${styles.subBtn} ${copied ? styles.subBtnActive : ''}`}

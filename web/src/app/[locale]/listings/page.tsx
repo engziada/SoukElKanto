@@ -77,8 +77,8 @@ async function ListingsGrid({
   return (
     <>
       <div className={styles.grid}>
-        {listings!.data.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
+        {listings!.data.map((listing, idx) => (
+          <ListingCard key={listing.id} listing={listing} priority={idx < 6} />
         ))}
       </div>
       <Pagination

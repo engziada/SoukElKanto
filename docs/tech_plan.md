@@ -319,7 +319,7 @@ PENDING ── seller accepts ──> ACCEPTED ── handover both-tap ──> 
 ## 12. Phase 10 — Closed beta launch (Sequential, 3 days)
 
 - [ ] DNS: `kanto.madinatyai.com` → Vercel project.
-- [ ] Add to platform NavBar: "كانتو" link.
+- [ ] Add to platform NavBar: "سوق الكانتو" link.
 - [ ] Seed 100 beta users via admin token grants (50 individual tokens each).
 - [ ] Set up Sentry / monitoring on both BE and FE.
 - [ ] Day 1: 25 beta users.

@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import {
-  ShieldCheck, PlusCircle, Search, Award, ArrowRight,
+  ShieldCheck, PlusCircle, Search, Award, ArrowRight, ShieldQuestion,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth/store';
-import { qk, fetchKycStatus } from '@/lib/queries';
+import {
+  qk, fetchKycStatus, fetchMyListings, fetchOffersReceived,
+} from '@/lib/queries';
 import {
   deriveTierFromId,
   tierLabelKey,
@@ -35,7 +37,25 @@ export default function MyOverviewPage() {
     staleTime: 5 * 60_000, // 5 min — KYC rarely changes
   });
 
+  const { data: myListings } = useQuery({
+    queryKey: qk.myListings(),
+    queryFn: () => fetchMyListings(user!.id),
+    enabled: Boolean(user),
+    staleTime: 60_000,
+  });
+
+  const { data: receivedOffers } = useQuery({
+    queryKey: qk.offersReceived(),
+    queryFn: fetchOffersReceived,
+    enabled: Boolean(user),
+    staleTime: 60_000,
+  });
+
   if (!user) return null;
+
+  const listingCount = myListings?.length ?? 0;
+  const offerCount = receivedOffers?.length ?? 0;
+  const hasActivity = listingCount > 0 || offerCount > 0;
 
   const tier = deriveTierFromId(user.id);
   const isVerified = Boolean(kyc?.isVerified);
@@ -84,6 +104,15 @@ export default function MyOverviewPage() {
         </Link>
       </section>
 
+      {/* Verification nudge */}
+      {!isVerified && (
+        <Link href={`/${locale}/my/verify`} className={styles.verifyBanner}>
+          <ShieldQuestion size={18} />
+          <span>{t('verifyNudge')}</span>
+          <ArrowRight size={14} />
+        </Link>
+      )}
+
       {/* Quick actions */}
       <section className={styles.actions} aria-labelledby="qa-title">
         <h3 id="qa-title" className={tabStyles.panelTitle}>
@@ -101,12 +130,25 @@ export default function MyOverviewPage() {
         </div>
       </section>
 
-      {/* Recent activity placeholder */}
+      {/* Recent activity — real counts from listings + received offers */}
       <section className={tabStyles.panel} aria-labelledby="ra-title">
         <h3 id="ra-title" className={tabStyles.panelTitle}>
           {t('recentActivity')}
         </h3>
-        <p className={styles.activityEmpty}>{t('noActivity')}</p>
+        {hasActivity ? (
+          <div className={styles.actionRow}>
+            <Link href={`/${locale}/my/listings`} className={styles.actionGhost}>
+              <PlusCircle size={16} aria-hidden="true" />
+              {t('activeListings', { count: listingCount })}
+            </Link>
+            <Link href={`/${locale}/my/offers`} className={styles.actionGhost}>
+              <ArrowRight size={16} aria-hidden="true" />
+              {t('receivedOffers', { count: offerCount })}
+            </Link>
+          </div>
+        ) : (
+          <p className={styles.activityEmpty}>{t('noActivity')}</p>
+        )}
       </section>
     </div>
   );

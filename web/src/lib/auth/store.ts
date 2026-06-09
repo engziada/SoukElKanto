@@ -10,6 +10,14 @@ export interface AuthUser {
   isVerified?: boolean;
   trustScore?: number;
   metadata?: Record<string, unknown>;
+  // Profile fields (stored in metadata, flattened for convenience)
+  fullName?: string;
+  gender?: 'MALE' | 'FEMALE' | string;
+  birthdate?: string; // ISO date YYYY-MM-DD
+  address?: string;
+  madinatyGroup?: string;
+  buildingNo?: string;
+  aptNo?: string;
 }
 
 interface AuthState {

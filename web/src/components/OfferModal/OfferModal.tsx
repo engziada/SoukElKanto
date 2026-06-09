@@ -11,7 +11,8 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { X, CheckCircle, AlertCircle } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { Listing } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth/store';
@@ -101,6 +102,18 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
 
   /* Own-listing guard */
   const isOwnListing = user?.id === listing.sellerId;
+  const locale = useLocale();
+
+  /* Deal execution guard: require complete profile */
+  const is18Plus = (() => {
+    if (!user?.birthdate) return false;
+    const b = new Date(user.birthdate);
+    const now = new Date();
+    const age = now.getFullYear() - b.getFullYear();
+    const m = now.getMonth() - b.getMonth();
+    return age > 18 || (age === 18 && m >= 0 && now.getDate() >= b.getDate());
+  })();
+  const hasCompleteProfile = !!(user?.fullName && user?.gender && user?.birthdate && is18Plus);
 
   return (
     <div
@@ -136,6 +149,21 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
           </div>
         ) : (
           <>
+
+            {/* ── Profile incomplete guard ─────────────── */}
+            {!hasCompleteProfile && !isOwnListing && (
+              <div className={styles.profileGate}>
+                <AlertCircle size={20} aria-hidden="true" />
+                <div>
+                  <p className={styles.profileGateTitle}>Complete your profile</p>
+                  <p className={styles.profileGateBody}>Full name, gender, and birthdate (18+) are required to make offers.</p>
+                  <a href={"/" + locale + "/my/profile"} className={styles.profileGateLink} onClick={onClose}>
+                    Go to Profile →
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* ── Form header ────────────────────────────── */}
             <div className={styles.header}>
               <div>
@@ -233,14 +261,6 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
               <p className={styles.fieldError} role="alert">
                 <AlertCircle size={12} aria-hidden="true" />
                 {serverError}
-              </p>
-            )}
-
-            {/* ── Own listing guard ──────────────────────── */}
-            {isOwnListing && (
-              <p className={styles.fieldError}>
-                <AlertCircle size={12} aria-hidden="true" />
-                {t('offer.ownListing')}
               </p>
             )}
 

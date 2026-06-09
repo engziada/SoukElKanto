@@ -308,7 +308,7 @@ Coral CTAs carry a warm shadow (`--shadow-coral`) — coral-tinted, low opacity.
 
 - **Header:** Sticky top, `color-mix(in oklab, var(--bg) 82%, transparent)` background, `backdrop-filter: blur(16px) saturate(140%)`, 1px `--border-soft` bottom border. Glassmorphism is rare in this system; this is one of the two acceptable uses.
 - **Nav links:** Inter 500, `0.92rem`, Slate Smoke text. Hover: Atlas Midnight text, Awning Shade background, `--r-sm` padding pill. Active state inherited (no underline; no fill).
-- **Brand mark:** Lucide `Store` icon inside a 2rem coral-gradient square, paired with "كانتو" (AR) or "Kanto" (EN) in Space Grotesk 700.
+- **Brand mark:** Lucide `Store` icon inside a 2rem coral-gradient square, paired with "سوق الكانتو" (AR) or "Souk ElKanto" (EN) in Space Grotesk 700.
 - **Mobile:** Nav links hide below `768px`. Header keeps brand, locale, theme toggle, login button. Hamburger / sheet menu deferred to Phase D.
 
 ### Signature: PriceTag

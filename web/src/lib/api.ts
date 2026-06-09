@@ -16,10 +16,16 @@ const API_BASE =
     : process.env.NEXT_PUBLIC_API_BASE || '';
 const TENANT_ID = 'kanto';
 
-import { getAuthToken } from './auth/store';
-
 function getToken(): string | null {
-  return getAuthToken();
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem('kanto.auth.v1');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { state?: { token?: string | null } };
+    return parsed?.state?.token ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export class ApiError extends Error {
@@ -126,6 +132,9 @@ export interface Offer {
   note?: string;
   tokenHoldAmount?: number;
   createdAt: string;
+  listing?: Listing;
+  parentOfferId?: string | null;
+  handover?: { buyerConfirmedAt?: string; sellerConfirmedAt?: string };
 }
 
 export interface SafeMeetSpot {
@@ -144,12 +153,13 @@ export interface CreateListingDto {
   condition: string;
   askingPrice: number;
   district: string;
+  photos?: Array<{ r2Key: string; position: number; url?: string }>;
 }
 
 /** Response from POST /listings/photo-upload-url */
 export interface PhotoUploadUrlResponse {
   uploadUrl: string;     // presigned R2 PUT URL
-  r2Key: string;        // key to pass to addPhoto
+  r2Key: string;        // key to include in the listing create DTO
   publicUrl: string;    // public CDN URL after upload
   expiresInSeconds: number;
 }
@@ -176,6 +186,7 @@ export interface KycStatus {
   status: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | string;
   submittedAt?: string | null;
   reviewedAt?: string | null;
+  fullName?: string;
 }
 
 export const api = {
@@ -202,6 +213,16 @@ export const api = {
   },
   users: {
     kycStatus: () => fetchJson<KycStatus>('/api/v1/users/me/kyc-status'),
+    updateProfile: (dto: { fullName?: string; gender?: string; birthdate?: string; address?: string; madinatyGroup?: string; buildingNo?: string; aptNo?: string }) =>
+      fetchJson<AuthUserPayload>('/api/v1/users/me/profile', {
+        method: 'PATCH',
+        body: JSON.stringify(dto),
+      }),
+    submitKyc: (dto: { fullName: string; idNumber: string; documentBase64: string }) =>
+      fetchJson<{ id: string; status: string }>('/api/v1/users/me/kyc', {
+        method: 'POST',
+        body: JSON.stringify(dto),
+      }),
   },
   listings: {
     list: (params?: Record<string, string>) =>
@@ -209,6 +230,11 @@ export const api = {
         `/api/v1/listings?${new URLSearchParams(params ?? {}).toString()}`,
       ),
     get: (id: string) => fetchJson<Listing>(`/api/v1/listings/${id}`),
+    update: (id: string, dto: Partial<CreateListingDto>) =>
+      fetchJson<Listing>(`/api/v1/listings/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(dto),
+      }),
     create: (dto: CreateListingDto) =>
       fetchJson<Listing>('/api/v1/listings', {
         method: 'POST',
@@ -225,17 +251,9 @@ export const api = {
         body: JSON.stringify({ filename, contentType, bytes }),
       }),
     /**
-     * Attach an uploaded photo (by r2Key) to an existing listing.
-     * The BE resolves the public CDN URL from the key.
+     * Photos are attached inline during listing creation via the
+     * `photos: [{r2Key, position}]` field on CreateListingDto.
      */
-    addPhoto: (listingId: string, r2Key: string, position: number) =>
-      fetchJson<{ id: string; r2Key: string; url: string; position: number }>(
-        `/api/v1/listings/${listingId}/photos`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ r2Key, position }),
-        },
-      ),
   },
   offers: {
     listSent: () => fetchJson<Offer[]>('/api/v1/offers/sent'),
@@ -245,6 +263,26 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(dto),
       }),
+    /** Seller accepts a received offer. */
+    accept: (id: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/accept`, { method: 'PATCH' }),
+    /** Seller declines a received offer (optional reason). */
+    decline: (id: string, reason?: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/decline`, {
+        method: 'PATCH',
+        body: JSON.stringify({ reason }),
+      }),
+    /** Seller counters with a new amount. */
+    counter: (id: string, amount: number) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/counter`, {
+        method: 'PATCH',
+        body: JSON.stringify({ amount }),
+      }),
+    /** Buyer withdraws a sent offer. */
+    confirmHandover: (id: string) =>
+      fetchJson<{ buyerConfirmedAt?: string; sellerConfirmedAt?: string }>(`/api/v1/handover/${id}/confirm`, { method: 'POST' }),
+    withdraw: (id: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/withdraw`, { method: 'PATCH' }),
   },
   categories: {
     list: () =>

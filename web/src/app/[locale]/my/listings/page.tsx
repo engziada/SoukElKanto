@@ -48,10 +48,10 @@ export default function MyListingsPage() {
         </div>
       ) : (
         <ul className={styles.list}>
-          {listings.map((listing) => (
+          {listings.map((listing, idx) => (
             <li key={listing.id} className={styles.row}>
               <div className={styles.rowCard}>
-                <ListingCard listing={listing} />
+                <ListingCard listing={listing} priority={idx < 6} />
               </div>
               <aside className={styles.rowMeta}>
                 <span

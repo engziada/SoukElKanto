@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { MapPin, Heart, BadgeCheck } from 'lucide-react';
 import type { Listing } from '@/lib/api';
@@ -11,10 +12,13 @@ import {
   tierClassMap,
 } from '@/lib/trustTier';
 import { useFavoritesStore } from '@/lib/favorites/store';
+import { useAuthStore } from '@/lib/auth/store';
 import styles from './ListingCard.module.css';
 
 interface ListingCardProps {
   listing: Listing;
+  /** Pass `true` for above-the-fold cards to eliminate LCP lazy-load penalty. */
+  priority?: boolean;
 }
 
 /**
@@ -26,13 +30,20 @@ function fallbackPhotoUrl(listingId: string, size = '640/480'): string {
   return `https://picsum.photos/seed/${encodeURIComponent(listingId)}/${size}`;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, priority }: ListingCardProps) {
   const locale = useLocale();
   const t = useTranslations();
-  const { toggle: toggleFavorite, isSaved } = useFavoritesStore();
-  const saved = isSaved(listing.id);
+  // Subscribe reactively to the ids array so the heart updates on every toggle.
+  const ids = useFavoritesStore((s) => s.ids);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  const userId = useAuthStore((s) => s.user?.id);
+  // Defer localStorage-backed reads to after hydration to avoid SSR mismatch.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  const saved = hydrated && ids.includes(listing.id);
+  const isOwnListing = hydrated && userId === listing.sellerId;
   const primaryPhoto = listing.photos?.find((p) => p.position === 0);
-  const photoUrl = primaryPhoto?.url || fallbackPhotoUrl(listing.id);
+  const photoUrl = primaryPhoto?.url?.trim() ? primaryPhoto.url : fallbackPhotoUrl(listing.id);
 
   // Demo: mix listing id with seller id so we see tier variety on a 1-seller seed.
   // In production this becomes `seller.trustMeter.tier` from the listings payload.
@@ -53,6 +64,7 @@ export function ListingCard({ listing }: ListingCardProps) {
           className={styles.photo}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          priority={priority}
         />
 
         <span
@@ -79,15 +91,17 @@ export function ListingCard({ listing }: ListingCardProps) {
             <MapPin size={12} aria-hidden="true" />
             {listing.district}
           </span>
-          <button
-            type="button"
-            onClick={handleSave}
-            className={`${styles.fav} ${saved ? styles.favActive : ''}`}
-            aria-label={saved ? t('listing.unsave') : t('listing.save')}
-            aria-pressed={saved}
-          >
-            <Heart size={14} fill={saved ? 'currentColor' : 'none'} />
-          </button>
+          {!isOwnListing && (
+            <button
+              type="button"
+              onClick={handleSave}
+              className={`${styles.fav} ${saved ? styles.favActive : ''}`}
+              aria-label={saved ? t('listing.unsave') : t('listing.save')}
+              aria-pressed={saved}
+            >
+              <Heart size={14} fill={saved ? 'currentColor' : 'none'} />
+            </button>
+          )}
         </div>
       </div>
     </Link>

@@ -75,16 +75,17 @@
   [dir="rtl"] .partner { justify-self: flex-start; }
 }
 
-.partnerCaption {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
+.copyright {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
-.partnerLogo {
-  height: 30px;
+.copyrightLogo {
+  height: 14px;
   width: auto;
-  color: var(--text);
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .bar {

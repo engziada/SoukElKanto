@@ -30,3 +30,9 @@ npm-debug.log*
 
 # Claude Preview / agent harness scratch
 **/.claude/
+
+# Playwright E2E
+web/e2e/.auth/
+web/e2e/.test-data.json
+web/playwright-report/
+web/test-results/

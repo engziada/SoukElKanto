@@ -181,3 +181,140 @@
   font-size: 0.78rem;
   color: var(--text-muted);
 }
+
+/* ── Offer actions (accept / decline / counter / withdraw) ── */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-fast, 0.15s) var(--ease-out, ease);
+}
+
+.actionBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.accept {
+  background: var(--mint, #22c993);
+  border-color: transparent;
+  color: #fff;
+}
+.accept:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.decline {
+  background: transparent;
+  border-color: color-mix(in oklab, var(--kanto-coral, #ff6b5b) 45%, transparent);
+  color: var(--kanto-coral, #ff6b5b);
+}
+.decline:not(:disabled):hover {
+  background: color-mix(in oklab, var(--kanto-coral, #ff6b5b) 10%, white);
+}
+
+.counter {
+  background: transparent;
+  border-color: color-mix(in oklab, var(--blue, #2b6eff) 40%, transparent);
+  color: var(--blue-mid, #1e4fd9);
+}
+.counter:not(:disabled):hover {
+  background: color-mix(in oklab, var(--blue, #2b6eff) 8%, white);
+}
+
+.ghost {
+  background: var(--surface-mid);
+  color: var(--text-soft);
+}
+.ghost:not(:disabled):hover {
+  color: var(--text);
+}
+
+.counterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.counterInput {
+  width: 8rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.counterInput:focus {
+  outline: 2px solid color-mix(in oklab, var(--blue, #2b6eff) 45%, transparent);
+  outline-offset: 1px;
+}
+
+
+.listingInfo {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.listingTitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  flex: 1;
+}
+
+.listingThumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+}
+
+.handover {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.handover:hover {
+  background: #bfdbfe;
+}
+
+.completedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.handoverHint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Cairo, Space_Grotesk, Orbitron, Changa } from 'next/font/google';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
+import { ToastProvider } from '@/components/Toast';
 import './globals.css';
 
 const inter = Inter({
@@ -63,8 +64,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body>
         <ReactQueryProvider>
-          <div className="site-bg" aria-hidden="true" />
-          {children}
+          <ToastProvider>
+            <div className="site-bg" aria-hidden="true" />
+            {children}
+          </ToastProvider>
         </ReactQueryProvider>
       </body>
     </html>

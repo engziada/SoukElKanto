@@ -1,6 +1,6 @@
 # Souk ElKanto — Documentation Index
 
-> **Souk ElKanto** (سوق الكنتو) — Pre-loved goods marketplace for Madinaty residents.
+> **Souk ElKanto** (سوق الكانتو) — Pre-loved goods marketplace for Madinaty residents.
 > A community-tenant under the **MadinatyAI Ecosystem Hub** (CoreMesh).
 >
 > **Status:** Planning · v0 · 2026-06-01

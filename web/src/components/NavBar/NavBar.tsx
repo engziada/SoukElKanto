@@ -5,16 +5,21 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import {
-  Store, Search, PlusCircle, Tag, LogIn, User as UserIcon, LayoutGrid, LogOut,
+  Store, Search, PlusCircle, Tag, LogIn, User as UserIcon, LayoutGrid, LogOut, BadgeCheck,
+  ClipboardList, ArrowLeftRight,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth/store';
 import styles from './NavBar.module.css';
 
-function formatPhone(phone: string): string {
-  // +201234567890 → 0123 456 7890 (Egyptian visual style)
-  if (!phone) return '';
-  const local = phone.replace(/^\+20/, '0');
-  return local.replace(/^(\d{4})(\d{3})(\d{4})$/, '$1 $2 $3');
+function userLabel(user: { phoneNumber: string; metadata?: Record<string, unknown> }): string {
+  const displayName = user.metadata?.displayName as string | undefined;
+  if (displayName) return displayName;
+  // Mask all but last 3 digits: +201234567890 → •••••••••890
+  const local = user.phoneNumber.replace(/^\+20/, '0');
+  if (local.length >= 3) {
+    return '•'.repeat(local.length - 3) + local.slice(-3);
+  }
+  return local;
 }
 
 export function NavBar() {
@@ -73,7 +78,7 @@ export function NavBar() {
             <span className={styles.brandIcon}>
               <Store size={18} strokeWidth={2} />
             </span>
-            <span>{locale === 'ar' ? 'كانتو' : 'Kanto'}</span>
+            <span>{locale === 'ar' ? 'سوق الكانتو' : 'Souk ElKanto'}</span>
           </Link>
 
           <nav className={styles.nav} aria-label="Primary">
@@ -117,7 +122,12 @@ export function NavBar() {
                   <span className={styles.userAvatar} aria-hidden="true">
                     <UserIcon size={14} />
                   </span>
-                  <span className={styles.userPhone}>{formatPhone(user!.phoneNumber)}</span>
+                  <span className={styles.userPhone}>{userLabel(user!)}</span>
+                  {user!.isVerified && (
+                    <span className={styles.verifiedStar} title="Verified">
+                      <BadgeCheck size={14} />
+                    </span>
+                  )}
                 </button>
                 {menuOpen && (
                   <div className={styles.userMenu} role="menu">
@@ -129,6 +139,24 @@ export function NavBar() {
                     >
                       <LayoutGrid size={14} aria-hidden="true" />
                       {tAuth('myAccount')}
+                    </Link>
+                    <Link
+                      href={`/${locale}/my/listings`}
+                      className={styles.userMenuItem}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <ClipboardList size={14} aria-hidden="true" />
+                      {tAuth('myListings')}
+                    </Link>
+                    <Link
+                      href={`/${locale}/my/offers`}
+                      className={styles.userMenuItem}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <ArrowLeftRight size={14} aria-hidden="true" />
+                      {tAuth('myOffers')}
                     </Link>
                     <button
                       type="button"

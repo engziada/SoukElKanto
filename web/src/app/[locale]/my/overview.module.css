@@ -208,6 +208,31 @@
   transform: translateY(-1px);
 }
 
+/* ── Verification nudge ─────────────────────────────────────────────────── */
+.verifyBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: color-mix(in oklab, var(--sun) 10%, white);
+  color: #8a5d00;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid color-mix(in oklab, var(--sun) 30%, white);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.verifyBanner:hover {
+  background: color-mix(in oklab, var(--sun) 18%, white);
+  transform: translateY(-1px);
+}
+
+[dir="rtl"] .verifyBanner svg:last-child {
+  transform: scaleX(-1);
+}
+
 /* ── Recent activity ────────────────────────────────────────────────────── */
 .activityEmpty {
   color: var(--text-muted);

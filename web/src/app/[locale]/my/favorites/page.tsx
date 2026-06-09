@@ -58,8 +58,8 @@ export default function MyFavoritesPage() {
         </div>
       ) : (
         <div className={tabStyles.favGrid}>
-          {listings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
+          {listings.map((listing, idx) => (
+            <ListingCard key={listing.id} listing={listing} priority={idx < 6} />
           ))}
         </div>
       )}

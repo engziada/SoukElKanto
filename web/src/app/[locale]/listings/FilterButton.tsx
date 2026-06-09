@@ -8,12 +8,12 @@ import styles from './listings.module.css';
 
 const CATEGORY_KEYS = [
   'FURNITURE', 'ELECTRONICS', 'APPLIANCES', 'FASHION',
-  'KIDS_TOYS', 'KIDS_CLOTHING', 'KIDS_GEAR', 'SPORTS',
-  'BOOKS', 'AUTOMOTIVE', 'HOME_DECOR', 'GARDEN',
-  'MUSICAL_INSTRUMENTS', 'COLLECTIBLES', 'CRAFTS', 'OTHER',
+  'KIDS_TOYS', 'KIDS_CLOTHING', 'KIDS_GEAR', 'BOOKS_MEDIA',
+  'SPORTS_OUTDOOR', 'HOME_DECOR', 'KITCHEN_DINING', 'BABY_MATERNITY',
+  'MOBILE_TABLETS', 'VINTAGE_COLLECTIBLES', 'MOVING_BUNDLE', 'OTHER',
 ] as const;
 
-const CONDITION_KEYS = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'FOR_PARTS'] as const;
+const CONDITION_KEYS = ['NEW_WITH_TAGS', 'LIKE_NEW', 'GOOD', 'FAIR', 'NEEDS_REPAIR', 'FOR_PARTS'] as const;
 
 export function FilterButton() {
   const t = useTranslations();

@@ -48,36 +48,23 @@ export async function Footer() {
               <span className={styles.brandSlogan}>{t('partOf')}</span>
             </div>
           </a>
-
-          <div className={styles.divider} aria-hidden="true" />
-
-          {/* Maker badge — ZSolutions */}
-          <a
-            href="mailto:engziada@gmail.com"
-            className={styles.partner}
-            aria-label={t('designedBy')}
-          >
-            <div className={styles.brandText} style={{ textAlign: isRtl ? 'left' : 'right' }}>
-              <span className={styles.partnerCaption}>{t('designedBy')}</span>
-            </div>
-            <img
-              src="/brand/zsolutions-light.svg"
-              alt="ZSolutions"
-              height={32}
-              className={`${styles.partnerLogo} ${styles.themeLight}`}
-            />
-            <img
-              src="/brand/zsolutions-dark.svg"
-              alt="ZSolutions"
-              height={32}
-              className={`${styles.partnerLogo} ${styles.themeDark}`}
-            />
-          </a>
         </div>
 
         {/* Bottom legal bar */}
         <div className={styles.bar}>
-          <span>{t('copyright', { year: new Date().getFullYear() })}</span>
+          <span className={styles.copyright}>
+            <img
+              src="/brand/zsolutions-light.svg"
+              alt="ZSolutions"
+              className={`${styles.copyrightLogo} ${styles.themeLight}`}
+            />
+            <img
+              src="/brand/zsolutions-dark.svg"
+              alt="ZSolutions"
+              className={`${styles.copyrightLogo} ${styles.themeDark}`}
+            />
+            {t('copyright', { year: new Date().getFullYear() })}
+          </span>
           <nav className={styles.barLinks} aria-label={t('footerLinksLabel')}>
             <Link href={`/${locale}`}>{t('home')}</Link>
             <a href="https://madinaty-ai.vercel.app" target="_blank" rel="noopener noreferrer">

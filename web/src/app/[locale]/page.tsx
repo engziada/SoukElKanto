@@ -4,6 +4,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import {
   Search, ShieldCheck, MapPin, Coins, Users, Handshake, MessageCircle,
   Sofa, Smartphone, Refrigerator, Shirt, Baby, Dumbbell, BookOpen, Car,
+  History,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { ListingCard } from '@/components/ListingCard';
@@ -54,8 +55,8 @@ async function HomeListingsGrid() {
 
   return (
     <div className={styles.grid}>
-      {listings.data.map((listing) => (
-        <ListingCard key={listing.id} listing={listing} />
+      {listings.data.map((listing, idx) => (
+        <ListingCard key={listing.id} listing={listing} priority={idx < 6} />
       ))}
     </div>
   );
@@ -169,6 +170,21 @@ export default async function HomePage() {
               <h3 className={styles.aboutItemTitle}>{t('home.aboutWhatsApp')}</h3>
               <p className={styles.aboutItemBody}>{t('home.aboutWhatsAppBody')}</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Heritage — real Souk ElKanto of Port Said */}
+      <section className={styles.heritage} aria-labelledby="heritage-title">
+        <div className={styles.heritageInner}>
+          <span className={styles.heritageIcon} aria-hidden="true">
+            <History size={22} />
+          </span>
+          <div>
+            <h2 id="heritage-title" className={styles.heritageTitle}>
+              {t('home.heritageTitle')}
+            </h2>
+            <p className={styles.heritageBody}>{t('home.heritageBody')}</p>
           </div>
         </div>
       </section>
