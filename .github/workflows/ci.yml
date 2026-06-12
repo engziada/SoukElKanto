@@ -1,0 +1,184 @@
+name: CI
+
+# Souk ElKanto frontend CI. Vercel handles the actual prod build + deploy via
+# its GitHub integration (see vercel.json + project settings). This workflow's
+# job is to enforce lint + typecheck + e2e ON PRs before merge.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: web-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-typecheck:
+    name: Lint + Typecheck + Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install deps
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_API_BASE: ''
+          NEXT_PUBLIC_TENANT_ID: kanto
+          NEXT_PUBLIC_ENV: production
+          CORE_MESH_URL: 'http://localhost:3000'
+        run: npm run build
+
+  e2e:
+    name: Playwright E2E (chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: web
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: madinaty
+          POSTGRES_PASSWORD: madinaty
+          POSTGRES_DB: madinatyai
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U madinaty -d madinatyai"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The e2e suite needs the sibling CoreMesh repo running locally.
+          # We check it out into a sibling directory; in monorepo setups
+          # this becomes a regular path reference.
+          path: SoukElkanto
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/CoreMesh
+          token: ${{ secrets.GH_PAT }}  # required if CoreMesh is private
+          path: CoreMesh
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # ── Start CoreMesh ────────────────────────────────────────────
+      - name: Install CoreMesh deps
+        working-directory: CoreMesh
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      # R-11 F-14 — ephemeral CI secrets, generated per job (never hardcoded).
+      - name: Generate ephemeral CI secrets
+        run: |
+          {
+            echo "JWT_SECRET=$(openssl rand -base64 48 | tr -d '\n' | tr '/+' '_-' | tr -d '=')"
+            echo "KYC_ENCRYPTION_KEY=$(openssl rand -hex 32)"
+          } >> "$GITHUB_ENV"
+          echo "::add-mask::$JWT_SECRET"
+          echo "::add-mask::$KYC_ENCRYPTION_KEY"
+
+      - name: Prisma generate + migrate + seed
+        working-directory: CoreMesh
+        env:
+          DATABASE_URL: postgresql://madinaty:madinaty@localhost:5432/madinatyai?schema=core
+          REDIS_HOST: localhost
+          REDIS_PORT: '6379'
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+          npm run db:seed
+
+      - name: Start CoreMesh BE in background
+        working-directory: CoreMesh
+        env:
+          NODE_ENV: development
+          PORT: 3000
+          DATABASE_URL: postgresql://madinaty:madinaty@localhost:5432/madinatyai?schema=core
+          REDIS_HOST: localhost
+          REDIS_PORT: '6379'
+          AUTH_DEV_BYPASS: 'true'
+          AUTH_DEV_BYPASS_CODE: '000000'
+          CORS_ORIGINS: 'http://localhost:3001'
+          ROOT_DOMAIN: madinatyai.com
+          # WAHA stays blank so OTP bypass works (per Session 1+ pattern).
+          WAHA_BASE_URL: ''
+          WAHA_API_KEY: ''
+          WAHA_SESSION: default
+        run: |
+          nohup npm run dev > be.log 2>&1 &
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/v1/health || true)
+            [ "$code" = "200" ] && break
+            sleep 2
+          done
+          curl -fsS http://localhost:3000/api/v1/health
+
+      # ── Web FE ─────────────────────────────────────────────────────
+      - name: Install web deps
+        working-directory: SoukElkanto/web
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Install Playwright browsers
+        working-directory: SoukElkanto/web
+        run: npx playwright install --with-deps chromium
+
+      - name: Start web FE in background
+        working-directory: SoukElkanto/web
+        env:
+          NEXT_PUBLIC_API_BASE: ''
+          NEXT_PUBLIC_TENANT_ID: kanto
+          CORE_MESH_URL: 'http://localhost:3000'
+        run: |
+          nohup npm run dev > fe.log 2>&1 &
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/ || true)
+            [ "$code" = "200" ] && break
+            sleep 2
+          done
+
+      - name: Run Playwright (chromium, workers=1)
+        working-directory: SoukElkanto/web
+        run: npx playwright test --project=chromium --workers=1 --reporter=list,html
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: SoukElkanto/web/playwright-report
+          retention-days: 14

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import {
@@ -26,9 +26,12 @@ export default function MyProfilePage() {
   const tc = useTranslations('create');
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const gateReason = searchParams?.get('reason');
+  const gateNext = searchParams?.get('next') ?? null;
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
-  const logout = useAuthStore((s) => s.logout);
+  const signOut = useAuthStore((s) => s.signOut);
   const toast = useToast();
 
   const [kyc, setKyc] = useState<KycStatus | null>(null);
@@ -57,8 +60,8 @@ export default function MyProfilePage() {
 
   if (!user) return null;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     router.push(`/${locale}`);
   };
 
@@ -76,6 +79,11 @@ export default function MyProfilePage() {
       setUser(updated);
       setEditing(false);
       toast.success(t('profileSaved'));
+      // If the user arrived here from a gate-block (#1), bounce them back to
+      // the original action once they've completed their profile.
+      if (gateReason === 'profile-incomplete' && gateNext && updated.fullName && updated.gender && updated.birthdate) {
+        router.push(gateNext);
+      }
     } catch {
       toast.error(t('profileSaveError'));
     } finally {
@@ -107,6 +115,13 @@ export default function MyProfilePage() {
       <h2 id="profile-title" className={tabStyles.panelTitle}>
         {t('title')}
       </h2>
+
+      {gateReason === 'profile-incomplete' && (
+        <div className={styles.gateBanner} role="alert">
+          <ShieldAlert size={18} aria-hidden="true" />
+          <span>{t('gateBanner')}</span>
+        </div>
+      )}
 
       {/* ── Identity Header ── */}
       <div className={styles.identity}>

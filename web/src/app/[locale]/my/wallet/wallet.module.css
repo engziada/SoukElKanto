@@ -1,7 +1,20 @@
+.policyBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-mid);
+  border-radius: var(--r-md);
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
 .balances {
   display: grid;
   gap: var(--s-4);
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin-bottom: 1.5rem;
 }
 
 .balance {
@@ -28,4 +41,150 @@
   font-variant-numeric: tabular-nums;
   color: var(--kanto-coral);
   letter-spacing: -0.02em;
+}
+
+.skeleton {
+  min-height: 7rem;
+  background: linear-gradient(110deg, var(--surface) 0%, var(--surface-mid) 30%, var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.section {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sectionTitle::-webkit-details-marker { display: none; }
+
+.sectionCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.allocationsList,
+.txList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.allocationRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--r-md);
+  background: var(--surface-mid);
+  font-size: 0.85rem;
+}
+
+.allocationAmount {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.allocationReason {
+  color: var(--text-soft);
+}
+
+.allocationDate {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+}
+
+.txRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.txIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+}
+
+.txCredit .txIcon {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.txDebit .txIcon {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.txDescription {
+  color: var(--text);
+}
+
+.txAmount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.txCredit .txAmount { color: #166534; }
+.txDebit .txAmount { color: #991b1b; }
+
+.txDate {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.txEmpty {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0;
+}
+
+@media (max-width: 640px) {
+  .txRow {
+    grid-template-columns: auto 1fr;
+  }
+  .txAmount, .txDate {
+    grid-column: 2 / 3;
+  }
 }

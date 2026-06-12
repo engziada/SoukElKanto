@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Camera, ChevronLeft, ChevronRight, AlertCircle, Check, ImagePlus, Save,
@@ -43,6 +44,7 @@ const EMPTY_DRAFT: DraftState = {
 export default function CreateListingPage() {
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState(1);
@@ -182,43 +184,45 @@ export default function CreateListingPage() {
     try {
       let photos: Array<{ r2Key: string; position: number }> | undefined;
 
-      // If photos were selected, try to upload them. R2 may be unavailable in dev —
-      // we fall back to creating the listing without photos rather than failing entirely.
+      // Photos are mandatory — validateStep(0) ensures at least one was chosen.
+      // We no longer silently swallow upload failures: if R2 (or local fallback)
+      // rejects the PUT, the user MUST know — otherwise they get a listing with
+      // no photos and the FE falls back to picsum, which looks like a bug.
       if (files.length > 0) {
-        try {
-          // 1. Request presigned R2 PUT URLs
-          const uploadMeta = await Promise.all(
-            files.map((file) =>
-              api.listings.photoUploadUrl(
-                file.name,
-                file.type || 'image/jpeg',
-                file.size,
-              ),
+        // 1. Request presigned PUT URLs
+        const uploadMeta = await Promise.all(
+          files.map((file) =>
+            api.listings.photoUploadUrl(
+              file.name,
+              file.type || 'image/jpeg',
+              file.size,
             ),
-          );
+          ),
+        );
 
-          // 2. Upload each file directly to R2
-          await Promise.all(
-            uploadMeta.map(({ uploadUrl }, idx) =>
-              fetch(uploadUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': files[idx].type || 'image/jpeg' },
-                body: files[idx],
-              }).then((res) => {
-                if (!res.ok) throw new Error(`Photo upload failed (${res.status})`);
-              }),
-            ),
-          );
+        // 2. Upload each file directly to R2 (or to the local upload middleware
+        //    when KANTO_R2_FORCE_LOCAL is set / R2 isn't configured).
+        await Promise.all(
+          uploadMeta.map(({ uploadUrl }, idx) =>
+            fetch(uploadUrl, {
+              method: 'PUT',
+              headers: { 'Content-Type': files[idx].type || 'image/jpeg' },
+              body: files[idx],
+            }).then((res) => {
+              if (!res.ok) {
+                throw new Error(
+                  `Photo upload failed: ${res.status} ${res.statusText || ''}`.trim(),
+                );
+              }
+            }),
+          ),
+        );
 
-          photos = uploadMeta.map(({ r2Key, publicUrl }, idx) => ({
-            r2Key,
-            url: publicUrl,
-            position: idx === coverIndex ? 0 : idx < coverIndex ? idx + 1 : idx,
-          }));
-        } catch (photoErr) {
-          // R2 not configured (503) or upload failed — still allow listing creation
-          console.warn('[publish] Photo upload skipped:', photoErr);
-        }
+        photos = uploadMeta.map(({ r2Key, publicUrl }, idx) => ({
+          r2Key,
+          url: publicUrl,
+          position: idx === coverIndex ? 0 : idx < coverIndex ? idx + 1 : idx,
+        }));
       }
 
       // 3. Create the listing (with or without photos)
@@ -243,6 +247,11 @@ export default function CreateListingPage() {
       const err = e instanceof ApiError ? e : null;
       console.error('[publish] Failed:', err?.message ?? (e as Error)?.message ?? String(e));
       if (err) {
+        // Loose-gate (#1): profile incomplete → bounce to /my/profile.
+        if (err.status === 403 && err.message?.startsWith('PROFILE_')) {
+          router.push(`/${locale}/my/profile?reason=profile-incomplete&next=/${locale}/listings/new`);
+          return;
+        }
         if (err.status === 401 || err.status === 403) {
           setErrors({ publish: t('create.loginRequired') });
         } else if (err.status === 0) {

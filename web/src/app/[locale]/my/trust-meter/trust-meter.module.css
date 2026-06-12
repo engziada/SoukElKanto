@@ -1,9 +1,10 @@
+/* Hero card */
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s-5);
-  padding: var(--s-7) var(--s-5);
+  gap: var(--s-4);
+  padding: var(--s-6) var(--s-5);
   border-radius: var(--r-xl);
   background:
     radial-gradient(80% 60% at 50% 0%, color-mix(in oklab, var(--kanto-coral) 8%, transparent), transparent 70%),
@@ -13,16 +14,27 @@
   text-align: center;
 }
 
+.skeleton {
+  min-height: 14rem;
+  background:
+    linear-gradient(110deg, var(--surface) 0%, var(--surface-mid) 30%, var(--surface) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
 .ribbon {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 1.2rem 2rem;
-  border-radius: var(--r-lg);
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--r-pill);
   font-family: var(--font-headline);
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: 1rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   border: 2px solid currentColor;
@@ -34,32 +46,227 @@
   text-transform: none;
 }
 
-.tier_tierNew {
-  background: color-mix(in oklab, var(--kanto-tier-new) 12%, white);
-  color: var(--kanto-tier-new);
-}
-.tier_tierBronze {
-  background: color-mix(in oklab, var(--kanto-tier-bronze) 12%, white);
-  color: var(--kanto-tier-bronze);
-}
-.tier_tierSilver {
-  background: color-mix(in oklab, var(--kanto-tier-silver) 12%, white);
-  color: var(--kanto-tier-silver);
-}
-.tier_tierGold {
-  background: color-mix(in oklab, var(--kanto-tier-gold) 12%, white);
-  color: var(--kanto-tier-gold);
-}
-.tier_tierPlatinum {
-  background: color-mix(in oklab, var(--kanto-tier-platinum) 12%, white);
-  color: var(--kanto-tier-platinum);
+.tierName {
+  font-weight: 700;
 }
 
-.soon {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+.scoreRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.scoreValue {
+  font-family: var(--font-headline);
+  font-size: 2.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.scoreCeiling {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.tierReached {
+  font-size: 0.85rem;
+  color: var(--text-soft);
   margin: 0;
-  max-width: 28rem;
 }
 
-[lang="ar"] .soon { line-height: 1.75; }
+/* Progress to next tier */
+.progressWrap {
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.progressPct {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 0.5rem;
+  background: var(--surface-mid);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--kanto-coral), var(--coral));
+  transition: width var(--dur-base) var(--ease-out);
+}
+
+/* Tier color variants applied to the hero ribbon + ladder items */
+.tier_new {
+  --tier-color: var(--kanto-tier-new, #94a3b8);
+}
+.tier_bronze {
+  --tier-color: var(--kanto-tier-bronze, #b45309);
+}
+.tier_silver {
+  --tier-color: var(--kanto-tier-silver, #64748b);
+}
+.tier_gold {
+  --tier-color: var(--kanto-tier-gold, #d97706);
+}
+.tier_platinum {
+  --tier-color: var(--kanto-tier-platinum, #7c3aed);
+}
+
+.tier_new .ribbon,
+.tier_bronze .ribbon,
+.tier_silver .ribbon,
+.tier_gold .ribbon,
+.tier_platinum .ribbon {
+  background: color-mix(in oklab, var(--tier-color) 12%, white);
+  color: var(--tier-color);
+}
+
+/* Sections */
+.section {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.sectionCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Tier ladder */
+.tierLadder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.5rem;
+}
+
+.tierItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  opacity: 0.6;
+}
+
+.tierItemAchieved {
+  opacity: 1;
+  color: var(--tier-color);
+  background: color-mix(in oklab, var(--tier-color) 6%, var(--surface));
+  border-color: color-mix(in oklab, var(--tier-color) 30%, var(--border));
+}
+
+.tierItemCurrent {
+  outline: 2px solid var(--tier-color);
+  outline-offset: 0;
+}
+
+.tierItemText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.tierItemName {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.tierItemRange {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bonus grants */
+.grantsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.grantRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.grantDescription {
+  color: var(--text);
+}
+
+.grantAmount {
+  font-weight: 700;
+  color: #166534;
+  font-variant-numeric: tabular-nums;
+}
+
+.grantDate {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.grantsEmpty {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .tierLadder { grid-template-columns: repeat(2, 1fr); }
+}

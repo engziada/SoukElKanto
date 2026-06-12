@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import {
   Store, Search, PlusCircle, Tag, LogIn, User as UserIcon, LayoutGrid, LogOut, BadgeCheck,
-  ClipboardList, ArrowLeftRight,
+  ClipboardList, ArrowLeftRight, Heart,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth/store';
 import styles from './NavBar.module.css';
@@ -32,7 +32,9 @@ export function NavBar() {
   const [hydrated, setHydrated] = useState(false);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
+  // R-11 F-16 — async signOut hits POST /auth/logout to revoke the JWT JTI
+  // server-side before clearing client state.
+  const signOut = useAuthStore((s) => s.signOut);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -62,9 +64,9 @@ export function NavBar() {
   const pathWithoutLocale = pathname.replace(new RegExp(`^/${locale}(?=/|$)`), '') || '/';
   const otherLocaleHref = `/${otherLocale}${pathWithoutLocale}`.replace(/\/$/, '') || `/${otherLocale}`;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
     setMenuOpen(false);
+    await signOut();
     router.push(`/${locale}`);
   };
 
@@ -94,9 +96,9 @@ export function NavBar() {
               <PlusCircle size={16} />
               {t('create')}
             </Link>
-            <Link href={`/${locale}/offers`} className={styles.navLink}>
-              <Tag size={16} />
-              {t('offers')}
+            <Link href={`/${locale}/my/favorites`} className={styles.navLink}>
+              <Heart size={16} />
+              {t('favorites')}
             </Link>
           </nav>
 

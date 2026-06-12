@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // /:locale/offers was a duplicate of /:locale/my/offers — same data, two
+      // routes. Canonical lives under /my/. Keep this redirect for bookmark
+      // compatibility for a release or two, then it can be removed.
+      { source: '/:locale(en|ar)/offers', destination: '/:locale/my/offers', permanent: false },
+    ];
+  },
 };
 
 const withNextIntl = createNextIntlPlugin('./src/lib/i18n.ts');

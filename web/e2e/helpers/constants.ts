@@ -5,9 +5,13 @@ export type Locale = (typeof LOCALES)[number];
 
 export const TEST_PHONE = '+201000000001';
 export const TEST_PHONE_BUYER = '+201000000002';
+/** Third user — a competing buyer used by CJ-07 (race-on-accept) and any
+ *  future "non-participant can't act" tests. */
+export const TEST_PHONE_THIRD = '+201000000003';
 /** Phone without country code — what the user types in the input field */
 export const TEST_PHONE_LOCAL = '1000000001';
 export const TEST_PHONE_BUYER_LOCAL = '1000000002';
+export const TEST_PHONE_THIRD_LOCAL = '1000000003';
 export const TEST_OTP = '000000';
 export const TEST_OTP_WRONG = '999999';
 
@@ -23,6 +27,7 @@ export const DRAFT_STORAGE_KEY = 'kanto.listing-draft.v1';
 /** Playwright storage state paths */
 export const AUTH_STATE_PATH = './e2e/.auth/user.json';
 export const BUYER_AUTH_STATE_PATH = './e2e/.auth/buyer.json';
+export const THIRD_AUTH_STATE_PATH = './e2e/.auth/third.json';
 
 /** Expected i18n text (sampled from messages files) */
 export const I18N = {

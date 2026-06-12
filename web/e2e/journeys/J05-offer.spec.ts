@@ -109,34 +109,41 @@ for (const locale of LOCALES) {
       await ctx.close();
     });
 
-    // ── Own-listing guard: seller sees disabled Send + warning ──────────
-    // FIXME: own-listing guard fires inside modal, not at CTA level (known bug J-05)
-    test.fixme(
-      'own-listing guard: Send button disabled and warning visible',
-      async ({ browser }) => {
-        // Seller navigates to their own listing
-        const ctx = await browser.newContext({ storageState: AUTH_STATE_PATH });
-        const page = await ctx.newPage();
+    // ── Own-listing guard (R-07): page-level CTAs change for the seller ───
+    // The page guard is the primary defense — sellers never see "Make Offer"
+    // on their own listing. The OfferModal carries a defense-in-depth warning
+    // block as a safety net for any code path that could force-open it.
+    test('own-listing guard: seller sees Review Offers + Edit, not Make Offer', async ({ browser }) => {
+      const ctx = await browser.newContext({ storageState: AUTH_STATE_PATH });
+      const page = await ctx.newPage();
 
-        const { listingId } = getTestData();
-        await page.goto(`/${locale}/listings/${listingId}`);
+      const { listingId } = getTestData();
+      await page.goto(`/${locale}/listings/${listingId}`);
 
-        const offerBtn = page.getByText(I18N[locale].makeOffer, { exact: false }).first();
-        await offerBtn.click();
+      // Trust panel renders → page hydrated.
+      await expect(page.locator('[class*="trustPanel"]')).toBeVisible();
 
-        const dialog = page.getByRole('dialog');
-        await expect(dialog).toBeVisible({ timeout: 5_000 });
+      // Make Offer must NOT be present (page-level guard active).
+      const makeOfferBtn = page.getByText(I18N[locale].makeOffer, { exact: true });
+      await expect(makeOfferBtn).toHaveCount(0);
 
-        // Own-listing warning must be visible
-        const ownListingWarning = page.getByText(I18N[locale].ownListing, { exact: false });
-        await expect(ownListingWarning).toBeVisible();
+      // Alternate CTAs must be present.
+      // "Review Offers" (EN) / "راجع العروض" or "عروض إعلانك" (AR).
+      const reviewOffersBtn = page
+        .locator('button, a')
+        .filter({ hasText: /review offers|شوف العروض/i });
+      await expect(reviewOffersBtn.first()).toBeVisible();
 
-        // Send button must be disabled
-        const sendBtn = page.locator('button').filter({ hasText: /send offer|ابعت/i }).first();
-        await expect(sendBtn).toBeDisabled();
+      // "Edit" (EN) / "تعديل" (AR).
+      const editBtn = page.locator('button, a').filter({ hasText: /^edit$|تعديل/i });
+      await expect(editBtn.first()).toBeVisible();
 
-        await ctx.close();
-      },
-    );
+      // The defense-in-depth OfferModal warning block (.ownListingGate) must
+      // NOT be currently visible because the page guard prevented modal open.
+      const ownListingGate = page.locator('[class*="ownListingGate"]');
+      await expect(ownListingGate).toHaveCount(0);
+
+      await ctx.close();
+    });
   });
 }

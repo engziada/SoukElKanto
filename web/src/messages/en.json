@@ -8,6 +8,7 @@
     "listings": "Listings",
     "create": "List Item",
     "offers": "Offers",
+    "favorites": "Favorites",
     "login": "Log In",
     "loginComingSoon": "Coming soon, we're on it."
   },
@@ -42,6 +43,7 @@
   "listing": {
     "price": "EGP",
     "makeOffer": "Make Offer",
+    "viewYourOffer": "View your offer",
     "reviewOffers": "Review Offers",
     "shareWhatsApp": "Share on WhatsApp",
     "save": "Save",
@@ -50,6 +52,7 @@
     "share": "Share",
     "shareDone": "Copied",
     "report": "Report",
+    "cantReportOwn": "You can't report your own listing.",
     "condition": "Condition",
     "category": "Category",
     "district": "District",
@@ -111,7 +114,56 @@
     "done": "Done",
     "sentTitle": "Offer sent!",
     "sentBody": "The seller will review your offer and get back to you. Get ready to negotiate.",
-    "ownListing": "You can't make an offer on your own listing."
+    "ownListing": "You can't make an offer on your own listing.",
+    "ownListingTitle": "This is your listing"
+  },
+  "rating": {
+    "title": "Rate your handover",
+    "scoreLabel": "Your rating",
+    "commentLabel": "Comments (optional)",
+    "commentPlaceholder": "How was the experience? Anything to note?",
+    "submit": "Submit rating",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "errorGeneric": "Couldn't submit rating. Try again."
+  },
+  "report": {
+    "title": "Report listing",
+    "incidentLabel": "What's wrong?",
+    "incidentPlaceholder": "Choose a reason",
+    "incidentType": {
+      "SCAM": "Scam / misleading",
+      "FRAUD": "Fraud / illegal item",
+      "SPAM": "Spam / duplicate",
+      "POLICY_VIOLATION": "Breaks community rules",
+      "OTHER": "Something else"
+    },
+    "severityLabel": "How serious is it?",
+    "severityHint": "Pick 1 (minor) to 5 (severe).",
+    "severityValue": {
+      "1": "Minor issue",
+      "2": "Mild concern",
+      "3": "Significant",
+      "4": "Serious",
+      "5": "Severe / urgent"
+    },
+    "reasonLabel": "Tell us more",
+    "reasonPlaceholder": "Add details — what happened, links, screenshots…",
+    "submit": "Submit report",
+    "sending": "Submitting...",
+    "cancel": "Cancel",
+    "done": "Done",
+    "successTitle": "Report submitted",
+    "successBody": "Thanks for letting us know. Our team will review it within 48 hours and act if a policy was broken.",
+    "reportId": "Reference",
+    "errorIncidentType": "Pick a category.",
+    "errorSeverity": "Pick a severity from 1 to 5.",
+    "errorReasonRequired": "Add a brief explanation.",
+    "errorReasonTooLong": "Keep it under 500 characters.",
+    "errorForbidden": "You can't report this listing.",
+    "errorNotFound": "This listing no longer exists.",
+    "errorNetwork": "We can't reach the server. Check your connection and try again.",
+    "errorGeneric": "Couldn't submit the report. Try again."
   },
   "offers": {
     "emptyHint": "When you send or receive offers, they will appear here.",
@@ -121,7 +173,10 @@
       "DECLINED": "Declined",
       "COUNTERED": "Countered",
       "WITHDRAWN": "Withdrawn",
-      "EXPIRED": "Expired"
+      "EXPIRED": "Expired",
+      "HANDOVER_PENDING": "Handover in progress",
+      "CONFIRMED": "Handover confirmed",
+      "CLOSED": "Closed"
     }
   },
   "pagination": {
@@ -159,6 +214,7 @@
     "photoCount": "{count} photos selected",
     "labelTitle": "Title",
     "placeholderTitle": "e.g. Brown leather 3-seat sofa",
+    "placeholderFullName": "e.g. Mohamed Ahmed Abdallah",
     "labelDescription": "Description",
     "placeholderDescription": "Describe the condition, age, reason for selling...",
     "defaultDescription": "Short description of the listed item.",
@@ -213,10 +269,45 @@
       "listings": "My Listings",
       "offers": "Offers",
       "handovers": "Handovers",
+      "activity": "Activity",
       "favorites": "Saved",
       "wallet": "Wallet",
       "trustMeter": "Trust",
       "profile": "Profile"
+    },
+    "activity": {
+      "title": "Activity",
+      "empty": "Nothing here yet. Start by listing an item or making an offer.",
+      "viewOffer": "View offer",
+      "filtersLabel": "Filter activity",
+      "filterRole": "Role",
+      "filterStatus": "Status",
+      "filterDate": "When",
+      "roleAll": "All",
+      "roleBuyer": "As buyer",
+      "roleSeller": "As seller",
+      "statusAll": "All",
+      "statusPending": "In progress",
+      "statusCompleted": "Completed",
+      "statusCancelled": "Cancelled",
+      "dateAll": "All time",
+      "date7d": "Last 7 days",
+      "date30d": "Last 30 days",
+      "date90d": "Last 90 days",
+      "events": {
+        "listingCreated": "Listed an item",
+        "offerSent": "Sent an offer",
+        "offerReceived": "Received an offer",
+        "handoverDone": "Handover confirmed",
+        "ratingGiven": "Rating given",
+        "ratingReceived": "Rating received"
+      },
+      "statusBucket": {
+        "all": "All",
+        "pending": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
     },
     "overview": {
       "greet": "Welcome back, {phone}",
@@ -259,6 +350,10 @@
       "decline": "Decline",
       "counter": "Counter",
       "withdraw": "Withdraw",
+      "goToHandover": "Go to handover",
+      "acceptCounter": "Accept counter",
+      "declineCounter": "Decline counter",
+      "reCounter": "Counter back",
       "counterPlaceholder": "Counter price",
       "confirm": "Confirm",
       "cancel": "Cancel",
@@ -276,7 +371,17 @@
     },
     "handovers": {
       "title": "Handovers",
-      "empty": "Your active handovers will appear here."
+      "empty": "Your active handovers will appear here.",
+      "pendingMine": "Awaiting your confirmation",
+      "awaitingOther": "Awaiting counterpart",
+      "completed": "Completed",
+      "confirm": "Confirm handover",
+      "confirmedToast": "Handover confirmed ✓",
+      "rateCounterpart": "Rate counterpart",
+      "rated": "Rated",
+      "counterpartBuyer": "Buyer",
+      "counterpartSeller": "Seller",
+      "actionError": "Couldn't complete the action. Try again."
     },
     "favorites": {
       "title": "Saved listings",
@@ -288,11 +393,34 @@
       "businessTokens": "Business tokens",
       "individualTokens": "Personal tokens",
       "noBalance": "Wallet empty. Tokens are commitment holds, not money; they appear automatically with offer holds.",
-      "soon": "Coming soon: transaction history and live holds."
+      "soon": "Coming soon: transaction history and live holds.",
+      "closedLoopNote": "Tokens are in-platform credits and cannot be exchanged for cash.",
+      "allocationsTitle": "Active holds",
+      "expiresAt": "Expires {date}",
+      "recentTitle": "Recent activity",
+      "recentEmpty": "No transactions yet.",
+      "errorNetwork": "Couldn't reach the wallet service.",
+      "errorGeneric": "Couldn't load your wallet."
     },
     "trustMeter": {
       "title": "Trust meter",
-      "soon": "Coming soon: full progress bar and the activity ledger."
+      "soon": "Coming soon: full progress bar and the activity ledger.",
+      "tier": {
+        "NEW": "New",
+        "BRONZE": "Bronze",
+        "SILVER": "Silver",
+        "GOLD": "Gold",
+        "PLATINUM": "Platinum"
+      },
+      "tierReachedAt": "Reached on {date}",
+      "progressToNext": "To {tier}",
+      "pointsToGo": "{n} points to go",
+      "ladderTitle": "Tier ladder",
+      "grantsTitle": "Recent bonus grants",
+      "grantsEmpty": "No bonus grants yet. Climb a tier to unlock rewards.",
+      "grantDescription": "Reached {tier} — bonus credited",
+      "errorNetwork": "Couldn't reach the trust service.",
+      "errorGeneric": "Couldn't load your trust meter."
     },
     "profile": {
       "title": "Profile",
@@ -310,6 +438,7 @@
     "verified": "Verified",
     "profileSaveError": "Could not save profile",
     "profileSaved": "Profile saved",
+    "gateBanner": "Complete your profile (full name, gender, birthdate) before you can list an item or accept an offer.",
     "dealNote": "Complete your profile to make and accept offers. KYC is optional for deals under 5,000 EGP.",
     "kycOptional": "KYC optional",
     "profileIncomplete": "Profile incomplete",

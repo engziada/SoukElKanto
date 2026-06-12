@@ -16,7 +16,20 @@ const API_BASE =
     : process.env.NEXT_PUBLIC_API_BASE || '';
 const TENANT_ID = 'kanto';
 
-function getToken(): string | null {
+/**
+ * R-11 F-15 — auth is now carried by the httpOnly `madinaty.access` cookie
+ * scoped to `/api`. We send `credentials: 'include'` on every request so the
+ * cookie travels through the Next dev-rewrite proxy (browser sees same-origin
+ * `localhost:3001`, so the cookie set by the proxy on the BE response is
+ * stored under `localhost:3001` and replayed on every `/api/*` call).
+ *
+ * Legacy `Authorization: Bearer` fallback: during the migration window, if
+ * `localStorage['kanto.auth.v1'].state.token` is still present (set by a
+ * pre-cookie-migration login), we ALSO send it as a Bearer header so existing
+ * sessions don't get kicked. The BE prefers the cookie when both are present.
+ * This fallback is removed once a few release cycles pass.
+ */
+function getLegacyToken(): string | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = window.localStorage.getItem('kanto.auth.v1');
@@ -45,13 +58,16 @@ async function fetchJson<T>(
   init: RequestInit = {},
 ): Promise<T> {
   const url = `${API_BASE}${path}`;
-  const token = getToken();
 
   const headers = new Headers(init.headers);
   headers.set('Content-Type', 'application/json');
   headers.set('x-tenant-id', TENANT_ID);
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+
+  // R-11 F-15 — legacy localStorage token fallback (back-compat for pre-cookie
+  // sessions). Goes away once persistent migration window closes.
+  const legacy = getLegacyToken();
+  if (legacy) {
+    headers.set('Authorization', `Bearer ${legacy}`);
   }
 
   let res: Response;
@@ -59,6 +75,7 @@ async function fetchJson<T>(
     res = await fetch(url, {
       ...init,
       headers,
+      credentials: 'include', // R-11 F-15 — send madinaty.access cookie
     });
   } catch (e) {
     throw new ApiError(
@@ -122,6 +139,20 @@ export interface PaginatedListings {
   };
 }
 
+export interface OfferHandover {
+  id?: string;
+  buyerConfirmedAt?: string | null;
+  sellerConfirmedAt?: string | null;
+  bothConfirmedAt?: string | null;
+  ratingWindowEndsAt?: string | null;
+}
+
+export interface OfferRatingSummary {
+  id: string;
+  raterId: string;
+  score: number;
+}
+
 export interface Offer {
   id: string;
   listingId: string;
@@ -134,7 +165,8 @@ export interface Offer {
   createdAt: string;
   listing?: Listing;
   parentOfferId?: string | null;
-  handover?: { buyerConfirmedAt?: string; sellerConfirmedAt?: string };
+  handover?: OfferHandover | null;
+  ratings?: OfferRatingSummary[];
 }
 
 export interface SafeMeetSpot {
@@ -171,6 +203,15 @@ export interface AuthUserPayload {
   isVerified?: boolean;
   trustScore?: number;
   metadata?: Record<string, unknown>;
+  // Flattened profile fields — the BE /me + /users/me/profile both return
+  // these alongside metadata for FE convenience.
+  fullName?: string;
+  gender?: string;
+  birthdate?: string;
+  address?: string;
+  madinatyGroup?: string;
+  buildingNo?: string;
+  aptNo?: string;
   kyc?: unknown;
   createdAt?: string;
 }
@@ -187,6 +228,52 @@ export interface KycStatus {
   submittedAt?: string | null;
   reviewedAt?: string | null;
   fullName?: string;
+}
+
+export interface TokenTransaction {
+  activityType: 'CREDIT' | 'DEBIT' | string;
+  tokenType: 'individual' | 'business' | string;
+  amount: number;
+  description: string;
+  referenceId?: string | null;
+  createdAt: string;
+}
+
+export interface TokenAllocation {
+  amount: number;
+  reason?: string;
+  expiresAt?: string | null;
+  createdAt?: string;
+  [key: string]: unknown;
+}
+
+export interface TokenWallet {
+  userId: string;
+  businessTokens: number;
+  individualTokens: number;
+  allocations: TokenAllocation[];
+  recentTransactions: TokenTransaction[];
+}
+
+export type TrustMeterTier = 'NEW' | 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
+
+export interface TrustMeterSummary {
+  userId: string;
+  total: number;
+  tier: TrustMeterTier;
+  tierReachedAt?: string | null;
+  highestTotal: number;
+  nextTier?: TrustMeterTier | null;
+  pointsToNextTier?: number | null;
+}
+
+export interface TrustMeterBonusGrant {
+  id: string;
+  tier: TrustMeterTier;
+  amount: number;
+  tokenType: 'individual' | 'business';
+  grantedAt: string;
+  reason?: string | null;
 }
 
 export const api = {
@@ -210,6 +297,20 @@ export const api = {
         body: JSON.stringify({ phoneNumber }),
       }),
     me: () => fetchJson<AuthUserPayload>('/api/v1/auth/me'),
+    /**
+     * R-11 F-15/F-16 — revoke the current JWT + clear the `madinaty.access`
+     * cookie. Returns 204 No Content; we ignore the body.
+     */
+    logout: () =>
+      fetchJson<void>('/api/v1/auth/logout', { method: 'POST' }).catch(
+        (e: unknown) => {
+          // Best-effort: a network failure on logout shouldn't block client-side
+          // session teardown. The cookie is httpOnly so the browser holds it
+          // until expiry, but the next /me call will still fail — UI clears state.
+          if (e instanceof ApiError && e.status === 0) return;
+          throw e;
+        },
+      ),
   },
   users: {
     kycStatus: () => fetchJson<KycStatus>('/api/v1/users/me/kyc-status'),
@@ -228,6 +329,15 @@ export const api = {
     list: (params?: Record<string, string>) =>
       fetchJson<PaginatedListings>(
         `/api/v1/listings?${new URLSearchParams(params ?? {}).toString()}`,
+      ),
+    /**
+     * Activity page (#8) — current user's listings across every status
+     * (ACTIVE / RESERVED / REMOVED / EXPIRED), newest first. Bearer/cookie
+     * auth required.
+     */
+    listMine: () =>
+      fetchJson<Array<Listing & { _count?: { offers: number } }>>(
+        '/api/v1/listings/mine',
       ),
     get: (id: string) => fetchJson<Listing>(`/api/v1/listings/${id}`),
     update: (id: string, dto: Partial<CreateListingDto>) =>
@@ -283,6 +393,22 @@ export const api = {
       fetchJson<{ buyerConfirmedAt?: string; sellerConfirmedAt?: string }>(`/api/v1/handover/${id}/confirm`, { method: 'POST' }),
     withdraw: (id: string) =>
       fetchJson<Offer>(`/api/v1/offers/${id}/withdraw`, { method: 'PATCH' }),
+    // ── R-02: buyer-side actions on seller-initiated counters ─────────
+    /** Buyer accepts a seller's counter (offer.parentOfferId must be set). */
+    buyerAccept: (id: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/buyer-accept`, { method: 'PATCH' }),
+    /** Buyer declines a seller's counter (optional reason). */
+    buyerDecline: (id: string, reason?: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/buyer-decline`, {
+        method: 'PATCH',
+        body: JSON.stringify({ reason }),
+      }),
+    /** Buyer counter-counters with a new amount; creates a grandchild offer. */
+    buyerCounter: (id: string, amount: number) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/buyer-counter`, {
+        method: 'PATCH',
+        body: JSON.stringify({ amount }),
+      }),
   },
   categories: {
     list: () =>
@@ -298,12 +424,73 @@ export const api = {
   },
   tokens: {
     walletMe: () =>
+      fetchJson<TokenWallet>('/api/v1/tokens/wallet/me'),
+  },
+  trustMeter: {
+    me: () => fetchJson<TrustMeterSummary>('/api/v1/trust-meter/me'),
+    bonusGrants: () =>
+      fetchJson<TrustMeterBonusGrant[]>('/api/v1/trust-meter/me/bonus-grants'),
+  },
+  // R-03a / R-09 — ratings + reports (BE already wired)
+  ratings: {
+    /** Submit a post-handover rating (1-5 score, optional comment). */
+    create: (offerId: string, score: number, comment?: string) =>
       fetchJson<{
-        userId: string;
-        businessTokens: number;
-        individualTokens: number;
-        allocations: unknown[];
-        recentTransactions: unknown[];
-      }>('/api/v1/tokens/wallet/me'),
+        id: string;
+        offerId: string;
+        raterId: string;
+        targetId: string;
+        score: number;
+        comment?: string | null;
+      }>('/api/v1/ratings', {
+        method: 'POST',
+        body: JSON.stringify({ offerId, score, comment }),
+      }),
+  },
+  reports: {
+    /**
+     * R-09 — file a report against a listing.
+     *
+     * The BE wraps the response as `{ report: {...}, trust: {...} }` where
+     * `trust` is the updated trust-score snapshot for the offender.
+     */
+    createListingReport: (
+      listingId: string,
+      dto: {
+        incidentType: ReportIncidentType;
+        severity: number;
+        reason: string;
+        evidencePhotoR2Key?: string;
+      },
+    ) =>
+      fetchJson<{
+        report: {
+          id: string;
+          reporterId: string;
+          offenderId: string;
+          incidentType: ReportIncidentType;
+          severity: number;
+          isPlatformWideBanned: boolean;
+          originSubdomain: string;
+          createdAt: string;
+        };
+        trust: {
+          score: number;
+          isBanned: boolean;
+          penalty: number;
+          ageBonus: number;
+        };
+      }>(`/api/v1/listings/${listingId}/report`, {
+        method: 'POST',
+        body: JSON.stringify(dto),
+      }),
   },
 };
+
+/** R-09 — Mirrors the closed enum on the BE (DTO `ReportIncidentType`). */
+export type ReportIncidentType =
+  | 'SCAM'
+  | 'SPAM'
+  | 'FRAUD'
+  | 'POLICY_VIOLATION'
+  | 'OTHER';

@@ -150,6 +150,20 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
         ) : (
           <>
 
+            {/* ── Own-listing guard (defense-in-depth) ── */}
+            {/* The page-level guard prevents the seller from opening this    */}
+            {/* modal in the first place. This block is a safety net for any  */}
+            {/* path that could force-open the modal on the seller's listing. */}
+            {isOwnListing && (
+              <div className={styles.ownListingGate} role="status">
+                <AlertCircle size={20} aria-hidden="true" />
+                <div>
+                  <p className={styles.ownListingTitle}>{t('offer.ownListingTitle')}</p>
+                  <p className={styles.ownListingBody}>{t('offer.ownListing')}</p>
+                </div>
+              </div>
+            )}
+
             {/* ── Profile incomplete guard ─────────────── */}
             {!hasCompleteProfile && !isOwnListing && (
               <div className={styles.profileGate}>

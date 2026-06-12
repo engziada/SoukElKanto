@@ -1,0 +1,191 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-4);
+}
+
+/* ── Filters ───────────────────────────────────────────────────────────── */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  margin-bottom: var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.pillGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.pillGroupLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pillRow {
+  display: flex;
+  gap: var(--s-1);
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.pill:hover {
+  background: color-mix(in oklab, var(--surface-dim) 60%, transparent);
+}
+
+.pillActive {
+  background: color-mix(in oklab, var(--primary) 18%, white);
+  border-color: color-mix(in oklab, var(--primary) 36%, transparent);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ── Feed ──────────────────────────────────────────────────────────────── */
+
+.feed {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.event {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.iconBubble {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-dim);
+  color: var(--text-muted);
+}
+
+.kind_listing         { background: color-mix(in oklab, var(--primary) 14%, white); color: var(--primary); }
+.kind_offer_sent      { background: color-mix(in oklab, var(--sun) 18%, white); color: #8a5d00; }
+.kind_offer_received  { background: color-mix(in oklab, var(--ocean, #38a3a5) 18%, white); color: #1a615a; }
+.kind_handover        { background: color-mix(in oklab, var(--mint) 18%, white); color: #11704f; }
+.kind_rating_given    { background: color-mix(in oklab, var(--gold, #f6c453) 22%, white); color: #7a5b0a; }
+.kind_rating_received { background: color-mix(in oklab, var(--gold, #f6c453) 22%, white); color: #7a5b0a; }
+
+.eventBody {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.eventTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.eventLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.eventTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.titleLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.titleLink:hover {
+  text-decoration: underline;
+}
+
+.eventAmount {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.eventMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.linkSecondary {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.linkSecondary:hover {
+  text-decoration: underline;
+}
+
+/* ── Status chips ──────────────────────────────────────────────────────── */
+
+.statusChip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.bucket_pending {
+  background: color-mix(in oklab, var(--sun) 18%, white);
+  color: #8a5d00;
+}
+
+.bucket_completed {
+  background: color-mix(in oklab, var(--mint) 18%, white);
+  color: #11704f;
+}
+
+.bucket_cancelled {
+  background: color-mix(in oklab, var(--ember, #e76f51) 16%, white);
+  color: #9c3618;
+}

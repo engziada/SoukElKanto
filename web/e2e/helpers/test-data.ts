@@ -8,6 +8,9 @@ export interface TestData {
   offerId: string;
   sellerToken: string;
   buyerToken: string;
+  /** Token for U-X — a third user used by CJ-07 race-on-accept and other
+   *  "non-participant" / "competing buyer" tests. */
+  thirdToken: string;
 }
 
 let _cache: TestData | null = null;

@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeftRight, Clock, ArrowDownToLine, ArrowUpFromLine,
-  Check, X, Repeat,
+  Check, X, Repeat, Handshake,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth/store';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
@@ -17,15 +19,38 @@ import styles from './my-offers.module.css';
 
 type Tab = 'sent' | 'received';
 
-const STATUS_KEYS = ['PENDING', 'ACCEPTED', 'DECLINED', 'COUNTERED', 'WITHDRAWN', 'EXPIRED'] as const;
+const STATUS_KEYS = [
+  'PENDING',
+  'ACCEPTED',
+  'DECLINED',
+  'COUNTERED',
+  'WITHDRAWN',
+  'EXPIRED',
+  'HANDOVER_PENDING',
+  'CONFIRMED',
+  'CLOSED',
+] as const;
 
 export default function MyOffersPage() {
+  const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations('my.offers');
   const tOfferStatus = useTranslations('offers.status');
   const tListing = useTranslations('listing');
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const queryClient = useQueryClient();
+  // Loose gate (#1): if the BE replies with PROFILE_INCOMPLETE / AGE_RESTRICTED,
+  // bounce the user to /my/profile with a hint. Falls back to the generic
+  // action-error toast for everything else.
+  const handleMutError = (err: unknown) => {
+    const e = err as { status?: number; message?: string };
+    if (e?.status === 403 && typeof e.message === 'string' && e.message.startsWith('PROFILE_')) {
+      router.push(`/${locale}/my/profile?reason=profile-incomplete&next=/${locale}/my/offers`);
+      return;
+    }
+    toast.error(t('actionError'));
+  };
 
   const [tab, setTab] = useState<Tab>('received');
   const [counterId, setCounterId] = useState<string | null>(null);
@@ -60,7 +85,7 @@ export default function MyOffersPage() {
   const acceptMut = useMutation({
     mutationFn: (id: string) => api.offers.accept(id),
     onSuccess: () => { toast.success(t('acceptedToast')); invalidateOffers(); },
-    onError: () => toast.error(t('actionError')),
+    onError: handleMutError,
   });
 
   const declineMut = useMutation({
@@ -87,10 +112,35 @@ export default function MyOffersPage() {
     onError: () => toast.error(t('actionError')),
   });
 
+  // ── R-02: buyer-side actions on seller-initiated counters ─────────
+  const buyerAcceptMut = useMutation({
+    mutationFn: (id: string) => api.offers.buyerAccept(id),
+    onSuccess: () => { toast.success(t('acceptedToast')); invalidateOffers(); },
+    onError: handleMutError,
+  });
+  const buyerDeclineMut = useMutation({
+    mutationFn: (id: string) => api.offers.buyerDecline(id),
+    onSuccess: () => { toast.info(t('declinedToast')); invalidateOffers(); },
+    onError: () => toast.error(t('actionError')),
+  });
+  const buyerCounterMut = useMutation({
+    mutationFn: (vars: { id: string; amount: number }) =>
+      api.offers.buyerCounter(vars.id, vars.amount),
+    onSuccess: () => {
+      toast.success(t('counteredToast'));
+      setCounterId(null);
+      setCounterAmount('');
+      invalidateOffers();
+    },
+    onError: () => toast.error(t('actionError')),
+  });
+
   const busy =
     acceptMut.isPending || declineMut.isPending ||
     counterMut.isPending || withdrawMut.isPending ||
-    confirmMut.isPending;
+    confirmMut.isPending ||
+    buyerAcceptMut.isPending || buyerDeclineMut.isPending ||
+    buyerCounterMut.isPending;
 
   const isLoading = !mounted || (tab === 'sent' ? loadingSent : loadingReceived);
   const rows: Offer[] | undefined = tab === 'sent' ? sent : received;
@@ -99,6 +149,14 @@ export default function MyOffersPage() {
     const amount = Number(counterAmount);
     if (!amount || amount <= 0) return;
     counterMut.mutate({ id, amount });
+  };
+
+  // R-02: when the buyer re-counters a seller's counter, call the buyer-side
+  // endpoint (creates a grandchild offer).
+  const submitBuyerCounter = (id: string) => {
+    const amount = Number(counterAmount);
+    if (!amount || amount <= 0) return;
+    buyerCounterMut.mutate({ id, amount });
   };
 
   return (
@@ -144,9 +202,27 @@ export default function MyOffersPage() {
         <ul className={styles.list}>
           {rows.map((offer) => {
             const canActReceived = tab === 'received' && offer.status === 'PENDING';
+            // R-02: on the Sent tab, a PENDING row WITH parentOfferId is a
+            // seller-initiated counter the buyer can act on.
+            const canActReceivedCounter =
+              tab === 'sent' &&
+              offer.status === 'PENDING' &&
+              !!offer.parentOfferId;
+            // Withdraw is for buyer-initiated, still-PENDING offers only. Once
+            // the seller counters, the parent flips to COUNTERED and the active
+            // negotiation has moved to the child — buyer should decline that
+            // counter to exit, not "withdraw" the historical parent.
             const canWithdraw =
               tab === 'sent' &&
-              (offer.status === 'PENDING' || offer.status === 'COUNTERED');
+              offer.status === 'PENDING' &&
+              !offer.parentOfferId;
+            // R-11 F-#7 — once the offer is accepted, the action moves to the
+            // /my/handovers page. Surface a direct link so the user doesn't
+            // hunt for it in the side nav.
+            const showHandoverLink =
+              offer.status === 'ACCEPTED' ||
+              offer.status === 'HANDOVER_PENDING' ||
+              offer.status === 'CONFIRMED';
             return (
               <li key={offer.id} className={styles.row}>
                 <div className={styles.rowMain}>
@@ -160,7 +236,6 @@ export default function MyOffersPage() {
 
                   {offer.listing && (
                     <div className={styles.listingInfo}>
-                      <p className={styles.listingTitle}>{offer.listing.title}</p>
                       {offer.listing.photos?.[0]?.url && (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img
@@ -169,6 +244,15 @@ export default function MyOffersPage() {
                           className={styles.listingThumb}
                         />
                       )}
+                      <div className={styles.listingMeta}>
+                        <p className={styles.listingTitle}>{offer.listing.title}</p>
+                        <p className={styles.listingPrice}>
+                          {tListing('price')} {offer.listing.askingPrice?.toLocaleString()}
+                        </p>
+                        <p className={styles.listingDate}>
+                          {new Date(offer.listing.createdAt).toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US')}
+                        </p>
+                      </div>
                     </div>
                   )}
 
@@ -253,6 +337,74 @@ export default function MyOffersPage() {
                       </button>
                     </div>
                   )}
+
+                  {/* R-02: buyer-side Accept/Decline/Re-counter on received counter */}
+                  {canActReceivedCounter && counterId !== offer.id && (
+                    <div className={styles.actions}>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.accept}`}
+                        disabled={busy}
+                        onClick={() => buyerAcceptMut.mutate(offer.id)}
+                      >
+                        <Check size={14} aria-hidden="true" />
+                        {t('acceptCounter')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.counter}`}
+                        disabled={busy}
+                        onClick={() => {
+                          setCounterId(offer.id);
+                          setCounterAmount(String(offer.amount));
+                        }}
+                      >
+                        <Repeat size={14} aria-hidden="true" />
+                        {t('reCounter')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.decline}`}
+                        disabled={busy}
+                        onClick={() => buyerDeclineMut.mutate(offer.id)}
+                      >
+                        <X size={14} aria-hidden="true" />
+                        {t('declineCounter')}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* R-02: inline re-counter input (uses same counterId state) */}
+                  {canActReceivedCounter && counterId === offer.id && (
+                    <div className={styles.counterRow}>
+                      <input
+                        type="number"
+                        min={1}
+                        className={styles.counterInput}
+                        placeholder={t('counterPlaceholder')}
+                        value={counterAmount}
+                        onChange={(e) => setCounterAmount(e.target.value)}
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.accept}`}
+                        disabled={busy || !counterAmount}
+                        onClick={() => submitBuyerCounter(offer.id)}
+                      >
+                        <Check size={14} aria-hidden="true" />
+                        {t('confirm')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.ghost}`}
+                        disabled={busy}
+                        onClick={() => { setCounterId(null); setCounterAmount(''); }}
+                      >
+                        {t('cancel')}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.rowMeta}>
@@ -263,6 +415,15 @@ export default function MyOffersPage() {
                   >
                     {tOfferStatus(offer.status as (typeof STATUS_KEYS)[number])}
                   </span>
+                  {showHandoverLink && (
+                    <Link
+                      href={`/${locale}/my/handovers#offer-${offer.id}`}
+                      className={`${styles.actionBtn} ${styles.accept}`}
+                    >
+                      <Handshake size={14} aria-hidden="true" />
+                      {t('goToHandover')}
+                    </Link>
+                  )}
                   <span className={styles.ts}>
                     <Clock size={12} aria-hidden="true" />
                     {new Date(offer.createdAt).toLocaleDateString()}

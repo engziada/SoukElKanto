@@ -8,7 +8,7 @@ import {
   MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check, Pencil,
 } from 'lucide-react';
 import { api } from '@/lib/api';
-import type { Listing } from '@/lib/api';
+import type { Listing, Offer } from '@/lib/api';
 import {
   deriveTierFromId,
   tierClassMap,
@@ -17,6 +17,7 @@ import {
 import { useAuthStore } from '@/lib/auth/store';
 import { useFavoritesStore } from '@/lib/favorites/store';
 import { OfferModal } from '@/components/OfferModal';
+import { ReportModal } from '@/components/ReportModal';
 import styles from './detail.module.css';
 
 interface DetailViewProps {
@@ -44,6 +45,42 @@ function DetailView({ listing }: DetailViewProps) {
   const [hint, setHint] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [offerOpen, setOfferOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  // R-11 F-#6 — if the user already has an open offer on this listing, swap
+  // "Make Offer" for "View your offer" so they don't get a 409 on submit.
+  const [existingOffer, setExistingOffer] = useState<Offer | null>(null);
+
+  useEffect(() => {
+    // Only buyers; sellers see "Review Offers" already. Only after hydration
+    // so authenticated state is correct.
+    if (!hydrated || !isAuthenticated || isOwnListing) {
+      setExistingOffer(null);
+      return;
+    }
+    let cancelled = false;
+    api.offers
+      .listSent()
+      .then((sent) => {
+        if (cancelled) return;
+        // Open = the user still has a live thread on this listing. Terminal
+        // statuses (DECLINED, WITHDRAWN, EXPIRED, CLOSED) let them re-offer.
+        const open = sent.find(
+          (o) =>
+            o.listingId === listing.id &&
+            ['PENDING', 'ACCEPTED', 'COUNTERED', 'HANDOVER_PENDING', 'CONFIRMED'].includes(
+              o.status,
+            ),
+        );
+        setExistingOffer(open ?? null);
+      })
+      .catch(() => {
+        // Not fatal — fall back to Make Offer; BE will 409 on duplicate.
+        setExistingOffer(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrated, isAuthenticated, isOwnListing, listing.id]);
 
   const primaryPhoto = listing.photos?.find((p) => p.position === 0);
   const photoUrl = primaryPhoto?.url?.trim() ? primaryPhoto.url : fallbackPhotoUrl(listing.id);
@@ -161,6 +198,14 @@ function DetailView({ listing }: DetailViewProps) {
                 {t('listing.edit')}
               </button>
             </>
+          ) : existingOffer ? (
+            <button
+              type="button"
+              className={styles.cta}
+              onClick={() => router.push(`/${locale}/my/offers?highlight=${existingOffer.id}`)}
+            >
+              {t('listing.viewYourOffer')}
+            </button>
           ) : (
             <button
               type="button"
@@ -218,7 +263,26 @@ function DetailView({ listing }: DetailViewProps) {
             <button
               type="button"
               className={styles.subBtn}
-              onClick={() => showHint(t('nav.loginComingSoon'))}
+              onClick={() => {
+                // R-09: route through the same auth-gate as the offer modal.
+                // Anonymous users hit /auth/login with a next= deep link back.
+                if (!isAuthenticated) {
+                  const path =
+                    typeof window !== 'undefined'
+                      ? window.location.pathname
+                      : `/${locale}/listings/${listing.id}`;
+                  router.push(
+                    `/${locale}/auth/login?next=${encodeURIComponent(path)}`,
+                  );
+                  return;
+                }
+                if (isOwnListing) {
+                  // Self-report is rejected at the BE; bail out client-side too.
+                  showHint(t('listing.cantReportOwn'));
+                  return;
+                }
+                setReportOpen(true);
+              }}
             >
               <Flag size={14} aria-hidden="true" />
               {t('listing.report')}
@@ -232,6 +296,14 @@ function DetailView({ listing }: DetailViewProps) {
         <OfferModal
           listing={listing}
           onClose={() => setOfferOpen(false)}
+        />
+      )}
+
+      {/* R-09: Report modal — same z-index family as OfferModal */}
+      {reportOpen && (
+        <ReportModal
+          listing={listing}
+          onClose={() => setReportOpen(false)}
         />
       )}
     </div>

@@ -385,3 +385,27 @@
   text-decoration: underline;
   font-size: 0.85rem;
 }
+
+/* Own-listing guard — defense-in-depth. Slightly different palette from the
+   profile gate so it reads as a distinct condition. */
+.ownListingGate {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #fee2e2;
+  border-radius: var(--r-md);
+  margin-bottom: 1rem;
+  color: #991b1b;
+}
+
+.ownListingTitle {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.ownListingBody {
+  margin: 0;
+  font-size: 0.85rem;
+}

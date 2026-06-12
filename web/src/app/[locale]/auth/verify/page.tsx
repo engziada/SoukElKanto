@@ -29,7 +29,31 @@ export default function VerifyPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const phone = searchParams.get('phone') ?? '';
-  const next = searchParams.get('next') ?? `/${locale}`;
+  /**
+   * R-11 F-10 — only accept same-origin same-app paths in the `next` query.
+   *
+   * The old code did `next.startsWith('/') ? next : ...` which accepted
+   * protocol-relative URLs like `//evil.com/foo` because `'/'.startsWith('/')`
+   * is true. A phishing link could redirect the user to an attacker site
+   * immediately after OTP success.
+   *
+   * New rule (all must hold):
+   *   1. Starts with `/` (relative URL)
+   *   2. Does NOT start with `//` (protocol-relative)
+   *   3. Does NOT start with `/\` (Windows-style protocol-relative)
+   *   4. Resolves to an in-app route (we only allow `/<locale>/...`)
+   *
+   * Anything else → fall back to the locale root.
+   */
+  const rawNext = searchParams.get('next') ?? '';
+  const next = (() => {
+    if (!rawNext) return `/${locale}`;
+    if (!rawNext.startsWith('/')) return `/${locale}`;
+    if (rawNext.startsWith('//') || rawNext.startsWith('/\\')) return `/${locale}`;
+    // In-app locale prefix check. The legal locales are en/ar; accept either.
+    if (!/^\/(en|ar)(\/|$)/.test(rawNext)) return `/${locale}`;
+    return rawNext;
+  })();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [resentFlash, setResentFlash] = useState(false);
 
@@ -58,7 +82,9 @@ export default function VerifyPage() {
     try {
       const res = await api.auth.verifyOtp(phone, code);
       login(res.token, res.user);
-      router.replace(next.startsWith('/') ? next : `/${locale}`);
+      // R-11 F-10: `next` is already sanitised at top of component, so this
+      // is a safe relative redirect.
+      router.replace(next);
     } catch (e) {
       if (e instanceof ApiError) {
         if (e.status === 0) {
