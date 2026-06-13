@@ -105,6 +105,7 @@ flyctl secrets set DATABASE_URL='postgresql://...supabase...' --app madinatyai-c
 flyctl secrets set REDIS_HOST='apt-marmot-12345.upstash.io' --app madinatyai-coremesh
 flyctl secrets set REDIS_PORT='6380' --app madinatyai-coremesh
 flyctl secrets set REDIS_PASSWORD='<upstash-password>' --app madinatyai-coremesh
+flyctl secrets set REDIS_TLS='true' --app madinatyai-coremesh
 flyctl secrets set JWT_SECRET='<48-byte-base64url-from-step-1>' --app madinatyai-coremesh
 flyctl secrets set KYC_ENCRYPTION_KEY='<32-byte-hex-from-step-1>' --app madinatyai-coremesh
 flyctl secrets set KANTO_R2_ENDPOINT='https://<account>.r2.cloudflarestorage.com' --app madinatyai-coremesh
