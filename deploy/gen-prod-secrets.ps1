@@ -57,10 +57,14 @@ $lines = @(
 )
 
 if ($OutFile) {
-  $lines | Set-Content -Path $OutFile -Encoding utf8
-  Write-Host "Saved to $OutFile" -ForegroundColor Green
+  # Use [System.IO.File]::WriteAllLines instead of Set-Content to avoid the
+  # PowerShell terminal-width wrap that turns long base64url secrets into
+  # multi-line garbage when the file is read back. Forces BOM-less UTF-8.
+  $absPath = if ([System.IO.Path]::IsPathRooted($OutFile)) { $OutFile } else { Join-Path (Get-Location).Path $OutFile }
+  [System.IO.File]::WriteAllLines($absPath, [string[]]$lines, [System.Text.UTF8Encoding]::new($false))
+  Write-Host "Saved to $absPath" -ForegroundColor Green
   Write-Host "Delete this file after pasting into your secrets manager:" -ForegroundColor Yellow
-  Write-Host "  Remove-Item $OutFile" -ForegroundColor Yellow
+  Write-Host "  Remove-Item $absPath" -ForegroundColor Yellow
 } else {
   $lines | ForEach-Object { Write-Host $_ }
 }
