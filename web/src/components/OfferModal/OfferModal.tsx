@@ -171,9 +171,13 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
                 <div>
                   <p className={styles.profileGateTitle}>Complete your profile</p>
                   <p className={styles.profileGateBody}>Full name, gender, and birthdate (18+) are required to make offers.</p>
-                  <a href={"/" + locale + "/my/profile"} className={styles.profileGateLink} onClick={onClose}>
+                  <Link 
+                    href={`/${locale}/my/profile?reason=profile-incomplete&next=/${locale}/listings/${listing.id}`} 
+                    className={styles.profileGateLink} 
+                    onClick={onClose}
+                  >
                     Go to Profile →
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}

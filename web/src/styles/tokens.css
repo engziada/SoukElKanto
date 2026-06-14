@@ -25,6 +25,13 @@
   --blue:         #2b6eff;
   --blue-mid:     #1e4fd9;
 
+  /* Primary aliases */
+  --primary:      var(--blue);
+  --primary-80:   var(--blue-mid);
+  --primary-50:   rgba(43, 110, 255, 0.5);
+  --primary-20:   rgba(43, 110, 255, 0.2);
+  --primary-ghost:rgba(43, 110, 255, 0.1);
+
   --coral:        #ff6b5b;
   --coral-soft:   #ffd7d1;
   --sun:          #ffc94a;
@@ -103,6 +110,13 @@
   --teal-soft:    #134e4a;
   --blue:         #5f8dff;
   --blue-mid:     #3a6cf0;
+
+  /* Primary aliases */
+  --primary:      var(--blue);
+  --primary-80:   var(--blue-mid);
+  --primary-50:   rgba(95, 141, 255, 0.5);
+  --primary-20:   rgba(95, 141, 255, 0.2);
+  --primary-ghost:rgba(95, 141, 255, 0.1);
 
   --coral:        #ff8b7a;
   --coral-soft:   #3a1813;
