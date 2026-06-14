@@ -255,7 +255,13 @@
     "editTitle": "Edit Listing",
     "saveChanges": "Save Changes",
     "cancel": "Cancel",
-    "loadError": "Failed to load listing."
+    "loadError": "Failed to load listing.",
+    "deleteListing": "Delete Listing",
+    "deleteConfirmTitle": "Are you sure?",
+    "deleteConfirmMessage": "This will permanently delete your listing. Open offers will be canceled.",
+    "deleteConfirmYes": "Yes, delete it",
+    "deleteConfirmNo": "Cancel",
+    "deleting": "Deleting..."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

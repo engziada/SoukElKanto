@@ -345,6 +345,8 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify(dto),
       }),
+    remove: (id: string) =>
+      fetchJson<void>(`/api/v1/listings/${id}`, { method: 'DELETE' }),
     create: (dto: CreateListingDto) =>
       fetchJson<Listing>('/api/v1/listings', {
         method: 'POST',

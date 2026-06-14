@@ -255,7 +255,13 @@
     "editTitle": "تعديل الإعلان",
     "saveChanges": "حفظ التعديلات",
     "cancel": "إلغاء",
-    "loadError": "فشل تحميل الإعلان."
+    "loadError": "فشل تحميل الإعلان.",
+    "deleteListing": "حذف الإعلان",
+    "deleteConfirmTitle": "متأكد؟",
+    "deleteConfirmMessage": "كده هتحذف إعلانك نهائياً. وأي عروض مفتوحة هتتلغي.",
+    "deleteConfirmYes": "أيوه، احذف",
+    "deleteConfirmNo": "إلغاء",
+    "deleting": "جاري الحذف..."
   },
   "errors": {
     "generic": "حصل حاجة غلط. جرب تاني.",

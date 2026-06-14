@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Camera, ChevronLeft, AlertCircle, Check, ImagePlus, X, ArrowLeft,
+  Camera, ChevronLeft, AlertCircle, Check, ImagePlus, X, ArrowLeft, Trash2
 } from 'lucide-react';
 import { api, type Listing } from '@/lib/api';
 import styles from '../../new/wizard.module.css';
@@ -28,6 +28,8 @@ export default function EditListingPage() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Form state
   const [title, setTitle] = useState('');
@@ -167,6 +169,18 @@ export default function EditListingPage() {
     }
   };
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await api.listings.remove(id);
+      router.push(`/${locale}/my/listings`);
+    } catch (_err) {
+      setErrors({ save: t('create.errorPublish') });
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   if (loading) return <div className="container" style={{ padding: '2rem' }}>…</div>;
   if (!listing) return (
     <div className="container" style={{ padding: '2rem' }}>
@@ -302,20 +316,45 @@ export default function EditListingPage() {
         </div>
       </section>
 
-      {/* ── Save ── */}
+      {/* ── Save / Delete ── */}
       {errors.save && (
         <div className={styles.publishError} role="alert">
           <AlertCircle size={14} aria-hidden="true" /> {errors.save}
         </div>
       )}
-      <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-        <button type="button" className={styles.publishBtn} disabled={saving} onClick={handleSave}>
-          {saving ? '…' : <><Check size={16} /> {t('create.saveChanges')}</>}
-        </button>
-        <Link href={`/${locale}/listings/${id}`} className={styles.ghostBtn}>
-          <X size={16} /> {t('create.cancel')}
-        </Link>
-      </div>
+
+      {showDeleteConfirm ? (
+        <div className={styles.panel} style={{ borderColor: 'var(--danger-500)', backgroundColor: 'var(--danger-50)' }}>
+          <h4 style={{ color: 'var(--danger-700)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', margin: 0, fontSize: '1.1rem' }}>
+            <AlertCircle size={16} /> {t('create.deleteConfirmTitle')}
+          </h4>
+          <p style={{ color: 'var(--danger-700)', marginBottom: '1rem', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+            {t('create.deleteConfirmMessage')}
+          </p>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button type="button" className={styles.publishBtn} style={{ backgroundColor: 'var(--danger-600)' }} disabled={deleting} onClick={handleDelete}>
+              {deleting ? t('create.deleting') : <><Trash2 size={16} /> {t('create.deleteConfirmYes')}</>}
+            </button>
+            <button type="button" className={styles.ghostBtn} disabled={deleting} onClick={() => setShowDeleteConfirm(false)}>
+              {t('create.deleteConfirmNo')}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button type="button" className={styles.publishBtn} disabled={saving} onClick={handleSave}>
+              {saving ? '…' : <><Check size={16} /> {t('create.saveChanges')}</>}
+            </button>
+            <Link href={`/${locale}/listings/${id}`} className={styles.ghostBtn}>
+              <X size={16} /> {t('create.cancel')}
+            </Link>
+          </div>
+          <button type="button" className={styles.ghostBtn} style={{ color: 'var(--danger-600)' }} onClick={() => setShowDeleteConfirm(true)}>
+            <Trash2 size={16} /> {t('create.deleteListing')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
