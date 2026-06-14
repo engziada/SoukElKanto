@@ -272,30 +272,36 @@
 
 .editActions {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .saveBtn,
 .cancelBtn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.5rem 1rem;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
   border-radius: var(--r-md);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   border: none;
+  transition: all var(--dur-fast) ease-out;
 }
 
 .saveBtn {
   background: var(--primary);
   color: white;
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
 .saveBtn:hover {
   background: var(--primary-80);
+  transform: translateY(-1px);
 }
 
 .cancelBtn {

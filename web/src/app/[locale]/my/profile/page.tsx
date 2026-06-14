@@ -58,6 +58,13 @@ export default function MyProfilePage() {
     setAptNo(user.aptNo || '');
   }, [user]);
 
+  // Auto-open the edit form if they were redirected here because of a gate
+  useEffect(() => {
+    if (gateReason === 'profile-incomplete') {
+      setEditing(true);
+    }
+  }, [gateReason]);
+
   if (!user) return null;
 
   const handleLogout = async () => {
@@ -210,7 +217,7 @@ export default function MyProfilePage() {
             </div>
             <div className={styles.editActions}>
               <button type="button" className={styles.saveBtn} onClick={handleSaveProfile} disabled={saving}>
-                {saving ? '…' : <><Save size={14} /> {t('save')}</>}
+                {saving ? '…' : <><Save size={16} /> {gateReason === 'profile-incomplete' ? t('saveAndContinue', { fallback: 'حفظ ومتابعة' }) : t('save')}</>}
               </button>
               <button type="button" className={styles.cancelBtn} onClick={() => setEditing(false)}>
                 <XIcon /> {t('cancel')}

@@ -8,6 +8,7 @@ import {
   Camera, ChevronLeft, ChevronRight, AlertCircle, Check, ImagePlus, Save,
 } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
+import { useAuthStore } from '@/lib/auth/store';
 import styles from './wizard.module.css';
 
 const CATEGORY_KEYS = [
@@ -46,6 +47,27 @@ export default function CreateListingPage() {
   const locale = useLocale();
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
+  const user = useAuthStore((s) => s.user);
+
+  // ── Pre-gate: Profile completeness ─────────────────────────────────────
+  // Prevent the user from spending time picking photos and writing details
+  // only to get rejected at the very end by the API.
+  useEffect(() => {
+    if (!user) return;
+    const is18Plus = (() => {
+      if (!user.birthdate) return false;
+      const b = new Date(user.birthdate);
+      const now = new Date();
+      const age = now.getFullYear() - b.getFullYear();
+      const m = now.getMonth() - b.getMonth();
+      return age > 18 || (age === 18 && m >= 0 && now.getDate() >= b.getDate());
+    })();
+    const hasCompleteProfile = !!(user.fullName && user.gender && user.birthdate && is18Plus);
+    
+    if (!hasCompleteProfile) {
+      router.replace(`/${locale}/my/profile?reason=profile-incomplete&next=/${locale}/listings/new`);
+    }
+  }, [user, router, locale]);
 
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState<DraftState>(EMPTY_DRAFT);
