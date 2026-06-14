@@ -244,9 +244,18 @@
     "errorCategory": "اختار فئة.",
     "errorCondition": "اختار حالة الحاجة.",
     "errorPublish": "الإعلان مرفعش. جرب تاني.",
+    "errorDistrict": "اكتب المنطقة.",
+    "selectCategory": "اختار الفئة",
+    "selectCondition": "اختار الحالة",
+    "askingPrice": "السعر (ج.م)",
+    "backToListings": "رجوع للإعلانات",
     "completeProfileTitle": "أكمل ملفك الشخصي",
     "completeProfileBody": "الاسم الكامل والنوع وتاريخ الميلاد (18+) مطلوب لتقديم العروض.",
-    "goToProfile": "اذهب إلى الملف الشخصي"
+    "goToProfile": "اذهب إلى الملف الشخصي",
+    "editTitle": "تعديل الإعلان",
+    "saveChanges": "حفظ التعديلات",
+    "cancel": "إلغاء",
+    "loadError": "فشل تحميل الإعلان."
   },
   "errors": {
     "generic": "حصل حاجة غلط. جرب تاني.",

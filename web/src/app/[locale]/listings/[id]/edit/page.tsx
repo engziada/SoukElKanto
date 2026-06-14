@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   Camera, ChevronLeft, AlertCircle, Check, ImagePlus, X, ArrowLeft,
 } from 'lucide-react';
-import { api, type Listing, ApiError } from '@/lib/api';
+import { api, type Listing } from '@/lib/api';
 import styles from '../../new/wizard.module.css';
 
 const CATEGORY_KEYS = [
@@ -159,9 +159,9 @@ export default function EditListingPage() {
       });
 
       router.push(`/${locale}/listings/${id}`);
-    } catch (err) {
-      const msg = err instanceof ApiError ? err.message : (err as Error)?.message;
-      setErrors({ save: msg || t('create.publishError') });
+    } catch (_err) {
+      // Always show translated error — API messages are English-only
+      setErrors({ save: t('create.errorPublish') });
     } finally {
       setSaving(false);
     }
@@ -256,18 +256,18 @@ export default function EditListingPage() {
       <section className={styles.panel}>
         <h3 className={styles.stepTitle}>{t('create.stepDetails')}</h3>
         <div className={styles.field}>
-          <label className={styles.label}>{t('create.title')}</label>
+          <label className={styles.label}>{t('create.labelTitle')}</label>
           <input className={styles.input} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} />
           {errors.title && <span className={styles.fieldError}><AlertCircle size={12} /> {errors.title}</span>}
         </div>
         <div className={styles.field}>
-          <label className={styles.label}>{t('create.description')}</label>
+          <label className={styles.label}>{t('create.labelDescription')}</label>
           <textarea className={styles.textarea} value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={2000} />
           {errors.description && <span className={styles.fieldError}><AlertCircle size={12} /> {errors.description}</span>}
         </div>
         <div className={styles.fieldRow}>
           <div className={styles.field}>
-            <label className={styles.label}>{t('create.category')}</label>
+            <label className={styles.label}>{t('create.labelCategory')}</label>
             <select className={styles.select} value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">{t('create.selectCategory')}</option>
               {CATEGORY_KEYS.map((k) => <option key={k} value={k}>{t(`categories.${k}`)}</option>)}
@@ -275,7 +275,7 @@ export default function EditListingPage() {
             {errors.category && <span className={styles.fieldError}><AlertCircle size={12} /> {errors.category}</span>}
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>{t('create.condition')}</label>
+            <label className={styles.label}>{t('create.labelCondition')}</label>
             <select className={styles.select} value={condition} onChange={(e) => setCondition(e.target.value)}>
               <option value="">{t('create.selectCondition')}</option>
               {CONDITION_KEYS.map((k) => <option key={k} value={k}>{t(`conditions.${k}`)}</option>)}
@@ -290,12 +290,12 @@ export default function EditListingPage() {
         <h3 className={styles.stepTitle}>{t('create.stepPrice')}</h3>
         <div className={styles.fieldRow}>
           <div className={styles.field}>
-            <label className={styles.label}>{t('create.askingPrice')}</label>
+            <label className={styles.label}>{t('create.labelPrice')}</label>
             <input type="number" min={0} className={styles.input} value={askingPrice} onChange={(e) => setAskingPrice(e.target.value)} />
             {errors.askingPrice && <span className={styles.fieldError}><AlertCircle size={12} /> {errors.askingPrice}</span>}
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>{t('create.district')}</label>
+            <label className={styles.label}>{t('create.labelDistrict')}</label>
             <input className={styles.input} value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="B5" />
             {errors.district && <span className={styles.fieldError}><AlertCircle size={12} /> {errors.district}</span>}
           </div>
