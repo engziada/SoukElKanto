@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/auth/auth_provider.dart';
 import '../../core/favorites/favorites_provider.dart';
 import '../../core/i18n/l10n_helper.dart';
 import '../../core/listings/listings_provider.dart';
@@ -26,11 +27,13 @@ class ListingDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final listingAsync = ref.watch(listingByIdProvider(id));
     final favorites = ref.watch(favoritesProvider);
+    final currentUser = ref.watch(currentUserProvider);
     final l = context.l10n;
 
     return listingAsync.when(
       data: (listing) {
         final isFav = favorites.valueOrNull?.contains(listing.id) ?? false;
+        final isOwner = currentUser?.id == listing.sellerId;
         return Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -50,6 +53,20 @@ class ListingDetailScreen extends ConsumerWidget {
                   onPressed: () => context.pop(),
                 ),
                 actions: [
+                  if (isOwner)
+                    IconButton(
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.edit_outlined,
+                            color: Colors.white),
+                      ),
+                      onPressed: () =>
+                          context.push('/listings/${listing.id}/edit'),
+                    ),
                   IconButton(
                     icon: Container(
                       padding: const EdgeInsets.all(6),
@@ -199,19 +216,39 @@ class ListingDetailScreen extends ConsumerWidget {
                 border: const Border(
                     top: BorderSide(color: AppColors.borderSoft)),
               ),
-              child: FilledButton.icon(
-                onPressed: () => OfferSheet.show(context, ref, listing),
-                icon: const Icon(Icons.local_offer_outlined),
-                label: Text(
-                  l.listingMakeOffer,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.coral,
-                  foregroundColor: AppColors.warmWhite,
-                  minimumSize: const Size(double.infinity, 52),
-                ),
-              ),
+              child: isOwner
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton.icon(
+                            onPressed: () =>
+                                context.push('/listings/${listing.id}/edit'),
+                            icon: const Icon(Icons.edit_outlined),
+                            label: Text(l.createEditTitle),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.indigo,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size(double.infinity, 52),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : FilledButton.icon(
+                      onPressed: () =>
+                          OfferSheet.show(context, ref, listing),
+                      icon: const Icon(Icons.local_offer_outlined),
+                      label: Text(
+                        l.listingMakeOffer,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.coral,
+                        foregroundColor: AppColors.warmWhite,
+                        minimumSize: const Size(double.infinity, 52),
+                      ),
+                    ),
             ),
           ),
         );

@@ -202,9 +202,9 @@ class _EditProfileDialogState extends ConsumerState<_EditProfileDialog> {
   @override
   void initState() {
     super.initState();
-    // Normalize gender to match dropdown values ('male' / 'female').
-    final g = widget.user.gender?.toLowerCase().trim();
-    _gender = (g == 'male' || g == 'female') ? g : null;
+    // Normalize gender to uppercase MALE/FEMALE (matches web client + BE convention).
+    final g = widget.user.gender?.toUpperCase().trim();
+    _gender = (g == 'MALE' || g == 'FEMALE') ? g : null;
     // Parse existing birthdate string (ISO date or yyyy-MM-dd).
     final bd = widget.user.birthdate;
     if (bd != null && bd.isNotEmpty) {
@@ -310,9 +310,9 @@ class _EditProfileDialogState extends ConsumerState<_EditProfileDialog> {
                 prefixIcon: const Icon(Icons.wc_outlined),
               ),
               items: [
-                DropdownMenuItem(value: 'male', child: Text(l.myProfileMale)),
+                DropdownMenuItem(value: 'MALE', child: Text(l.myProfileMale)),
                 DropdownMenuItem(
-                    value: 'female', child: Text(l.myProfileFemale)),
+                    value: 'FEMALE', child: Text(l.myProfileFemale)),
               ],
               onChanged: (v) => setState(() => _gender = v),
             ),

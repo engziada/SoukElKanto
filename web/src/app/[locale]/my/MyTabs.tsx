@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   LayoutGrid, Tag, ArrowLeftRight, Handshake, Heart, Coins, Award, User as UserIcon,
-  History,
+  History, ShieldAlert,
 } from 'lucide-react';
 import styles from './my.module.css';
 
@@ -24,6 +24,7 @@ interface TabLabelKeys {
   listings: string;
   offers: string;
   handovers: string;
+  disputes: string;
   activity: string;
   favorites: string;
   wallet: string;
@@ -36,6 +37,7 @@ const TABS: TabDef[] = [
   { slug: 'listings',      labelKey: 'listings',   icon: Tag },
   { slug: 'offers',        labelKey: 'offers',     icon: ArrowLeftRight },
   { slug: 'handovers',     labelKey: 'handovers',  icon: Handshake },
+  { slug: 'disputes',      labelKey: 'disputes',   icon: ShieldAlert },
   { slug: 'activity',      labelKey: 'activity',   icon: History },
   { slug: 'favorites',     labelKey: 'favorites',  icon: Heart },
   { slug: 'wallet',        labelKey: 'wallet',     icon: Coins },

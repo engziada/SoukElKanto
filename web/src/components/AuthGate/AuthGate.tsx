@@ -27,11 +27,21 @@ export function AuthGate({ children, fallback = null }: AuthGateProps) {
   const pathname = usePathname() ?? '/';
   const locale = useLocale();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const refreshUser = useAuthStore((s) => s.refreshUser);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
+
+  // Pre-Phase A — reconcile persisted localStorage user with the server on
+  // mount. This fixes stale profile data after edits made in another tab or
+  // after the cookie was revoked server-side. Fire-and-forget; the redirect
+  // effect below reacts to isAuthenticated changes.
+  useEffect(() => {
+    if (!hydrated) return;
+    refreshUser();
+  }, [hydrated, refreshUser]);
 
   useEffect(() => {
     if (!hydrated) return;

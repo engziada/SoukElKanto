@@ -167,6 +167,44 @@ export interface Offer {
   parentOfferId?: string | null;
   handover?: OfferHandover | null;
   ratings?: OfferRatingSummary[];
+  disputes?: Dispute[];
+}
+
+export interface ContactReveal {
+  fullName: string;
+  phoneNumber: string;
+  trustScore: number;
+  trustTier: 'GOLD' | 'SILVER' | 'BRONZE' | 'NEW';
+  waMeLink: string;
+}
+
+export type DisputeReason =
+  | 'ITEM_NOT_AS_DESCRIBED'
+  | 'ITEM_DEFECTIVE'
+  | 'NO_SHOW'
+  | 'PAYMENT_ISSUE'
+  | 'COUNTERFEIT'
+  | 'SELLER_BACKED_OUT'
+  | 'BUYER_BACKED_OUT'
+  | 'SAFETY_CONCERN'
+  | 'OTHER';
+
+export type DisputeStatus = 'OPEN' | 'RESOLVED' | 'REJECTED';
+
+export interface Dispute {
+  id: string;
+  offerId: string;
+  filedById: string;
+  againstId: string;
+  reason: DisputeReason;
+  description?: string | null;
+  evidenceR2Key?: string | null;
+  status: DisputeStatus;
+  resolution?: string | null;
+  resolvedById?: string | null;
+  resolvedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SafeMeetSpot {
@@ -411,6 +449,29 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ amount }),
       }),
+    /** Reveal counterpart contact info (post-accept). */
+    revealContact: (id: string) =>
+      fetchJson<ContactReveal>(`/api/v1/offers/${id}/contact`),
+    /** Cancel an accepted offer (no-show, change of mind, etc.). */
+    cancel: (id: string, reason: string) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}/cancel`, {
+        method: 'POST',
+        body: JSON.stringify({ reason }),
+      }),
+  },
+  disputes: {
+    /** File a dispute on an offer. */
+    create: (dto: {
+      offerId: string;
+      reason: DisputeReason;
+      description?: string;
+      evidenceR2Key?: string;
+    }) => fetchJson<Dispute>('/api/v1/disputes', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    }),
+    /** List disputes where the current user is filer or subject. */
+    listMine: () => fetchJson<Dispute[]>('/api/v1/disputes/mine'),
   },
   categories: {
     list: () =>
@@ -483,6 +544,13 @@ export const api = {
           ageBonus: number;
         };
       }>(`/api/v1/listings/${listingId}/report`, {
+        method: 'POST',
+        body: JSON.stringify(dto),
+      }),
+  },
+  contactUs: {
+    send: (dto: { name: string; phone: string; message: string; email?: string }) =>
+      fetchJson<{ ok: boolean }>('/api/v1/contact-us', {
         method: 'POST',
         body: JSON.stringify(dto),
       }),

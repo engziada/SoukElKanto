@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeftRight, Clock, ArrowDownToLine, ArrowUpFromLine,
-  Check, X, Repeat, Handshake,
+  Check, X, Repeat, Handshake, Phone, Ban, ShieldAlert,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth/store';
@@ -14,6 +14,9 @@ import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { qk, fetchOffersSent, fetchOffersReceived } from '@/lib/queries';
 import type { Offer } from '@/lib/api';
+import { ContactRevealModal } from '@/components/ContactRevealModal';
+import { CancelOfferModal } from '@/components/CancelOfferModal';
+import { DisputeModal } from '@/components/DisputeModal';
 import tabStyles from '../my.module.css';
 import styles from './my-offers.module.css';
 
@@ -29,6 +32,7 @@ const STATUS_KEYS = [
   'HANDOVER_PENDING',
   'CONFIRMED',
   'CLOSED',
+  'CANCELLED',
 ] as const;
 
 export default function MyOffersPage() {
@@ -55,6 +59,9 @@ export default function MyOffersPage() {
   const [tab, setTab] = useState<Tab>('received');
   const [counterId, setCounterId] = useState<string | null>(null);
   const [counterAmount, setCounterAmount] = useState('');
+  const [revealFor, setRevealFor] = useState<string | null>(null);
+  const [cancelFor, setCancelFor] = useState<string | null>(null);
+  const [disputeFor, setDisputeFor] = useState<string | null>(null);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -135,12 +142,19 @@ export default function MyOffersPage() {
     onError: () => toast.error(t('actionError')),
   });
 
+  const cancelMut = useMutation({
+    mutationFn: (vars: { id: string; reason: string }) =>
+      api.offers.cancel(vars.id, vars.reason),
+    onSuccess: () => { toast.info(t('cancelledToast')); invalidateOffers(); },
+    onError: () => toast.error(t('actionError')),
+  });
+
   const busy =
     acceptMut.isPending || declineMut.isPending ||
     counterMut.isPending || withdrawMut.isPending ||
     confirmMut.isPending ||
     buyerAcceptMut.isPending || buyerDeclineMut.isPending ||
-    buyerCounterMut.isPending;
+    buyerCounterMut.isPending || cancelMut.isPending;
 
   const isLoading = !mounted || (tab === 'sent' ? loadingSent : loadingReceived);
   const rows: Offer[] | undefined = tab === 'sent' ? sent : received;
@@ -223,6 +237,11 @@ export default function MyOffersPage() {
               offer.status === 'ACCEPTED' ||
               offer.status === 'HANDOVER_PENDING' ||
               offer.status === 'CONFIRMED';
+            const canCancel =
+              offer.status === 'ACCEPTED' ||
+              offer.status === 'HANDOVER_PENDING';
+            const canReveal = canCancel || offer.status === 'CONFIRMED';
+            const canDispute = canCancel;
             return (
               <li key={offer.id} className={styles.row}>
                 <div className={styles.rowMain}>
@@ -424,6 +443,36 @@ export default function MyOffersPage() {
                       {t('goToHandover')}
                     </Link>
                   )}
+                  {canReveal && (
+                    <button
+                      type="button"
+                      className={`${styles.actionBtn} ${styles.ghost}`}
+                      onClick={() => setRevealFor(offer.id)}
+                    >
+                      <Phone size={14} aria-hidden="true" />
+                      {t('revealContact')}
+                    </button>
+                  )}
+                  {canCancel && (
+                    <button
+                      type="button"
+                      className={`${styles.actionBtn} ${styles.decline}`}
+                      onClick={() => setCancelFor(offer.id)}
+                    >
+                      <Ban size={14} aria-hidden="true" />
+                      {t('cancelOffer')}
+                    </button>
+                  )}
+                  {canDispute && (
+                    <button
+                      type="button"
+                      className={`${styles.actionBtn} ${styles.ghost}`}
+                      onClick={() => setDisputeFor(offer.id)}
+                    >
+                      <ShieldAlert size={14} aria-hidden="true" />
+                      {t('fileDispute')}
+                    </button>
+                  )}
                   <span className={styles.ts}>
                     <Clock size={12} aria-hidden="true" />
                     {new Date(offer.createdAt).toLocaleDateString()}
@@ -433,6 +482,35 @@ export default function MyOffersPage() {
             );
           })}
         </ul>
+      )}
+
+      {revealFor && (
+        <ContactRevealModal
+          offerId={revealFor}
+          onClose={() => setRevealFor(null)}
+        />
+      )}
+      {cancelFor && (
+        <CancelOfferModal
+          offerId={cancelFor}
+          onClose={() => setCancelFor(null)}
+          onDone={() => {
+            setCancelFor(null);
+            invalidateOffers();
+          }}
+        />
+      )}
+      {disputeFor && (
+        <DisputeModal
+          offerId={disputeFor}
+          onClose={() => setDisputeFor(null)}
+          onDone={() => {
+            setDisputeFor(null);
+            invalidateOffers();
+            queryClient.invalidateQueries({ queryKey: qk.disputesMine() });
+            toast.info(t('fileDispute'));
+          }}
+        />
       )}
     </section>
   );

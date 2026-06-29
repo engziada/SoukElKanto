@@ -176,7 +176,8 @@
       "EXPIRED": "انتهت صلاحيته",
       "HANDOVER_PENDING": "جاري التسليم",
       "CONFIRMED": "تأكد التسليم",
-      "CLOSED": "مقفول"
+      "CLOSED": "مقفول",
+      "CANCELLED": "ملغي"
     }
   },
   "pagination": {
@@ -280,6 +281,7 @@
       "listings": "إعلاناتي",
       "offers": "العروض",
       "handovers": "التسليم",
+      "disputes": "النزاعات",
       "activity": "النشاط",
       "favorites": "المحفوظات",
       "wallet": "المحفظة",
@@ -378,7 +380,16 @@
     "waitingBuyer": "في انتظار المشتري",
     "waitingSeller": "في انتظار البائع",
     "confirmHandover": "تأكيد التسليم",
-    "handoverConfirmed": "تم تأكيد التسليم"
+    "handoverConfirmed": "تم تأكيد التسليم",
+    "revealContact": "اظهر بيانات التواصل",
+    "cancelOffer": "الغي الصفقة",
+    "fileDispute": "افتح نزاع",
+    "cancelledToast": "تم إلغاء الصفقة",
+    "revealToast": "تم إظهار بيانات التواصل",
+    "cancelReasonLabel": "سبب الإلغاء",
+    "cancelReasonPlaceholder": "مثلاً: لم يحضر، غير رأيه…",
+    "cancelConfirm": "أيوة، الغي الصفقة دي",
+    "cancelWarning": "الإلغاء هيفرج حجز الرموز ويرجع الإعلان متاح. مينفعش يترجع."
     },
     "handovers": {
       "title": "التسليم",
@@ -392,7 +403,37 @@
       "rated": "تم التقييم",
       "counterpartBuyer": "المشتري",
       "counterpartSeller": "البائع",
-      "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني."
+      "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني.",
+      "revealContact": "اظهر بيانات التواصل",
+      "cancelOffer": "الغي الصفقة",
+      "fileDispute": "افتح نزاع"
+    },
+    "disputes": {
+      "title": "النزاعات",
+      "empty": "مفيش نزاعات مفتوحة.",
+      "filedByYou": "أنت فتحتها",
+      "filedAgainstYou": "مفتوحة ضدك",
+      "reasonLabel": "السبب",
+      "descriptionLabel": "اوصف اللي حصل",
+      "descriptionPlaceholder": "ادخل تفاصيل تساعد المراقبين في مراجعة حالتك…",
+      "submit": "أرسل النزاع",
+      "submitting": "بيتبعت…",
+      "disputeFiledToast": "تم فتح النزاع ✓",
+      "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني.",
+      "statusOpen": "مفتوح",
+      "statusResolved": "تم حله",
+      "statusRejected": "مرفوض",
+      "reason": {
+        "ITEM_NOT_AS_DESCRIBED": "الحاجة مش زي الوصف",
+        "ITEM_DEFECTIVE": "فيها عيب",
+        "NO_SHOW": "لم يحضر",
+        "PAYMENT_ISSUE": "مشكلة دفع",
+        "COUNTERFEIT": "تقليد",
+        "SELLER_BACKED_OUT": "البائع انسحب",
+        "BUYER_BACKED_OUT": "المشتري انسحب",
+        "SAFETY_CONCERN": "خطر على الأمان",
+        "OTHER": "سبب تاني"
+      }
     },
     "favorites": {
       "title": "محفوظاتك",
@@ -536,5 +577,25 @@
     "aboutMadinaty": "عن Madinaty AI",
     "contact": "تواصل معنا",
     "copyright": "© {year} ZSolutions · القاهرة الجديدة، مصر · جميع الحقوق محفوظة."
+  },
+  "contactUs": {
+    "title": "تواصل معنا",
+    "subtitle": "عندك سؤال أو محتاج مساعدة؟ ابعتلنا رسالة وهنرد عليك على واتساب.",
+    "nameLabel": "الاسم",
+    "namePlaceholder": "اكتب اسمك",
+    "phoneLabel": "رقم الموبايل",
+    "phonePlaceholder": "01xxxxxxxxx",
+    "emailLabel": "البريد الإلكتروني (اختياري)",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "الرسالة",
+    "messagePlaceholder": "إزاي نقدر نساعدك؟",
+    "submit": "ابعت الرسالة",
+    "sending": "جاري الإرسال...",
+    "success": "تم إرسال الرسالة! هنواصل معاك على واتساب قريب.",
+    "error": "تعذر إرسال الرسالة. حاول تاني أو تواصل معانا مباشرة.",
+    "errorName": "من فضلك اكتب اسمك.",
+    "errorPhone": "من فضلك اكتب رقم موبايل صحيح.",
+    "errorEmail": "من فضلك اكتب بريد إلكتروني صحيح.",
+    "errorMessage": "من فضلك اكتب الرسالة."
   }
 }

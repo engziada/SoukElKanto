@@ -344,7 +344,8 @@ enum OfferStatus {
   expired,
   handoverPending,
   confirmed,
-  closed;
+  closed,
+  cancelled;
 
   static OfferStatus fromString(String? value) {
     switch (value?.toUpperCase()) {
@@ -366,6 +367,8 @@ enum OfferStatus {
         return OfferStatus.confirmed;
       case 'CLOSED':
         return OfferStatus.closed;
+      case 'CANCELLED':
+        return OfferStatus.cancelled;
       default:
         return OfferStatus.pending;
     }
@@ -381,6 +384,7 @@ enum OfferStatus {
         OfferStatus.handoverPending => 'HANDOVER_PENDING',
         OfferStatus.confirmed => 'CONFIRMED',
         OfferStatus.closed => 'CLOSED',
+        OfferStatus.cancelled => 'CANCELLED',
       };
 }
 
@@ -815,4 +819,160 @@ class TrustTiers {
     gold: 1001,
     platinum: 2001,
   };
+}
+
+// ── Contact Reveal ───────────────────────────────────────────────────────────
+
+/// Contact info revealed after offer acceptance.
+class ContactReveal {
+  const ContactReveal({
+    required this.fullName,
+    required this.phoneNumber,
+    required this.trustScore,
+    required this.trustTier,
+    required this.waMeLink,
+  });
+
+  final String fullName;
+  final String phoneNumber;
+  final int trustScore;
+  final String trustTier;
+  final String waMeLink;
+
+  factory ContactReveal.fromJson(Map<String, dynamic> json) {
+    return ContactReveal(
+      fullName: json['fullName'] as String? ?? '',
+      phoneNumber: json['phoneNumber'] as String? ?? '',
+      trustScore: (json['trustScore'] as num?)?.toInt() ?? 0,
+      trustTier: json['trustTier'] as String? ?? 'NEW',
+      waMeLink: json['waMeLink'] as String? ?? '',
+    );
+  }
+}
+
+// ── Disputes ──────────────────────────────────────────────────────────────────
+
+/// Dispute reason enum matching backend SoukDisputeReason.
+enum DisputeReason {
+  itemNotAsDescribed,
+  itemDefective,
+  noShow,
+  paymentIssue,
+  counterfeit,
+  sellerBackedOut,
+  buyerBackedOut,
+  safetyConcern,
+  other;
+
+  static DisputeReason fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case 'ITEM_NOT_AS_DESCRIBED':
+        return DisputeReason.itemNotAsDescribed;
+      case 'ITEM_DEFECTIVE':
+        return DisputeReason.itemDefective;
+      case 'NO_SHOW':
+        return DisputeReason.noShow;
+      case 'PAYMENT_ISSUE':
+        return DisputeReason.paymentIssue;
+      case 'COUNTERFEIT':
+        return DisputeReason.counterfeit;
+      case 'SELLER_BACKED_OUT':
+        return DisputeReason.sellerBackedOut;
+      case 'BUYER_BACKED_OUT':
+        return DisputeReason.buyerBackedOut;
+      case 'SAFETY_CONCERN':
+        return DisputeReason.safetyConcern;
+      case 'OTHER':
+        return DisputeReason.other;
+      default:
+        return DisputeReason.other;
+    }
+  }
+
+  String get apiValue => switch (this) {
+        DisputeReason.itemNotAsDescribed => 'ITEM_NOT_AS_DESCRIBED',
+        DisputeReason.itemDefective => 'ITEM_DEFECTIVE',
+        DisputeReason.noShow => 'NO_SHOW',
+        DisputeReason.paymentIssue => 'PAYMENT_ISSUE',
+        DisputeReason.counterfeit => 'COUNTERFEIT',
+        DisputeReason.sellerBackedOut => 'SELLER_BACKED_OUT',
+        DisputeReason.buyerBackedOut => 'BUYER_BACKED_OUT',
+        DisputeReason.safetyConcern => 'SAFETY_CONCERN',
+        DisputeReason.other => 'OTHER',
+      };
+}
+
+/// Dispute status enum.
+enum DisputeStatus {
+  open,
+  resolved,
+  rejected;
+
+  static DisputeStatus fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case 'RESOLVED':
+        return DisputeStatus.resolved;
+      case 'REJECTED':
+        return DisputeStatus.rejected;
+      default:
+        return DisputeStatus.open;
+    }
+  }
+
+  String get apiValue => switch (this) {
+        DisputeStatus.open => 'OPEN',
+        DisputeStatus.resolved => 'RESOLVED',
+        DisputeStatus.rejected => 'REJECTED',
+      };
+}
+
+/// Dispute model.
+class Dispute {
+  const Dispute({
+    required this.id,
+    required this.offerId,
+    required this.filedById,
+    required this.againstId,
+    required this.reason,
+    this.description,
+    this.evidenceR2Key,
+    required this.status,
+    this.resolution,
+    this.resolvedById,
+    this.resolvedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  final String id;
+  final String offerId;
+  final String filedById;
+  final String againstId;
+  final DisputeReason reason;
+  final String? description;
+  final String? evidenceR2Key;
+  final DisputeStatus status;
+  final String? resolution;
+  final String? resolvedById;
+  final String? resolvedAt;
+  final String createdAt;
+  final String updatedAt;
+
+  factory Dispute.fromJson(Map<String, dynamic> json) {
+    return Dispute(
+      id: json['id'] as String? ?? '',
+      offerId: json['offerId'] as String? ?? '',
+      filedById: json['filedById'] as String? ?? '',
+      againstId: json['againstId'] as String? ?? '',
+      reason: DisputeReason.fromString(json['reason'] as String?),
+      description: json['description'] as String?,
+      evidenceR2Key: json['evidenceR2Key'] as String?,
+      status: DisputeStatus.fromString(json['status'] as String?),
+      resolution: json['resolution'] as String?,
+      resolvedById: json['resolvedById'] as String?,
+      resolvedAt: json['resolvedAt'] as String?,
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
 }

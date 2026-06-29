@@ -19,13 +19,16 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Handshake, Check, Clock, Star } from 'lucide-react';
+import { Handshake, Check, Clock, Star, Phone, Ban, ShieldAlert } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth/store';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { qk, fetchOffersSent, fetchOffersReceived } from '@/lib/queries';
 import type { Offer } from '@/lib/api';
 import { RatingModal } from '@/components/RatingModal';
+import { ContactRevealModal } from '@/components/ContactRevealModal';
+import { CancelOfferModal } from '@/components/CancelOfferModal';
+import { DisputeModal } from '@/components/DisputeModal';
 import tabStyles from '../my.module.css';
 import styles from './handovers.module.css';
 
@@ -58,6 +61,9 @@ export default function MyHandoversPage() {
   useEffect(() => setMounted(true), []);
 
   const [ratingFor, setRatingFor] = useState<Offer | null>(null);
+  const [revealFor, setRevealFor] = useState<string | null>(null);
+  const [cancelFor, setCancelFor] = useState<string | null>(null);
+  const [disputeFor, setDisputeFor] = useState<string | null>(null);
 
   const { data: sent } = useQuery({
     queryKey: qk.offersSent(),
@@ -78,6 +84,13 @@ export default function MyHandoversPage() {
   const confirmMut = useMutation({
     mutationFn: (id: string) => api.offers.confirmHandover(id),
     onSuccess: () => { toast.success(t('confirmedToast')); invalidate(); },
+    onError: () => toast.error(t('actionError')),
+  });
+
+  const cancelMut = useMutation({
+    mutationFn: (vars: { id: string; reason: string }) =>
+      api.offers.cancel(vars.id, vars.reason),
+    onSuccess: () => { toast.info(t('actionError')); invalidate(); },
     onError: () => toast.error(t('actionError')),
   });
 
@@ -139,11 +152,42 @@ export default function MyHandoversPage() {
             <button
               type="button"
               className={`${styles.actionBtn} ${styles.confirm}`}
-              disabled={confirmMut.isPending}
+              disabled={confirmMut.isPending || cancelMut.isPending}
               onClick={() => confirmMut.mutate(offer.id)}
             >
               <Check size={14} aria-hidden="true" />
               {t('confirm')}
+            </button>
+          )}
+          {section !== 'completed' && (
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${styles.ghost}`}
+              onClick={() => setRevealFor(offer.id)}
+            >
+              <Phone size={14} aria-hidden="true" />
+              {t('revealContact')}
+            </button>
+          )}
+          {section !== 'completed' && (
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${styles.decline}`}
+              disabled={cancelMut.isPending}
+              onClick={() => setCancelFor(offer.id)}
+            >
+              <Ban size={14} aria-hidden="true" />
+              {t('cancelOffer')}
+            </button>
+          )}
+          {section !== 'completed' && (
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${styles.ghost}`}
+              onClick={() => setDisputeFor(offer.id)}
+            >
+              <ShieldAlert size={14} aria-hidden="true" />
+              {t('fileDispute')}
             </button>
           )}
           {section === 'awaitingOther' && (
@@ -224,6 +268,34 @@ export default function MyHandoversPage() {
             setRatingFor(null);
             invalidate();
             toast.success(t('rated'));
+          }}
+        />
+      )}
+
+      {revealFor && (
+        <ContactRevealModal
+          offerId={revealFor}
+          onClose={() => setRevealFor(null)}
+        />
+      )}
+      {cancelFor && (
+        <CancelOfferModal
+          offerId={cancelFor}
+          onClose={() => setCancelFor(null)}
+          onDone={() => {
+            setCancelFor(null);
+            invalidate();
+          }}
+        />
+      )}
+      {disputeFor && (
+        <DisputeModal
+          offerId={disputeFor}
+          onClose={() => setDisputeFor(null)}
+          onDone={() => {
+            setDisputeFor(null);
+            invalidate();
+            queryClient.invalidateQueries({ queryKey: qk.disputesMine() });
           }}
         />
       )}

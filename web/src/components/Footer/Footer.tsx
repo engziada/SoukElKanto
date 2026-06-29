@@ -70,7 +70,7 @@ export async function Footer() {
             <a href="https://madinaty-ai.vercel.app" target="_blank" rel="noopener noreferrer">
               {t('aboutMadinaty')}
             </a>
-            <a href={`mailto:engziada@gmail.com`}>{t('contact')}</a>
+            <Link href={`/${locale}/contact-us`}>{t('contact')}</Link>
           </nav>
         </div>
       </div>

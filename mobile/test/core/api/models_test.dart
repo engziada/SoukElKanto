@@ -28,6 +28,51 @@ void main() {
       expect(user.isKycVerified, true);
     });
 
+    test('fromJson parses enriched verifyOtp response with all profile fields', () {
+      final json = {
+        'id': 'user-1',
+        'phoneNumber': '+201000000000',
+        'role': 'USER',
+        'isVerified': true,
+        'trustScore': 50,
+        'metadata': {
+          'fullName': 'Sara Hassan',
+          'gender': 'FEMALE',
+          'birthdate': '1995-03-15',
+          'address': 'Madinaty',
+          'madinatyGroup': 'G1',
+          'buildingNo': 'B12',
+          'aptNo': 'A3',
+        },
+        'fullName': 'Sara Hassan',
+        'gender': 'FEMALE',
+        'birthdate': '1995-03-15',
+        'address': 'Madinaty',
+        'madinatyGroup': 'G1',
+        'buildingNo': 'B12',
+        'aptNo': 'A3',
+        'kyc': {'status': 'PENDING', 'reviewedAt': null},
+        'createdAt': '2025-01-01T00:00:00.000Z',
+      };
+
+      final user = AuthUser.fromJson(json);
+
+      expect(user.id, 'user-1');
+      expect(user.role, 'USER');
+      expect(user.isVerified, true);
+      expect(user.trustScore, 50);
+      expect(user.fullName, 'Sara Hassan');
+      expect(user.gender, 'FEMALE');
+      expect(user.birthdate, '1995-03-15');
+      expect(user.address, 'Madinaty');
+      expect(user.madinatyGroup, 'G1');
+      expect(user.buildingNo, 'B12');
+      expect(user.aptNo, 'A3');
+      expect(user.kyc?.status, 'PENDING');
+      expect(user.createdAt, '2025-01-01T00:00:00.000Z');
+      expect(user.isProfileComplete, true);
+    });
+
     test('fromJson handles missing optional fields with defaults', () {
       final json = {
         'id': 'user-2',

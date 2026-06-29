@@ -192,6 +192,30 @@ class ApiClient {
     await _dio.post<void>('/auth/logout');
   }
 
+  /// Register an FCM push-notification device token.
+  Future<void> registerDeviceToken({
+    required String token,
+    required String platform,
+    String? appSlug,
+  }) async {
+    await _dio.post<void>(
+      '/auth/device-token',
+      data: {
+        'token': token,
+        'platform': platform,
+        if (appSlug != null) 'appSlug': appSlug,
+      },
+    );
+  }
+
+  /// Unregister an FCM device token.
+  Future<void> unregisterDeviceToken(String token) async {
+    await _dio.delete<void>(
+      '/auth/device-token',
+      data: {'token': token},
+    );
+  }
+
   // ── User Endpoints ───────────────────────────────────
 
   /// Update user profile metadata.
@@ -341,6 +365,7 @@ class ApiClient {
     String? condition,
     int? askingPrice,
     String? district,
+    List<({String r2Key, int position})>? photos,
   }) async {
     final body = <String, dynamic>{};
     if (title != null) body['title'] = title;
@@ -349,6 +374,11 @@ class ApiClient {
     if (condition != null) body['condition'] = condition;
     if (askingPrice != null) body['askingPrice'] = askingPrice;
     if (district != null) body['district'] = district;
+    if (photos != null) {
+      body['photos'] = photos
+          .map((p) => {'r2Key': p.r2Key, 'position': p.position})
+          .toList();
+    }
 
     final res =
         await _dio.patch<Map<String, dynamic>>('/listings/$id', data: body);
@@ -601,6 +631,63 @@ class ApiClient {
         if (comment != null) 'comment': comment,
       },
     );
+  }
+
+  // ── Contact Reveal ───────────────────────────────────
+
+  /// Reveal counterpart contact info (post-accept).
+  Future<ContactReveal> revealContact(String offerId) async {
+    final res = await _dio.get<Map<String, dynamic>>('/offers/$offerId/contact');
+    return ContactReveal.fromJson(
+      (res.data as Map<String, dynamic>).cast<String, dynamic>(),
+    );
+  }
+
+  // ── Cancel Offer ─────────────────────────────────────
+
+  /// Cancel an accepted offer (no-show, change of mind, etc.).
+  Future<Offer> cancelOffer(String offerId, String reason) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '/offers/$offerId/cancel',
+      data: {'reason': reason},
+    );
+    return Offer.fromJson(
+      (res.data as Map<String, dynamic>).cast<String, dynamic>(),
+    );
+  }
+
+  // ── Disputes ─────────────────────────────────────────
+
+  /// File a dispute on an offer.
+  Future<Dispute> createDispute({
+    required String offerId,
+    required DisputeReason reason,
+    String? description,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '/disputes',
+      data: {
+        'offerId': offerId,
+        'reason': reason.apiValue,
+        if (description != null) 'description': description,
+      },
+    );
+    return Dispute.fromJson(
+      (res.data as Map<String, dynamic>).cast<String, dynamic>(),
+    );
+  }
+
+  /// List disputes where the current user is filer or subject.
+  Future<List<Dispute>> listMyDisputes() async {
+    final res = await _dio.get<dynamic>('/disputes/mine');
+    final data = res.data;
+    if (data is List) {
+      return data
+          .map((e) => Dispute.fromJson(
+              (e as Map<String, dynamic>).cast<String, dynamic>()))
+          .toList();
+    }
+    return [];
   }
 
   // ── Favorites Endpoints ──────────────────────────────

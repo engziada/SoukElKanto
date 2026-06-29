@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "604538726222",
+    "project_id": "madinatyai",
+    "storage_bucket": "madinatyai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604538726222:android:8d208ef1ce5ee02417a01f",
+        "android_client_info": {
+          "package_name": "com.madinatyai.souk_elkanto_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy0-6l1rhV5rGP-BblN4IFdmhr7QnZQe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

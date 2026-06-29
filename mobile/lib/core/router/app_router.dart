@@ -11,6 +11,7 @@ import '../../features/home/home_screen.dart';
 import '../../features/listings/listings_screen.dart';
 import '../../features/listings/listing_detail_screen.dart';
 import '../../features/listings/create_listing_screen.dart';
+import '../../features/listings/edit_listing_screen.dart';
 import '../../features/listings/my_listings_screen.dart';
 import '../../features/favorites/favorites_screen.dart';
 import '../../features/offers/offers_screen.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const String listings = '/listings';
   static const String listingDetail = '/listings/:id';
   static const String create = '/create';
+  static const String editListing = '/listings/:id/edit';
   static const String my = '/my';
   static const String favorites = '/favorites';
   static const String offers = '/offers';
@@ -50,6 +52,7 @@ GoRouter buildRouter(Ref ref) {
       // Auth-required routes.
       final authRequiredRoutes = [
         Routes.create,
+        '/listings/:id/edit',
         Routes.my,
         Routes.offers,
         Routes.profile,
@@ -129,6 +132,13 @@ GoRouter buildRouter(Ref ref) {
       GoRoute(
         path: Routes.create,
         builder: (context, state) => const CreateListingScreen(),
+      ),
+      // Edit listing (outside shell — full screen).
+      GoRoute(
+        path: '/listings/:id/edit',
+        builder: (context, state) => EditListingScreen(
+          listingId: state.pathParameters['id']!,
+        ),
       ),
       // Favorites.
       GoRoute(

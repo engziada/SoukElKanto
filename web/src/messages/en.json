@@ -176,7 +176,8 @@
       "EXPIRED": "Expired",
       "HANDOVER_PENDING": "Handover in progress",
       "CONFIRMED": "Handover confirmed",
-      "CLOSED": "Closed"
+      "CLOSED": "Closed",
+      "CANCELLED": "Cancelled"
     }
   },
   "pagination": {
@@ -280,6 +281,7 @@
       "listings": "My Listings",
       "offers": "Offers",
       "handovers": "Handovers",
+      "disputes": "Disputes",
       "activity": "Activity",
       "favorites": "Saved",
       "wallet": "Wallet",
@@ -378,7 +380,16 @@
     "waitingBuyer": "Waiting for buyer",
     "waitingSeller": "Waiting for seller",
     "confirmHandover": "Confirm Handover",
-    "handoverConfirmed": "Handover confirmed"
+    "handoverConfirmed": "Handover confirmed",
+    "revealContact": "Reveal contact",
+    "cancelOffer": "Cancel deal",
+    "fileDispute": "File a dispute",
+    "cancelledToast": "Deal cancelled",
+    "revealToast": "Contact info revealed",
+    "cancelReasonLabel": "Reason for cancellation",
+    "cancelReasonPlaceholder": "e.g. No-show, change of mind…",
+    "cancelConfirm": "Yes, cancel this deal",
+    "cancelWarning": "Cancelling releases the token hold and returns the listing to active. This cannot be undone."
     },
     "handovers": {
       "title": "Handovers",
@@ -392,7 +403,37 @@
       "rated": "Rated",
       "counterpartBuyer": "Buyer",
       "counterpartSeller": "Seller",
-      "actionError": "Couldn't complete the action. Try again."
+      "actionError": "Couldn't complete the action. Try again.",
+      "revealContact": "Reveal contact",
+      "cancelOffer": "Cancel deal",
+      "fileDispute": "File a dispute"
+    },
+    "disputes": {
+      "title": "Disputes",
+      "empty": "No disputes filed.",
+      "filedByYou": "Filed by you",
+      "filedAgainstYou": "Filed against you",
+      "reasonLabel": "Reason",
+      "descriptionLabel": "Describe what happened",
+      "descriptionPlaceholder": "Provide details to help moderators review your case…",
+      "submit": "Submit dispute",
+      "submitting": "Submitting…",
+      "disputeFiledToast": "Dispute filed ✓",
+      "actionError": "Couldn't complete the action. Try again.",
+      "statusOpen": "Open",
+      "statusResolved": "Resolved",
+      "statusRejected": "Rejected",
+      "reason": {
+        "ITEM_NOT_AS_DESCRIBED": "Item not as described",
+        "ITEM_DEFECTIVE": "Item defective",
+        "NO_SHOW": "No-show",
+        "PAYMENT_ISSUE": "Payment issue",
+        "COUNTERFEIT": "Counterfeit item",
+        "SELLER_BACKED_OUT": "Seller backed out",
+        "BUYER_BACKED_OUT": "Buyer backed out",
+        "SAFETY_CONCERN": "Safety concern",
+        "OTHER": "Other"
+      }
     },
     "favorites": {
       "title": "Saved listings",
@@ -532,5 +573,25 @@
     "aboutMadinaty": "About MadinatyAI",
     "contact": "Contact",
     "copyright": "© {year} ZSolutions · New Cairo, Egypt · All rights reserved."
+  },
+  "contactUs": {
+    "title": "Contact Us",
+    "subtitle": "Have a question or need help? Send us a message and we'll get back to you on WhatsApp.",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "Enter your name",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "01xxxxxxxxx",
+    "emailLabel": "Email (optional)",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "How can we help you?",
+    "submit": "Send Message",
+    "sending": "Sending...",
+    "success": "Message sent! We'll contact you on WhatsApp soon.",
+    "error": "Couldn't send the message. Please try again or reach us directly.",
+    "errorName": "Please enter your name.",
+    "errorPhone": "Please enter a valid phone number.",
+    "errorEmail": "Please enter a valid email address.",
+    "errorMessage": "Please enter a message."
   }
 }

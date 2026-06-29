@@ -6,7 +6,7 @@
  */
 
 import { api } from './api';
-import type { Listing, PaginatedListings, Offer, KycStatus } from './api';
+import type { Listing, PaginatedListings, Offer, Dispute, KycStatus } from './api';
 
 /* ── Query key factory ────────────────────────────────────────────────────── */
 
@@ -26,6 +26,9 @@ export const qk = {
 
   /** Received offers for the current user */
   offersReceived: () => ['offers', 'received'] as const,
+
+  /** My disputes (filed by or against the current user) */
+  disputesMine: () => ['disputes', 'mine'] as const,
 
   /** KYC status for the current user */
   kycStatus: () => ['users', 'me', 'kyc'] as const,
@@ -59,6 +62,11 @@ export async function fetchOffersSent(): Promise<Offer[]> {
 /** Fetch offers the current user has received. */
 export async function fetchOffersReceived(): Promise<Offer[]> {
   return api.offers.listReceived();
+}
+
+/** Fetch disputes where the current user is filer or subject. */
+export async function fetchMyDisputes(): Promise<Dispute[]> {
+  return api.disputes.listMine();
 }
 
 /** Fetch KYC status for the current user. */

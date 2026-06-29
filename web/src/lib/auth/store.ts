@@ -42,6 +42,13 @@ interface AuthState {
   /** Refresh the cached user payload (e.g. after KYC submit). */
   setUser: (user: AuthUser) => void;
   /**
+   * Pre-Phase A — re-fetch the full profile from /auth/me and update the
+   * cached user. Called on AuthGate mount so persisted localStorage state
+   * is reconciled with the server (fixes stale profile after edits).
+   * Returns true on success, false on failure (triggers logout if 401).
+   */
+  refreshUser: () => Promise<boolean>;
+  /**
    * R-11 F-16 — revoke server-side (adds JTI to deny-list, clears cookie),
    * then drop client state. Falls back to local-only logout on network error.
    */
@@ -58,6 +65,17 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       login: (token, user) => set({ token, user, isAuthenticated: true }),
       setUser: (user) => set({ user }),
+      refreshUser: async () => {
+        try {
+          const user = await api.auth.me();
+          set({ user, isAuthenticated: true });
+          return true;
+        } catch {
+          // Cookie expired or revoked — clear stale local state.
+          get().logout();
+          return false;
+        }
+      },
       signOut: async () => {
         try {
           await api.auth.logout();
