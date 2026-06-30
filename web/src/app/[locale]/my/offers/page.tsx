@@ -1,18 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeftRight, Clock, ArrowDownToLine, ArrowUpFromLine,
-  Check, X, Repeat, Handshake, Phone, Ban, ShieldAlert,
+  Check, X, Repeat, Handshake, Phone, Ban, ShieldAlert, Pencil, History,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth/store';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { qk, fetchOffersSent, fetchOffersReceived } from '@/lib/queries';
+import { usePendingActions } from '@/lib/usePendingActions';
 import type { Offer } from '@/lib/api';
 import { ContactRevealModal } from '@/components/ContactRevealModal';
 import { CancelOfferModal } from '@/components/CancelOfferModal';
@@ -44,6 +45,12 @@ export default function MyOffersPage() {
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { markAllSeen } = usePendingActions();
+
+  // Clear notification badge when user visits the offers page
+  useEffect(() => {
+    markAllSeen();
+  }, [markAllSeen]);
   // Loose gate (#1): if the BE replies with PROFILE_INCOMPLETE / AGE_RESTRICTED,
   // bounce the user to /my/profile with a hint. Falls back to the generic
   // action-error toast for everything else.
@@ -57,14 +64,28 @@ export default function MyOffersPage() {
   };
 
   const [tab, setTab] = useState<Tab>('received');
+  const [highlightId, setHighlightId] = useState<string | null>(null);
   const [counterId, setCounterId] = useState<string | null>(null);
   const [counterAmount, setCounterAmount] = useState('');
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editAmount, setEditAmount] = useState('');
+  const [editNote, setEditNote] = useState('');
+  const [chainFor, setChainFor] = useState<string | null>(null);
   const [revealFor, setRevealFor] = useState<string | null>(null);
   const [cancelFor, setCancelFor] = useState<string | null>(null);
   const [disputeFor, setDisputeFor] = useState<string | null>(null);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const rowRefs = useRef<Map<string, HTMLLIElement>>(new Map());
+  const setRowRef = useCallback(
+    (id: string) => (el: HTMLLIElement | null) => {
+      if (el) rowRefs.current.set(id, el);
+      else rowRefs.current.delete(id);
+    },
+    [],
+  );
 
   const { data: sent, isLoading: loadingSent } = useQuery({
     queryKey: qk.offersSent(),
@@ -77,6 +98,45 @@ export default function MyOffersPage() {
     queryFn: fetchOffersReceived,
     enabled: Boolean(user),
   });
+
+  // ── URL params: ?tab=sent|received and/or ?highlight=<offerId> ──
+  // On mount, pick the right tab and remember which offer to scroll to.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    const hl = params.get('highlight');
+    if (tabParam === 'sent' || tabParam === 'received') {
+      setTab(tabParam);
+    }
+    if (hl) setHighlightId(hl);
+  }, []);
+
+  // Once data is available, if we have a highlightId, make sure we're on
+  // the tab that contains it, then scroll + flash.
+  useEffect(() => {
+    if (!highlightId || !mounted) return;
+    const inSent = sent?.some((o) => o.id === highlightId);
+    const inReceived = received?.some((o) => o.id === highlightId);
+    if (inSent && tab !== 'sent') setTab('sent');
+    else if (inReceived && tab !== 'received') setTab('received');
+    else if (!inSent && !inReceived) return; // not loaded yet or not found
+    // scroll on next paint
+    requestAnimationFrame(() => {
+      const el = rowRefs.current.get(highlightId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add(styles.highlight);
+        window.setTimeout(() => el.classList.remove(styles.highlight), 2500);
+        // clear the param so a refresh doesn't re-trigger
+        const url = new URL(window.location.href);
+        url.searchParams.delete('highlight');
+        url.searchParams.delete('tab');
+        window.history.replaceState({}, '', url.toString());
+        setHighlightId(null);
+      }
+    });
+  }, [highlightId, mounted, sent, received, tab]);
 
   const invalidateOffers = () => {
     queryClient.invalidateQueries({ queryKey: qk.offersReceived() });
@@ -119,6 +179,25 @@ export default function MyOffersPage() {
     onError: () => toast.error(t('actionError')),
   });
 
+  const editMut = useMutation({
+    mutationFn: (vars: { id: string; amount?: number; note?: string }) =>
+      api.offers.update(vars.id, { amount: vars.amount, note: vars.note }),
+    onSuccess: () => {
+      toast.success(t('editedToast'));
+      setEditId(null);
+      setEditAmount('');
+      setEditNote('');
+      invalidateOffers();
+    },
+    onError: () => toast.error(t('actionError')),
+  });
+
+  const { data: chainData, isLoading: chainLoading } = useQuery({
+    queryKey: ['offers', 'chain', chainFor],
+    queryFn: () => api.offers.chain(chainFor!),
+    enabled: Boolean(chainFor),
+  });
+
   // ── R-02: buyer-side actions on seller-initiated counters ─────────
   const buyerAcceptMut = useMutation({
     mutationFn: (id: string) => api.offers.buyerAccept(id),
@@ -152,7 +231,7 @@ export default function MyOffersPage() {
   const busy =
     acceptMut.isPending || declineMut.isPending ||
     counterMut.isPending || withdrawMut.isPending ||
-    confirmMut.isPending ||
+    confirmMut.isPending || editMut.isPending ||
     buyerAcceptMut.isPending || buyerDeclineMut.isPending ||
     buyerCounterMut.isPending || cancelMut.isPending;
 
@@ -171,6 +250,12 @@ export default function MyOffersPage() {
     const amount = Number(counterAmount);
     if (!amount || amount <= 0) return;
     buyerCounterMut.mutate({ id, amount });
+  };
+
+  const submitEdit = (id: string) => {
+    const amount = Number(editAmount);
+    if (!amount || amount <= 0) return;
+    editMut.mutate({ id, amount, note: editNote || undefined });
   };
 
   return (
@@ -230,6 +315,7 @@ export default function MyOffersPage() {
               tab === 'sent' &&
               offer.status === 'PENDING' &&
               !offer.parentOfferId;
+            const canEdit = canWithdraw;
             // R-11 F-#7 — once the offer is accepted, the action moves to the
             // /my/handovers page. Surface a direct link so the user doesn't
             // hunt for it in the side nav.
@@ -243,7 +329,7 @@ export default function MyOffersPage() {
             const canReveal = canCancel || offer.status === 'CONFIRMED';
             const canDispute = canCancel;
             return (
-              <li key={offer.id} className={styles.row}>
+              <li key={offer.id} ref={setRowRef(offer.id)} className={styles.row}>
                 <div className={styles.rowMain}>
                   <div className={styles.amount}>
                     <span className={styles.amountValue}>
@@ -343,8 +429,21 @@ export default function MyOffersPage() {
                     </div>
                   )}
 
-                  {canWithdraw && (
+                  {canWithdraw && editId !== offer.id && (
                     <div className={styles.actions}>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.ghost}`}
+                        disabled={busy}
+                        onClick={() => {
+                          setEditId(offer.id);
+                          setEditAmount(String(offer.amount));
+                          setEditNote(offer.note ?? '');
+                        }}
+                      >
+                        <Pencil size={14} aria-hidden="true" />
+                        {t('edit')}
+                      </button>
                       <button
                         type="button"
                         className={`${styles.actionBtn} ${styles.ghost}`}
@@ -353,6 +452,45 @@ export default function MyOffersPage() {
                       >
                         <X size={14} aria-hidden="true" />
                         {t('withdraw')}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Edit form */}
+                  {canEdit && editId === offer.id && (
+                    <div className={styles.editRow}>
+                      <input
+                        type="number"
+                        min={1}
+                        className={styles.counterInput}
+                        placeholder={t('counterPlaceholder')}
+                        value={editAmount}
+                        onChange={(e) => setEditAmount(e.target.value)}
+                        autoFocus
+                      />
+                      <input
+                        type="text"
+                        className={styles.counterInput}
+                        placeholder={t('editNotePlaceholder')}
+                        value={editNote}
+                        onChange={(e) => setEditNote(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.accept}`}
+                        disabled={busy || !editAmount}
+                        onClick={() => submitEdit(offer.id)}
+                      >
+                        <Check size={14} aria-hidden="true" />
+                        {t('save')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.ghost}`}
+                        disabled={busy}
+                        onClick={() => { setEditId(null); setEditAmount(''); setEditNote(''); }}
+                      >
+                        {t('cancel')}
                       </button>
                     </div>
                   )}
@@ -473,6 +611,14 @@ export default function MyOffersPage() {
                       {t('fileDispute')}
                     </button>
                   )}
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.ghost}`}
+                    onClick={() => setChainFor(offer.id)}
+                  >
+                    <History size={14} aria-hidden="true" />
+                    {t('history')}
+                  </button>
                   <span className={styles.ts}>
                     <Clock size={12} aria-hidden="true" />
                     {new Date(offer.createdAt).toLocaleDateString()}
@@ -511,6 +657,71 @@ export default function MyOffersPage() {
             toast.info(t('fileDispute'));
           }}
         />
+      )}
+
+      {/* Offer history timeline modal */}
+      {chainFor && (
+        <div className={styles.chainOverlay} onClick={() => setChainFor(null)}>
+          <div className={styles.chainModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.chainHeader}>
+              <h3 className={styles.chainTitle}>
+                <History size={18} aria-hidden="true" />
+                {t('historyTitle')}
+              </h3>
+              <button
+                type="button"
+                className={`${styles.actionBtn} ${styles.ghost}`}
+                onClick={() => setChainFor(null)}
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+            {chainLoading ? (
+              <div className={tabStyles.empty} aria-busy="true">…</div>
+            ) : chainData && chainData.length > 0 ? (
+              <ol className={styles.chainList}>
+                {chainData.map((o, idx) => (
+                  <li key={o.id} className={styles.chainItem}>
+                    <div className={styles.chainDot} aria-hidden="true" />
+                    <div className={styles.chainContent}>
+                      <div className={styles.chainAmount}>
+                        {o.amount.toLocaleString()} {tListing('price')}
+                      </div>
+                      <span
+                        className={`${styles.statusChip} ${
+                          styles[`status_${o.status}`] ?? styles.statusDefault
+                        }`}
+                      >
+                        {tOfferStatus(o.status as (typeof STATUS_KEYS)[number])}
+                      </span>
+                      {o.note && <p className={styles.chainNote}>{o.note}</p>}
+                      <span className={styles.chainDate}>
+                        <Clock size={12} aria-hidden="true" />
+                        {new Date(o.createdAt).toLocaleString(
+                          locale === 'ar' ? 'ar-EG' : 'en-US',
+                        )}
+                      </span>
+                      {idx === 0 && (
+                        <span className={styles.chainLabel}>
+                          {t('historyInitial')}
+                        </span>
+                      )}
+                      {idx > 0 && idx === chainData.length - 1 && (
+                        <span className={styles.chainLabel}>
+                          {t('historyLatest')}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div className={tabStyles.empty}>
+                <p>{t('historyEmpty')}</p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </section>
   );

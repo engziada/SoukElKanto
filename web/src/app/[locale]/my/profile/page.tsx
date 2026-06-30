@@ -217,7 +217,7 @@ export default function MyProfilePage() {
             </div>
             <div className={styles.editActions}>
               <button type="button" className={styles.saveBtn} onClick={handleSaveProfile} disabled={saving}>
-                {saving ? '…' : <><Save size={16} /> {gateReason === 'profile-incomplete' ? t('saveAndContinue', { fallback: 'حفظ ومتابعة' }) : t('save')}</>}
+                {saving ? '…' : <><Save size={16} /> {gateReason === 'profile-incomplete' ? t('saveAndContinue') : t('save')}</>}
               </button>
               <button type="button" className={styles.cancelBtn} onClick={() => setEditing(false)}>
                 <XIcon /> {t('cancel')}

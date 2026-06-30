@@ -3,6 +3,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
+import { AstroChat } from '@/components/AstroChat/AstroChat';
+import { CompareBar } from '@/components/CompareBar/CompareBar';
 import styles from './layout.module.css';
 
 const SUPPORTED = ['ar', 'en'] as const;
@@ -36,6 +38,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <NavBar />
         <main className={`${styles.main} container`}>{children}</main>
         <Footer />
+        <AstroChat />
+        <CompareBar />
       </div>
     </NextIntlClientProvider>
   );

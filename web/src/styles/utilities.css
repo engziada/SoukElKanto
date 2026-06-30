@@ -85,3 +85,14 @@
 
 /* Tabular numerals for prices */
 .tnum { font-variant-numeric: tabular-nums; }
+
+/* AI gradient text — teal→blue gradient clip */
+.ai-text {
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* AI glow shadow */
+.ai-glow { box-shadow: 0 0 24px rgba(11, 184, 199, 0.25); }

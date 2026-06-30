@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
-import { api } from '@/lib/api';
+import { api, ApiError } from '@/lib/api';
 import { ListingCard } from '@/components/ListingCard';
 import { EmptySearchState } from '@/components/EmptySearchState/EmptySearchState';
 import { ListingCardSkeletonGrid } from '@/components/ListingCardSkeleton/ListingCardSkeletonGrid';
@@ -25,18 +25,26 @@ async function ListingsGrid({
   if (searchParams.page) query.page = String(searchParams.page);
 
   let listings: Awaited<ReturnType<typeof api.listings.list>> | null = null;
-  let networkDown = false;
+  let loadError: 'network' | 'server' | null = null;
 
   try {
     listings = await api.listings.list(query);
-  } catch {
-    networkDown = true;
+  } catch (err) {
+    // Distinguish genuine network errors (status 0 / NETWORK code) from
+    // HTTP errors (5xx, etc.).  Only show "network down" for true network
+    // failures; treat server errors as a softer "couldn't load" state so
+    // users don't see a scary network-down message when the BE hiccups.
+    const status = err instanceof ApiError ? err.status : 0;
+    loadError = status === 0 ? 'network' : 'server';
   }
 
-  if (networkDown) {
+  if (loadError === 'network') {
     return (
       <div className={styles.empty}>
         <p>{t('errors.networkDown')}</p>
+        <a className={styles.retryLink} href={typeof window !== 'undefined' ? window.location.href : '#'}>
+          {t('errors.retry')}
+        </a>
       </div>
     );
   }
@@ -46,7 +54,9 @@ async function ListingsGrid({
     Boolean(searchParams.category) ||
     Boolean(searchParams.condition) ||
     Boolean(searchParams.district);
-  const isEmpty = !listings || listings.data.length === 0;
+  // Treat server errors as empty results so users see a friendly state
+  // instead of a scary network-down message.
+  const isEmpty = loadError === 'server' || !listings || listings.data.length === 0;
 
   if (isEmpty && hasSearchQuery) {
     let suggestions: Awaited<ReturnType<typeof api.listings.list>> | null = null;

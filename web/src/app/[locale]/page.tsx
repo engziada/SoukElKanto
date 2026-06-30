@@ -4,11 +4,12 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import {
   Search, ShieldCheck, MapPin, Coins, Users, Handshake, MessageCircle,
   Sofa, Smartphone, Refrigerator, Shirt, Baby, Dumbbell, BookOpen, Car,
-  History,
+  History, Sparkles,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { ListingCard } from '@/components/ListingCard';
 import { ListingCardSkeletonGrid } from '@/components/ListingCardSkeleton/ListingCardSkeletonGrid';
+import { AstroAvatar } from '@/components/AstroAvatar/AstroAvatar';
 import styles from './page.module.css';
 
 type CategoryShortcut = {
@@ -71,6 +72,14 @@ export default async function HomePage() {
     <div className={styles.wrap}>
       {/* Hero */}
       <section className={styles.hero} aria-labelledby="hero-title">
+        {/* AI glow orb behind Astro */}
+        <div className={styles.heroAiGlow} aria-hidden="true" />
+
+        {/* Astro avatar — waving on load */}
+        <div className={styles.heroAstro}>
+          <AstroAvatar mood="waving" size="lg" />
+        </div>
+
         {/* Decorative awning ornament — top-end corner */}
         <svg
           className={styles.heroOrnament}
@@ -82,6 +91,11 @@ export default async function HomePage() {
           <path d="M0 110 Q60 40 120 110 T240 110" stroke="var(--kanto-coral)" strokeOpacity="0.22" strokeWidth="2" fill="none" />
           <path d="M0 140 Q60 70 120 140 T240 140" stroke="var(--sun)" strokeOpacity="0.28" strokeWidth="2" fill="none" />
         </svg>
+
+        <span className={styles.aiPoweredBadge}>
+          <Sparkles size={14} />
+          {locale === 'ar' ? 'مدعوم بالذكاء الاصطناعي' : 'AI-Powered'}
+        </span>
 
         <h1 id="hero-title" className={styles.heroTitle}>{t('hero.title')}</h1>
         <p className={styles.heroSubtitle}>{t('hero.subtitle')}</p>

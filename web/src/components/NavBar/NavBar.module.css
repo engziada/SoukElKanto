@@ -8,6 +8,39 @@
   border-bottom: 1px solid var(--border-soft);
 }
 
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--teal), var(--blue), var(--teal), transparent);
+  background-size: 200% 100%;
+  opacity: 0.5;
+  animation: aiGradientShift 6s ease-in-out infinite;
+}
+
+@keyframes aiGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.aiBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  color: #fff;
+  font-family: var(--font-headline);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .inner {
   display: flex;
   align-items: center;
@@ -66,10 +99,71 @@
   background: var(--surface-mid);
 }
 
+/* ── Highlighted "Create listing" button ──────────────────────────────── */
+.navCreate {
+  font-weight: 700;
+  color: var(--on-teal, #fff);
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  box-shadow: 0 2px 8px rgba(11, 184, 199, 0.25);
+}
+
+.navCreate:hover {
+  color: var(--on-teal, #fff);
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 184, 199, 0.35);
+}
+
 .right {
   display: flex;
   align-items: center;
   gap: var(--s-2);
+}
+
+/* ── Notification bell ─────────────────────────────────────────────────── */
+.bellLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--r-pill);
+  background: var(--surface-mid);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.bellLink:hover {
+  color: var(--kanto-coral, #ff8366);
+  border-color: var(--kanto-coral, #ff8366);
+  transform: translateY(-1px);
+}
+
+.bellBadge {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -2px;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.25rem;
+  border-radius: var(--r-pill);
+  background: var(--kanto-coral, #ff8366);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(255, 131, 102, 0.4);
+  animation: bellPulse 2s var(--ease-out) infinite;
+}
+
+@keyframes bellPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 
 .locale {

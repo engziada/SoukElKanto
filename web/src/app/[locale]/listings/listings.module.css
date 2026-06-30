@@ -299,3 +299,20 @@
   margin-top: var(--s-2);
   color: var(--text-muted);
 }
+
+.retryLink {
+  display: inline-block;
+  margin-top: var(--s-3);
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter var(--dur-fast, 0.15s) var(--ease-out, ease);
+}
+
+.retryLink:hover {
+  filter: brightness(1.1);
+}

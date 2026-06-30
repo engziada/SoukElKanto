@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import {
-  MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check, Pencil,
+  MapPin, Heart, Share2, Flag, ShieldCheck, BadgeCheck, Check, Pencil, GitCompare,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Listing, Offer } from '@/lib/api';
@@ -16,6 +16,7 @@ import {
 } from '@/lib/trustTier';
 import { useAuthStore } from '@/lib/auth/store';
 import { useFavoritesStore } from '@/lib/favorites/store';
+import { useCompare } from '@/lib/compare';
 import { OfferModal } from '@/components/OfferModal';
 import { ReportModal } from '@/components/ReportModal';
 import styles from './detail.module.css';
@@ -37,6 +38,7 @@ function DetailView({ listing }: DetailViewProps) {
   // Subscribe reactively to the ids array so the heart updates on every toggle.
   const ids = useFavoritesStore((s) => s.ids);
   const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  const { isInCompare, addToCompare, removeFromCompare, items: compareItems, maxItems } = useCompare();
   // Defer localStorage-backed reads to after hydration to avoid SSR mismatch.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
@@ -202,7 +204,7 @@ function DetailView({ listing }: DetailViewProps) {
             <button
               type="button"
               className={styles.cta}
-              onClick={() => router.push(`/${locale}/my/offers?highlight=${existingOffer.id}`)}
+              onClick={() => router.push(`/${locale}/my/offers?tab=sent&highlight=${existingOffer.id}`)}
             >
               {t('listing.viewYourOffer')}
             </button>
@@ -250,6 +252,38 @@ function DetailView({ listing }: DetailViewProps) {
               >
                 <Heart size={14} fill={saved ? 'currentColor' : 'none'} aria-hidden="true" />
                 {saved ? t('listing.unsave') : t('listing.save')}
+              </button>
+            )}
+            {!isOwnListing && (
+              <button
+                type="button"
+                className={`${styles.subBtn} ${hydrated && isInCompare(listing.id) ? styles.subBtnActive : ''}`}
+                onClick={() => {
+                  if (isInCompare(listing.id)) {
+                    removeFromCompare(listing.id);
+                    showHint(t('compare.removedFromCompare'));
+                  } else if (compareItems.length >= maxItems) {
+                    showHint(t('compare.maxReached'));
+                  } else {
+                    addToCompare({
+                      id: listing.id,
+                      title: listing.title,
+                      description: listing.description,
+                      askingPrice: listing.askingPrice,
+                      category: listing.category,
+                      condition: listing.condition,
+                      district: listing.district,
+                      photoUrl: primaryPhoto?.url,
+                      photoUrls: listing.photos?.map((p) => p.url).filter(Boolean) ?? [],
+                      sellerRating: tier === 'PLATINUM' ? 5 : tier === 'GOLD' ? 4.5 : tier === 'SILVER' ? 4 : tier === 'BRONZE' ? 3.5 : 0,
+                    });
+                    showHint(t('compare.addedToCompare'));
+                  }
+                }}
+                aria-pressed={hydrated && isInCompare(listing.id)}
+              >
+                <GitCompare size={14} aria-hidden="true" />
+                {hydrated && isInCompare(listing.id) ? t('compare.removeFromCompare') : t('compare.addToCompare')}
               </button>
             )}
             <button

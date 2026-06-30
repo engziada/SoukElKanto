@@ -3,6 +3,17 @@
   padding-block: var(--s-7) var(--s-6);
   background: linear-gradient(180deg, transparent 0%, var(--bg-alt) 40%);
   border-top: 1px solid var(--border-soft);
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--teal), var(--blue), var(--lilac), transparent);
+  opacity: 0.4;
 }
 
 .inner {

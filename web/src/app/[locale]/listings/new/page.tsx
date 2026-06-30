@@ -267,8 +267,14 @@ export default function CreateListingPage() {
       sessionStorage.removeItem(DRAFT_KEY);
     } catch (e) {
       const err = e instanceof ApiError ? e : null;
-      console.error('[publish] Failed:', err?.message ?? (e as Error)?.message ?? String(e));
-      if (err) {
+      const rawMsg = (e as Error)?.message ?? '';
+      console.error('[publish] Failed:', err?.message ?? rawMsg ?? String(e));
+      // Photo upload failures throw a plain Error (not ApiError) with a
+      // "Photo upload failed" prefix — surface a friendlier message so the
+      // user knows it was the photos, not the listing itself.
+      if (!err && rawMsg.startsWith('Photo upload failed')) {
+        setErrors({ publish: t('create.photoUploadError') });
+      } else if (err) {
         // Loose-gate (#1): profile incomplete → bounce to /my/profile.
         if (err.status === 403 && err.message?.startsWith('PROFILE_')) {
           router.push(`/${locale}/my/profile?reason=profile-incomplete&next=/${locale}/listings/new`);

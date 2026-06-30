@@ -1,0 +1,186 @@
+/* ============================================================
+   ASTRO AVATAR — Official AI Mascot of Madinaty AI
+   Ported from Platform. Uses SoukElkanto design tokens.
+   ============================================================ */
+
+.astro-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.astro-avatar--sm { width: 60px; height: 60px; }
+.astro-avatar--md { width: 90px; height: 90px; }
+.astro-avatar--lg { width: 120px; height: 120px; }
+.astro-avatar--xl { width: 180px; height: 180px; }
+.astro-avatar--huge { width: 260px; height: 260px; }
+
+.astro-svg { width: 100%; height: 100%; }
+
+/* SVG part colors — using SoukElkanto design tokens */
+.astro-body { fill: var(--surface-hi); stroke: var(--teal); stroke-width: 2; }
+.astro-head { fill: var(--surface); stroke: var(--teal); stroke-width: 2; }
+.astro-visor { fill: var(--teal-dim); stroke: var(--teal); stroke-width: 1.5; }
+.astro-eye { fill: var(--text); }
+.astro-pupil { fill: #fff; }
+.astro-eye-shine { fill: #fff; opacity: 0.9; }
+.astro-mouth { stroke: var(--teal); transition: d 0.3s ease; }
+.astro-ear line { stroke: var(--text-muted); }
+.astro-ear-tip { fill: var(--coral); }
+.astro-tail { stroke: var(--teal); }
+.astro-paw { fill: var(--surface-hi); stroke: var(--teal); stroke-width: 1.5; }
+.astro-badge { fill: var(--teal-dim); stroke: var(--teal); stroke-width: 1.5; }
+.astro-badge-text { fill: var(--teal); user-select: none; }
+
+/* Glow ring */
+.astro-glow {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--teal-dim) 0%, transparent 70%);
+  animation: astroGlowPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---- Mood animations ------------------------------------------ */
+
+.astro-mood--idle .astro-tail { animation: astroTailWag 2s ease-in-out infinite; transform-origin: 148px 140px; }
+.astro-mood--idle .astro-eyes { animation: astroBlink 4s ease-in-out infinite; }
+
+.astro-mood--talking .astro-mouth { animation: astroMouthMove 0.4s ease-in-out infinite; }
+.astro-mood--talking .astro-head { animation: astroHeadBob 0.6s ease-in-out infinite; }
+
+.astro-mood--listening .astro-ear--left { animation: astroEarPerk 1.5s ease-in-out infinite; transform-origin: 58px 28px; }
+.astro-mood--listening .astro-ear--right { animation: astroEarPerk 1.5s ease-in-out infinite 0.2s; transform-origin: 142px 28px; }
+
+.astro-mood--celebrating .astro-svg { animation: astroCelebrateJump 0.6s ease-in-out 2; }
+.astro-mood--celebrating .astro-tail { animation: astroTailWagFast 0.3s ease-in-out infinite; transform-origin: 148px 140px; }
+
+.astro-mood--thinking .astro-badge { animation: astroSpin 2s linear infinite; transform-origin: 100px 122px; }
+
+.astro-mood--error .astro-head { animation: astroHeadShake 0.5s ease-in-out; }
+
+.astro-mood--waving .astro-paw--right {
+  transform-origin: 128px 168px;
+  animation: astroPawWave 0.3s ease-in-out infinite alternate;
+}
+
+/* Confetti (Celebration) */
+.astro-confetti {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+.astro-confetti-piece {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: hsl(calc(var(--hue, 0) * 1deg), 85%, 60%);
+  top: 50%;
+  left: 50%;
+  animation: astroConfettiBurst 1.2s ease-out forwards;
+  animation-delay: calc(var(--i, 0) * 0.05s);
+}
+
+/* ---- Keyframes ------------------------------------------------ */
+
+@keyframes astroSpin { to { transform: rotate(360deg); } }
+
+@keyframes astroPawWave {
+  0% { transform: translate(15px, -30px) rotate(30deg); }
+  100% { transform: translate(35px, -35px) rotate(60deg); }
+}
+
+@keyframes astroTailWag {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+@keyframes astroTailWagFast {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
+}
+
+@keyframes astroBlink {
+  0%, 45%, 55%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+
+@keyframes astroMouthMove {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.3); }
+}
+
+@keyframes astroHeadBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes astroEarPerk {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-8deg); }
+}
+
+@keyframes astroCelebrateJump {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-12px); }
+}
+
+@keyframes astroHeadShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes astroGlowPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.08); }
+}
+
+@keyframes astroConfettiBurst {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+  100% {
+    transform: translate(
+      calc((var(--i, 0) - 6) * 20px),
+      calc(-60px + var(--i, 0) * 10px)
+    ) scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ---- Responsive Overrides ------------------------------------- */
+
+@media (max-width: 600px) {
+  .astro-avatar--lg { width: 80px; height: 80px; }
+  .astro-avatar--xl { width: 140px; height: 140px; }
+}
+
+/* ---- Reduced Motion ------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .astro-glow { animation: none; opacity: 0.3; }
+  .astro-mood--idle .astro-tail,
+  .astro-mood--idle .astro-eyes,
+  .astro-mood--talking .astro-mouth,
+  .astro-mood--talking .astro-head,
+  .astro-mood--listening .astro-ear--left,
+  .astro-mood--listening .astro-ear--right,
+  .astro-mood--celebrating .astro-svg,
+  .astro-mood--celebrating .astro-tail,
+  .astro-mood--thinking .astro-badge,
+  .astro-mood--error .astro-head,
+  .astro-mood--waving .astro-paw--right {
+    animation: none;
+  }
+  .astro-confetti-piece {
+    animation: none;
+    opacity: 0;
+  }
+}

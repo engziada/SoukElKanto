@@ -44,12 +44,14 @@ function getLegacyToken(): string | null {
 export class ApiError extends Error {
   public readonly status: number;
   public readonly code?: string;
+  public readonly data?: Record<string, unknown>;
 
-  constructor(message: string, status: number, code?: string) {
+  constructor(message: string, status: number, code?: string, data?: Record<string, unknown>) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
     this.code = code;
+    this.data = data;
   }
 }
 
@@ -87,10 +89,12 @@ async function fetchJson<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
+    const errorObj = body?.error ?? body;
     const message =
       (body && (body.error?.message ?? body.message)) ?? `HTTP ${res.status}`;
-    const code = body?.error?.code;
-    throw new ApiError(message, res.status, code);
+    const code = body?.error?.code ?? (typeof errorObj?.code === 'string' ? errorObj.code : undefined);
+    const data = errorObj && typeof errorObj === 'object' ? errorObj : undefined;
+    throw new ApiError(message, res.status, code, data);
   }
 
   const payload = (await res.json()) as unknown;
@@ -433,6 +437,15 @@ export const api = {
       fetchJson<{ buyerConfirmedAt?: string; sellerConfirmedAt?: string }>(`/api/v1/handover/${id}/confirm`, { method: 'POST' }),
     withdraw: (id: string) =>
       fetchJson<Offer>(`/api/v1/offers/${id}/withdraw`, { method: 'PATCH' }),
+    /** Buyer edits amount and/or note on a PENDING offer. */
+    update: (id: string, dto: { amount?: number; note?: string }) =>
+      fetchJson<Offer>(`/api/v1/offers/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(dto),
+      }),
+    /** Returns the full offer chain (root → leaf) for the timeline UI. */
+    chain: (id: string) =>
+      fetchJson<Offer[]>(`/api/v1/offers/${id}/chain`),
     // ── R-02: buyer-side actions on seller-initiated counters ─────────
     /** Buyer accepts a seller's counter (offer.parentOfferId must be set). */
     buyerAccept: (id: string) =>

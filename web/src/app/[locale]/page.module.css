@@ -11,6 +11,7 @@
   border-radius: var(--r-xl);
   background:
     radial-gradient(120% 80% at 100% 0%, color-mix(in oklab, var(--kanto-coral) 18%, transparent), transparent 60%),
+    radial-gradient(80% 60% at 50% 0%, color-mix(in oklab, var(--teal) 12%, transparent), transparent 50%),
     linear-gradient(160deg, var(--kanto-stall), var(--surface));
   border: 1px solid var(--kanto-stall-edge);
   overflow: hidden;
@@ -20,6 +21,51 @@
 
 @media (min-width: 768px) {
   .hero { padding: var(--s-8) var(--s-7); }
+}
+
+.heroAiGlow {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--teal-dim) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: -1;
+  animation: heroGlowPulse 4s ease-in-out infinite;
+}
+
+@keyframes heroGlowPulse {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+}
+
+.heroAstro {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--s-3);
+}
+
+.aiPoweredBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--r-pill);
+  background: linear-gradient(135deg, var(--teal-dim), color-mix(in oklab, var(--blue) 12%, transparent));
+  border: 1px solid color-mix(in oklab, var(--teal) 25%, transparent);
+  color: var(--teal);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--s-3);
+}
+
+[lang="ar"] .aiPoweredBadge {
+  font-family: var(--font-body-ar);
+  letter-spacing: 0;
 }
 
 .heroOrnament {
@@ -208,6 +254,10 @@
   font-size: 1.45rem;
   letter-spacing: -0.01em;
   font-weight: 700;
+  background: linear-gradient(135deg, var(--text), var(--text-soft));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 [lang="ar"] .sectionTitle {
@@ -312,10 +362,11 @@
   gap: var(--s-4) var(--s-6);
   padding: var(--s-4) var(--s-5);
   border-radius: var(--r-lg);
-  background: var(--teal-dim);
+  background: linear-gradient(135deg, var(--teal-dim), color-mix(in oklab, var(--blue) 8%, transparent));
   color: var(--teal);
   font-weight: 600;
   font-size: 0.9rem;
+  border: 1px solid color-mix(in oklab, var(--teal) 15%, transparent);
 }
 
 .trustItem {

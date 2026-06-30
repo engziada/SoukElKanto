@@ -8,9 +8,10 @@
     "listings": "الإعلانات",
     "create": "اعلن",
     "offers": "العروض",
-    "favorites": "المفضّلة",
+    "favorites": "إعلانات مميزة",
     "login": "تسجيل الدخول",
-    "loginComingSoon": "قريباً، بنشتغل عليها."
+    "loginComingSoon": "قريباً، بنشتغل عليها.",
+    "notifications": "الإشعارات"
   },
   "hero": {
     "title": "أقرب صفقة ليك",
@@ -245,6 +246,7 @@
     "errorCategory": "اختار فئة.",
     "errorCondition": "اختار حالة الحاجة.",
     "errorPublish": "الإعلان مرفعش. جرب تاني.",
+    "photoUploadError": "مقدرناش نرفع بعض الصور. تأكد من الإنترنت وحاول تاني، أو شيل الصور اللي فشلت وضيفها من جديد.",
     "errorDistrict": "اكتب المنطقة.",
     "selectCategory": "اختار الفئة",
     "selectCondition": "اختار الحالة",
@@ -272,6 +274,7 @@
     "emptyOffers": "لسه مفيش عروض هنا.",
     "unauthorized": "لازم تسجل دخول الأول.",
     "beFirst": "كن أول واحد يعلن. سوقك يستنى حاجتك!",
+    "offerOutOfBand": "العرض لازم يكون بين {min} و {max} جنيه (50% لـ 150% من السعر المطلوب).",
     "retry": "جرب تاني"
   },
   "my": {
@@ -281,9 +284,9 @@
       "listings": "إعلاناتي",
       "offers": "العروض",
       "handovers": "التسليم",
-      "disputes": "النزاعات",
+      "disputes": "الشكاوي",
       "activity": "النشاط",
-      "favorites": "المحفوظات",
+      "favorites": "إعلانات مميزة",
       "wallet": "المحفظة",
       "trustMeter": "ثقتك",
       "profile": "بياناتك"
@@ -374,6 +377,15 @@
       "declinedToast": "رفضت العرض",
       "counteredToast": "اتبعت العرض المضاد",
       "withdrawnToast": "اتسحب العرض",
+      "editedToast": "تم تحديث العرض",
+      "edit": "تعديل",
+      "save": "حفظ",
+      "editNotePlaceholder": "أضف ملاحظة (اختياري)",
+      "history": "السجل",
+      "historyTitle": "سجل العرض",
+      "historyInitial": "العرض الأولي",
+      "historyLatest": "الأحدث",
+      "historyEmpty": "لا يوجد سجل متاح.",
       "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني.",
     "dealCompleted": "اكتملت الصفقة",
     "youConfirmed": "أنت أكدت",
@@ -383,7 +395,7 @@
     "handoverConfirmed": "تم تأكيد التسليم",
     "revealContact": "اظهر بيانات التواصل",
     "cancelOffer": "الغي الصفقة",
-    "fileDispute": "افتح نزاع",
+    "fileDispute": "افتح شكوى",
     "cancelledToast": "تم إلغاء الصفقة",
     "revealToast": "تم إظهار بيانات التواصل",
     "cancelReasonLabel": "سبب الإلغاء",
@@ -406,19 +418,19 @@
       "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني.",
       "revealContact": "اظهر بيانات التواصل",
       "cancelOffer": "الغي الصفقة",
-      "fileDispute": "افتح نزاع"
+      "fileDispute": "افتح شكوى"
     },
     "disputes": {
-      "title": "النزاعات",
-      "empty": "مفيش نزاعات مفتوحة.",
+      "title": "الشكاوي",
+      "empty": "مفيش شكاوى مفتوحة.",
       "filedByYou": "أنت فتحتها",
       "filedAgainstYou": "مفتوحة ضدك",
       "reasonLabel": "السبب",
       "descriptionLabel": "اوصف اللي حصل",
       "descriptionPlaceholder": "ادخل تفاصيل تساعد المراقبين في مراجعة حالتك…",
-      "submit": "أرسل النزاع",
+      "submit": "أرسل الشكوى",
       "submitting": "بيتبعت…",
-      "disputeFiledToast": "تم فتح النزاع ✓",
+      "disputeFiledToast": "تم فتح الشكوى ✓",
       "actionError": "ماقدرناش ننفذ الإجراء. جرب تاني.",
       "statusOpen": "مفتوح",
       "statusResolved": "تم حله",
@@ -436,7 +448,7 @@
       }
     },
     "favorites": {
-      "title": "محفوظاتك",
+      "title": "إعلانات مميزة",
       "empty": "لسه ما حفظتش حاجة. دوس على القلب على أي إعلان عشان نسجله."
     },
     "wallet": {
@@ -488,6 +500,7 @@
       "verifyNow": "وثق حسابك",
       "fullName": "الاسم الكامل",
       "save": "حفظ",
+      "saveAndContinue": "حفظ ومتابعة",
       "cancel": "إلغاء",
       "male": "ذكر",
       "female": "أنثى",
@@ -597,5 +610,34 @@
     "errorPhone": "من فضلك اكتب رقم موبايل صحيح.",
     "errorEmail": "من فضلك اكتب بريد إلكتروني صحيح.",
     "errorMessage": "من فضلك اكتب الرسالة."
+  },
+  "astro": {
+    "title": "أسترو · Madinaty AI",
+    "subtitle": "مساعدك في مدينتي",
+    "open": "افتح محادثة أسترو",
+    "close": "إغلاق المحادثة",
+    "send": "إرسال رسالة",
+    "placeholder": "اسأل أسترو عن مدينتي..."
+  },
+  "compare": {
+    "compare": "قارن",
+    "remove": "إزالة",
+    "clear": "مسح الكل",
+    "addToCompare": "قارن",
+    "removeFromCompare": "إزالة من المقارنة",
+    "addedToCompare": "تمت الإضافة للمقارنة",
+    "removedFromCompare": "تمت الإزالة من المقارنة",
+    "maxReached": "المقارنة ممتلئة (حد أقصى 4)",
+    "pageTitle": "مقارنة الإعلانات",
+    "emptyTitle": "لا يوجد ما يقارن بعد",
+    "emptyText": "أضف إعلانات للمقارنة جنباً إلى جنب — الأسعار، الحالة، والمزيد.",
+    "browseListings": "تصفح الإعلانات",
+    "attribute": "الخاصية",
+    "category": "الفئة",
+    "condition": "الحالة",
+    "district": "المنطقة",
+    "bestPrice": "أفضل سعر",
+    "description": "الوصف",
+    "sellerRating": "تقييم البائع"
   }
 }

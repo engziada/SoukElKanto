@@ -6,9 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import {
   Store, Search, PlusCircle, Tag, LogIn, User as UserIcon, LayoutGrid, LogOut, BadgeCheck,
-  ClipboardList, ArrowLeftRight, Heart,
+  ClipboardList, ArrowLeftRight, Heart, Bell,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth/store';
+import { usePendingActions } from '@/lib/usePendingActions';
 import styles from './NavBar.module.css';
 
 function userLabel(user: { phoneNumber: string; metadata?: Record<string, unknown> }): string {
@@ -35,6 +36,7 @@ export function NavBar() {
   // R-11 F-16 — async signOut hits POST /auth/logout to revoke the JWT JTI
   // server-side before clearing client state.
   const signOut = useAuthStore((s) => s.signOut);
+  const { newCount } = usePendingActions();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -81,6 +83,7 @@ export function NavBar() {
               <Store size={18} strokeWidth={2} />
             </span>
             <span>{locale === 'ar' ? 'سوق الكانتو' : 'Souk ElKanto'}</span>
+            <span className={styles.aiBadge}>AI</span>
           </Link>
 
           <nav className={styles.nav} aria-label="Primary">
@@ -92,7 +95,7 @@ export function NavBar() {
               <Tag size={16} />
               {t('listings')}
             </Link>
-            <Link href={`/${locale}/listings/new`} className={styles.navLink}>
+            <Link href={`/${locale}/listings/new`} className={`${styles.navLink} ${styles.navCreate}`}>
               <PlusCircle size={16} />
               {t('create')}
             </Link>
@@ -103,6 +106,20 @@ export function NavBar() {
           </nav>
 
           <div className={styles.right}>
+            {showUserChip && hydrated && newCount > 0 && (
+              <Link
+                href={`/${locale}/my/offers`}
+                className={styles.bellLink}
+                aria-label={t('notifications')}
+              >
+                <Bell size={18} aria-hidden="true" />
+                {newCount > 0 && (
+                  <span className={styles.bellBadge}>
+                    {newCount > 9 ? '9+' : newCount}
+                  </span>
+                )}
+              </Link>
+            )}
             <Link
               href={otherLocaleHref}
               className={styles.locale}

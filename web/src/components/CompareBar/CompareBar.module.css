@@ -1,0 +1,127 @@
+.bar {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  z-index: 50;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 24px rgba(12, 26, 51, 0.12);
+  padding: var(--s-3) 0;
+  animation: slideUp 0.3s var(--ease-out, ease);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.items {
+  display: flex;
+  gap: var(--s-2);
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--r-sm);
+  background: var(--surface-mid);
+  border: 1px solid var(--border-soft);
+  flex-shrink: 0;
+  max-width: 200px;
+}
+
+.thumb {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--r-xs);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.itemTitle {
+  font-size: 0.8rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.removeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--dur-fast, 150ms) ease;
+}
+
+.removeBtn:hover {
+  background: var(--kanto-coral, #ff8366);
+  color: white;
+}
+
+.actions {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.clearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur-fast, 150ms) ease;
+}
+
+.clearBtn:hover {
+  color: var(--kanto-coral, #ff8366);
+  border-color: var(--kanto-coral, #ff8366);
+}
+
+.compareBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--dur-fast, 150ms) ease, box-shadow var(--dur-fast, 150ms) ease;
+}
+
+.compareBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 184, 199, 0.3);
+}

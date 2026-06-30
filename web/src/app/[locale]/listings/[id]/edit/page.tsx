@@ -161,9 +161,15 @@ export default function EditListingPage() {
       });
 
       router.push(`/${locale}/listings/${id}`);
-    } catch (_err) {
-      // Always show translated error — API messages are English-only
-      setErrors({ save: t('create.errorPublish') });
+    } catch (e) {
+      // Photo upload failures throw a plain Error with "Upload failed" prefix
+      const rawMsg = (e as Error)?.message ?? '';
+      if (rawMsg.startsWith('Upload failed')) {
+        setErrors({ save: t('create.photoUploadError') });
+      } else {
+        // Always show translated error — API messages are English-only
+        setErrors({ save: t('create.errorPublish') });
+      }
     } finally {
       setSaving(false);
     }

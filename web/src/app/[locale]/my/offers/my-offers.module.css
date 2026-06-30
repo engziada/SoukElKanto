@@ -341,3 +341,158 @@
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
+
+@keyframes highlightFlash {
+  0%   { box-shadow: 0 0 0 3px var(--blue, #2b6eff); }
+  50%  { box-shadow: 0 0 0 3px color-mix(in oklab, var(--blue, #2b6eff) 40%, transparent); }
+  100% { box-shadow: var(--shadow-card); }
+}
+
+.highlight {
+  animation: highlightFlash 2.5s var(--ease-out, ease) forwards;
+}
+
+/* ───────────── Edit row ───────────── */
+.editRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+  padding: var(--s-2) 0;
+}
+
+/* ───────────── Offer chain timeline modal ───────────── */
+.chainOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 26, 51, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: var(--s-4);
+}
+
+.chainModal {
+  width: min(540px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card-hover);
+  padding: var(--s-5);
+}
+
+.chainHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s-4);
+}
+
+.chainTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-headline);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+[lang="ar"] .chainTitle {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+}
+
+.chainList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chainItem {
+  display: flex;
+  gap: var(--s-3);
+  padding-bottom: var(--s-4);
+  position: relative;
+}
+
+.chainItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 1.5rem;
+  inset-inline-start: 0.55rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.chainDot {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  z-index: 1;
+  box-shadow: 0 0 0 3px var(--surface);
+}
+
+.chainContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.chainAmount {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+[lang="ar"] .chainAmount {
+  font-family: var(--font-body-ar);
+  font-weight: 800;
+}
+
+.chainNote {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin: 0;
+  padding: var(--s-1) var(--s-2);
+  background: var(--surface-mid);
+  border-radius: var(--r-sm);
+}
+
+.chainDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.chainLabel {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--teal);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--r-sm);
+  background: var(--teal-dim);
+  width: fit-content;
+}

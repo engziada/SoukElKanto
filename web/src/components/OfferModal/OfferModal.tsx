@@ -13,7 +13,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { X, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, ApiError } from '@/lib/api';
 import type { Listing } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth/store';
 import styles from './OfferModal.module.css';
@@ -93,9 +93,15 @@ export function OfferModal({ listing, onClose }: OfferModalProps) {
       });
       setPhase('success');
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : t('errors.generic'),
-      );
+      if (err instanceof ApiError && err.code === 'OFFER_OUT_OF_BAND' && err.data) {
+        const min = (err.data.min as number)?.toLocaleString();
+        const max = (err.data.max as number)?.toLocaleString();
+        setServerError(t('errors.offerOutOfBand', { min, max }));
+      } else {
+        setServerError(
+          err instanceof Error ? err.message : t('errors.generic'),
+        );
+      }
       setPhase('error');
     }
   }, [validate, listing.id, amount, note, t]);
